@@ -1,4 +1,4 @@
 package com.aliasgame.app.domain.model
 
-class Team {
+class Team(val id: String, val name: String) {
 }
