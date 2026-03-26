@@ -1,4 +1,7 @@
 package com.aliasgame.app.presentation.game
 
-class GameViewModel {
+import androidx.lifecycle.ViewModel
+
+class GameViewModel : ViewModel() {
+    // Тут буде зв'язок між UI та GameEngine
 }
