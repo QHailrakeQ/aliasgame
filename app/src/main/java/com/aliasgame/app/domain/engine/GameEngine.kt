@@ -14,28 +14,33 @@ class GameEngine(val allWords: List<Word>, val initialTeams: List<Team>, val set
     private var currentScore = 0
     private var isPaused = false
 
-    fun getNextWord(): Word {
+    fun getNextWord(): Word? {
         val availableWords = allWords.filter { !usedWords.contains(it) }
         if (availableWords.isEmpty()) {
-            throw IllegalStateException("No more words available")
+            return null
         }
         val nextWord = availableWords.random()
         usedWords.add(nextWord)
         return nextWord
     }
 
-    fun onCorrectAnswer(): Word {
+    fun onCorrectAnswer(): Word? {
         currentScore += settings.pointsPerCorrectAnswer
         return getNextWord()
     }
 
-    fun onSkipWord(): Word {
+    fun onSkipWord(): Word? {
         currentScore += settings.pointsPerSkip
         return getNextWord()
     }
 
-    fun pause() { isPaused = true }
-    fun resume() { isPaused = false}
+    fun pause() {
+        isPaused = true
+    }
+
+    fun resume() {
+        isPaused = false
+    }
 
     fun rollNextTeam(): Team? {
         val team = teams[currentTeamIndex]
@@ -54,14 +59,31 @@ class GameEngine(val allWords: List<Word>, val initialTeams: List<Team>, val set
         return teams.toList()
     }
 
-    fun getCurrentState(timeRemaining: Long, currentWord: Word?): GameState {
+    fun getCurrentState(
+        timeRemaining: Long, currentWord: Word?,
+        isRoundOver: Boolean = false,
+        winner: Team? = null
+    ): GameState {
         return GameState(
             currentTeam = teams[currentTeamIndex],
             currentWord = currentWord,
             score = currentScore,
             timeRemaining = timeRemaining,
             isPaused = isPaused,
-            isLastWordMode = timeRemaining <= 0
+            isLastWordMode = timeRemaining <= 0 && !isRoundOver,
+            isRoundOver = isRoundOver,
+            isGameFinished = winner != null,
+            winner = winner,
+            allTeams = teams.toList()
+
         )
     }
+
+    fun addPointToTeam(teamId: String) {
+        val index = teams.indexOfFirst { it.id == teamId }
+        if (index != -1) {
+            teams[index] = teams[index].copy(score = teams[index].score + 1)
+        }
+    }
 }
+
