@@ -60,10 +60,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 
     // Serialization
     implementation(libs.kotlinx.serialization.json)

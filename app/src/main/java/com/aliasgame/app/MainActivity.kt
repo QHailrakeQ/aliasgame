@@ -9,6 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.aliasgame.app.presentation.game.GameScreen
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.aliasgame.app.presentation.setup.SetupScreen
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,7 +25,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GameScreen()
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = "setup"
+                    ) {
+                    composable("setup") {
+                        SetupScreen(onStartGame = {
+                            navController.navigate("game")
+                        })
+                    }
+                        composable("game") {
+                            GameScreen()
+                        }
+                    }
                 }
             }
         }
