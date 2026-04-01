@@ -29,6 +29,7 @@ class GameViewModel @Inject constructor(
     init {
         currentWord = engine.getNextWord()
         updateState()
+        startTimer()
     }
 
     private fun updateState() {
