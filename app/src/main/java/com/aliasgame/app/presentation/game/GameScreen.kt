@@ -3,6 +3,7 @@ package com.aliasgame.app.presentation.game
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -91,12 +92,25 @@ fun FinalWordDialog(
 
 @Composable
 fun GameScreen(
-    viewModel: GameViewModel = hiltViewModel()
+    viewModel: GameViewModel = hiltViewModel(),
+    onExit: () -> Unit
 ) {
     val state by viewModel.gameState.collectAsState()
     val currentState = state ?: return
 
     Box(modifier = Modifier.fillMaxSize()) {
+        IconButton(
+            onClick = onExit,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = androidx.compose.material.icons.Icons.Default.Close,
+                contentDescription = "Exit"
+                )
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -172,6 +186,38 @@ fun GameScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = { viewModel.startNextRound() }) {
                         Text("Next round")
+                    }
+                }
+            }
+        }
+
+        if (!currentState.isRoundOver &&
+            !currentState.isPaused &&
+            !currentState.isGameFinished &&
+            currentState.timeRemaining == currentState.maxTime) {
+            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primaryContainer) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    Text("Next Team:")
+                    Text(currentState.currentTeam.name, style = MaterialTheme.typography.displayMedium)
+                    Spacer(Modifier.height(32.dp))
+                    Button(onClick = { viewModel.onStartTimer() }) {
+                        Text("I'm ready!")
+                    }
+                }
+            }
+        }
+
+        if (currentState.isGameFinished && currentState.winner != null) {
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.Yellow) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text("Game is finished!", style = MaterialTheme.typography.displayLarge)
+                    Text(currentState.winner.name, style = MaterialTheme.typography.headlineLarge)
+                    Text("Score: ${currentState.winner.score}")
+                    Button(onClick = onExit) {
+                        Text("Main menu")
                     }
                 }
             }

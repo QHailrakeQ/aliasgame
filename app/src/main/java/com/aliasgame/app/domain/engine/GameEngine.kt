@@ -74,8 +74,8 @@ class GameEngine(val allWords: List<Word>, val initialTeams: List<Team>, var set
             isRoundOver = isRoundOver,
             isGameFinished = winner != null,
             winner = winner,
-            allTeams = teams.toList()
-
+            allTeams = teams.toList(),
+            maxTime = settings.roundTime
         )
     }
 
@@ -85,5 +85,16 @@ class GameEngine(val allWords: List<Word>, val initialTeams: List<Team>, var set
             teams[index] = teams[index].copy(score = teams[index].score + 1)
         }
     }
-}
 
+    fun setupGame(teamNames: List<String>, newSettings: GameSettings) {
+        this.settings = newSettings
+        this.teams.clear()
+        teamNames.forEachIndexed { index, name ->
+            teams.add(Team(id = (index + 1).toString(), name = name))
+        }
+        this.usedWords.clear()
+        this.currentTeamIndex = 0
+        this.currentScore = 0
+        this.isPaused = false
+    }
+}

@@ -11,10 +11,13 @@ class SetupViewModel @Inject constructor(
     private val engine: GameEngine
 ) : ViewModel() {
 
-    fun startGame(roundTime: Long, targetScore: Int) {
-        engine.settings = engine.settings.copy(
-            roundTime = roundTime,
-            targetScore = targetScore
+    fun startGame(teamNames: List<String>, roundTime: Long, targetScore: Int) {
+        engine.setupGame (
+            teamNames = teamNames,
+            newSettings = engine.settings.copy(
+                roundTime = roundTime,
+                targetScore = targetScore
+            )
         )
     }
 }

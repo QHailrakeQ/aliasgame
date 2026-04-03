@@ -11,4 +11,5 @@ data class GameState(
     val isRoundOver: Boolean = false,
     val winner: Team? = null,
     val allTeams: List<Team> = emptyList(),
+    val maxTime: Long
 )

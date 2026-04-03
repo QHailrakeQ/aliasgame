@@ -30,13 +30,15 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "setup"
                     ) {
-                    composable("setup") {
-                        SetupScreen(onStartGame = {
-                            navController.navigate("game")
-                        })
-                    }
+                        composable("setup") {
+                            SetupScreen(onStartGame = {
+                                navController.navigate("game")
+                            })
+                        }
                         composable("game") {
-                            GameScreen()
+                            GameScreen(onExit = {
+                                navController.popBackStack("setup", inclusive = false)
+                            })
                         }
                     }
                 }

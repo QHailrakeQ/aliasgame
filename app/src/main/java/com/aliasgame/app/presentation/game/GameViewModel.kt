@@ -29,7 +29,6 @@ class GameViewModel @Inject constructor(
     init {
         currentWord = engine.getNextWord()
         updateState()
-        startTimer()
     }
 
     private fun updateState() {
@@ -46,8 +45,11 @@ class GameViewModel @Inject constructor(
         roundWinner = null
         timeLeft = engine.settings.roundTime
         currentWord = engine.getNextWord()
-        startTimer()
         updateState()
+    }
+
+    fun onStartTimer() {
+        startTimer()
     }
 
     fun startTimer() {
