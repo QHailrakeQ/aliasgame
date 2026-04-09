@@ -3,6 +3,8 @@ package com.aliasgame.app.presentation.game
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +19,11 @@ import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.Word
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import androidx.compose.foundation.lazy.items
+import com.aliasgame.app.domain.model.RoundResult
+
+
+
 
 @Composable
 fun WordCard(
@@ -186,6 +193,26 @@ fun GameScreen(
                         Text("${team.name}: ${team.score} points")
                     }
                     Spacer(modifier = Modifier.height(24.dp))
+                    Text("Words in this round:", style = MaterialTheme.typography.titleMedium)
+                    LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        items(currentState.roundResults) { result ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = result.word.text)
+                                Text(
+                                    text = if (result.isCorrect) "✓" else "✗",
+                                    color = if (result.isCorrect) Color.Green else Color.Red,
+                                    style = MaterialTheme.typography.headlineSmall
+                                 )
+                            }
+                            HorizontalDivider(thickness = 1.dp, color = Color.LightGray.copy(alpha = 0.5f))
+                        }
+                    }
+
                     Button(onClick = { viewModel.startNextRound() }) {
                         Text("Next round")
                     }

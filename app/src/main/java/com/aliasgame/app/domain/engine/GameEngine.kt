@@ -4,6 +4,7 @@ import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.GameState
+import com.aliasgame.app.domain.model.RoundResult
 
 
 class GameEngine(
@@ -12,7 +13,9 @@ class GameEngine(
     var settings: GameSettings
 ) {
     private val teams = initialTeams.toMutableList()
+    private val currentRoundResults = mutableListOf<RoundResult>()
 
+    private var currentWord: Word? = null
     private var currentTeamIndex = 0
     private var usedWords = mutableListOf<Word>()
     private var currentScore = 0
@@ -21,19 +24,25 @@ class GameEngine(
     fun getNextWord(): Word? {
         val availableWords = allWords.filter { !usedWords.contains(it) }
         if (availableWords.isEmpty()) {
+            currentWord = null
             return null
         }
         val nextWord = availableWords.random()
         usedWords.add(nextWord)
+        currentWord = nextWord
         return nextWord
     }
 
     fun onCorrectAnswer(): Word? {
+        val word = currentWord ?: return null
+        currentRoundResults.add(RoundResult(word, true))
         currentScore += settings.pointsPerCorrectAnswer
         return getNextWord()
     }
 
     fun onSkipWord(): Word? {
+        val word = currentWord ?: return null
+        currentRoundResults.add(RoundResult(word, false))
         currentScore += settings.pointsPerSkip
         return getNextWord()
     }
@@ -55,6 +64,8 @@ class GameEngine(
 
         currentTeamIndex = (currentTeamIndex + 1) % teams.size
         currentScore = 0
+
+        currentRoundResults.clear()
 
         return winner
     }
@@ -79,7 +90,8 @@ class GameEngine(
             isGameFinished = winner != null,
             winner = winner,
             allTeams = teams.toList(),
-            maxTime = settings.roundTime
+            maxTime = settings.roundTime,
+            roundResults = currentRoundResults.toList()
         )
     }
 
@@ -100,5 +112,6 @@ class GameEngine(
         this.currentTeamIndex = 0
         this.currentScore = 0
         this.isPaused = false
+        currentRoundResults.clear()
     }
 }
