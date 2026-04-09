@@ -71,7 +71,7 @@ class GameViewModel @Inject constructor(
     fun onWordSwiped(isCorrect: Boolean) {
         if (timeLeft <= 0) return
 
-        currentWord = if(isCorrect) {
+        currentWord = if (isCorrect) {
             engine.onCorrectAnswer()
         } else {
             engine.onSkipWord()

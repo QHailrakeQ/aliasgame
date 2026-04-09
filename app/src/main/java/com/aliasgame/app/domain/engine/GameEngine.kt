@@ -6,7 +6,11 @@ import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.GameState
 
 
-class GameEngine(val allWords: List<Word>, val initialTeams: List<Team>, var settings: GameSettings) {
+class GameEngine(
+    val allWords: List<Word>,
+    val initialTeams: List<Team>,
+    var settings: GameSettings
+) {
     private val teams = initialTeams.toMutableList()
 
     private var currentTeamIndex = 0

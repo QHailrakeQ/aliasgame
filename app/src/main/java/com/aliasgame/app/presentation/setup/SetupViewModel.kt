@@ -12,7 +12,7 @@ class SetupViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun startGame(teamNames: List<String>, roundTime: Long, targetScore: Int) {
-        engine.setupGame (
+        engine.setupGame(
             teamNames = teamNames,
             newSettings = engine.settings.copy(
                 roundTime = roundTime,

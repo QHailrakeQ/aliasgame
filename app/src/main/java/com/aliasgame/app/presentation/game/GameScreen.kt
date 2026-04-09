@@ -73,7 +73,9 @@ fun FinalWordDialog(
                 teams.forEach { team ->
                     Button(
                         onClick = { onTeamSelected(team.id) },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
                     ) {
                         Text(team.name)
                     }
@@ -108,7 +110,7 @@ fun GameScreen(
             Icon(
                 imageVector = androidx.compose.material.icons.Icons.Default.Close,
                 contentDescription = "Exit"
-                )
+            )
         }
 
         Column(
@@ -143,7 +145,7 @@ fun GameScreen(
                     Text(text = "Correct")
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { viewModel.pauseGame() }) {
                 Text("Pause")
@@ -194,11 +196,21 @@ fun GameScreen(
         if (!currentState.isRoundOver &&
             !currentState.isPaused &&
             !currentState.isGameFinished &&
-            currentState.timeRemaining == currentState.maxTime) {
-            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primaryContainer) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            currentState.timeRemaining == currentState.maxTime
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text("Next Team:")
-                    Text(currentState.currentTeam.name, style = MaterialTheme.typography.displayMedium)
+                    Text(
+                        currentState.currentTeam.name,
+                        style = MaterialTheme.typography.displayMedium
+                    )
                     Spacer(Modifier.height(32.dp))
                     Button(onClick = { viewModel.onStartTimer() }) {
                         Text("I'm ready!")

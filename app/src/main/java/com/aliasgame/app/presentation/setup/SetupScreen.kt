@@ -38,13 +38,17 @@ fun SetupScreen(
         )
 
         OutlinedTextField(
-                value = team2Name,
-                onValueChange = { team2Name = it },
-                label = { Text("Team 2 Name") }
-                )
+            value = team2Name,
+            onValueChange = { team2Name = it },
+            label = { Text("Team 2 Name") }
+        )
 
         Button(onClick = {
-            viewModel.startGame(listOf(team1Name, team2Name), roundTime.toLong(), targetScore.toInt())
+            viewModel.startGame(
+                listOf(team1Name, team2Name),
+                roundTime.toLong(),
+                targetScore.toInt()
+            )
             onStartGame()
         }) {
             Text("Start Game")
