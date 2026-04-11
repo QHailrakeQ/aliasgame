@@ -45,7 +45,8 @@ object AppModule {
         settings: GameSettings
     ): GameEngine {
         val words = runBlocking {
-            repository.getWordsByPack("basic")
+            // Використовуємо початкову мову та пак
+            repository.getWords("UK", "Easy")
         }
 
         val defaultTeams = listOf(
@@ -54,7 +55,7 @@ object AppModule {
         )
 
         val finalWords = if (words.isEmpty()) {
-            listOf(Word("Apple", "basic"), Word("Banana", "basic"))
+            listOf(Word("Apple", "Easy"), Word("Banana", "Easy"))
         } else {
             words
         }
