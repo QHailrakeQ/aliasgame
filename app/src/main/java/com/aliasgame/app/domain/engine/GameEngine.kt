@@ -8,7 +8,7 @@ import com.aliasgame.app.domain.model.RoundResult
 
 
 class GameEngine(
-    val allWords: List<Word>,
+    var allWords: List<Word>,
     val initialTeams: List<Team>,
     var settings: GameSettings
 ) {
@@ -47,6 +47,16 @@ class GameEngine(
         return getNextWord()
     }
 
+    fun addFinalWordResult(isCorrect: Boolean) {
+        currentWord?.let {
+            currentRoundResults.add(RoundResult(it, isCorrect))
+        }
+    }
+
+    fun prepareForNextRound() {
+        currentRoundResults.clear()
+    }
+
     fun pause() {
         isPaused = true
     }
@@ -64,8 +74,6 @@ class GameEngine(
 
         currentTeamIndex = (currentTeamIndex + 1) % teams.size
         currentScore = 0
-
-        currentRoundResults.clear()
 
         return winner
     }
@@ -102,13 +110,17 @@ class GameEngine(
         }
     }
 
-    fun setupGame(teamNames: List<String>, newSettings: GameSettings) {
+    fun setupGame(teamNames: List<String>,
+                  newSettings: GameSettings,
+                  newWords: List<Word>) {
         this.settings = newSettings
+        this.allWords = newWords
         this.teams.clear()
         teamNames.forEachIndexed { index, name ->
             teams.add(Team(id = (index + 1).toString(), name = name))
         }
         this.usedWords.clear()
+        this.currentWord = null
         this.currentTeamIndex = 0
         this.currentScore = 0
         this.isPaused = false

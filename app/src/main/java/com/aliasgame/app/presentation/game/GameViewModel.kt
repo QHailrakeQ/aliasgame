@@ -41,6 +41,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun startNextRound() {
+        engine.prepareForNextRound()
         isRoundOver = false
         roundWinner = null
         timeLeft = engine.settings.roundTime
@@ -80,6 +81,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun onFinalWordProcessed(winnerTeamId: String?) {
+        engine.addFinalWordResult(isCorrect = winnerTeamId != null)
         winnerTeamId?.let { engine.addPointToTeam(it) }
         finishRound()
     }

@@ -11,15 +11,38 @@ import javax.inject.Inject
 class WordsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : WordsRepository {
-    override suspend fun getWordsByPack(packId: String): List<Word> {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    override suspend fun getWordsByPack(
+        language: String,
+        packId: String
+    ): List<Word> {
+        val fileName = "words_${language.lowercase()}.json"
         return try {
-            val jsonString = context.assets.open("words_uk.json")
+            val jsonString = context.assets.open(fileName)
                 .bufferedReader()
                 .use { it.readText() }
-            val allWords: List<Word> = Json.decodeFromString(jsonString)
+            val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
             allWords.filter { it.packId == packId }
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    override suspend fun getPacks(language: String): List<String> {
+        val fileName = "words_${language.lowercase()}.json"
+        return try {
+            val jsonString = context.assets.open(fileName)
+                .bufferedReader()
+                .use { it.readText() }
+            val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
+            allWords.map { it.packId }.distinct()
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    override suspend fun getLanguages(): List<String> {
+        return listOf("EN",  "UK" , "RU", "DE")
     }
 }
