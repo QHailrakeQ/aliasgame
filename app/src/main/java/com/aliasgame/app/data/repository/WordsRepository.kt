@@ -13,7 +13,7 @@ class WordsRepositoryImpl @Inject constructor(
 ) : WordsRepository {
     private val json = Json { ignoreUnknownKeys = true }
 
-    override suspend fun getWordsByPack(
+    override suspend fun getWords(
         language: String,
         packId: String
     ): List<Word> {

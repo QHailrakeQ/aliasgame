@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
@@ -22,7 +24,7 @@ class SetupViewModel @Inject constructor(
     private val _selectedLanguage = MutableStateFlow("EN")
     val selectedLanguage = _selectedLanguage.asStateFlow()
 
-    private val _selectedPack = MutableStateFlow<String?>("basic")
+    private val _selectedPack = MutableStateFlow<String>("Easy")
     val selectedPack = _selectedPack.asStateFlow()
 
     private val _packs = MutableStateFlow<List<String>>(emptyList())
@@ -38,6 +40,9 @@ class SetupViewModel @Inject constructor(
     fun onLanguageSelected(language: String) {
         _selectedLanguage.value = language
         loadPacks(language)
+
+        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language.lowercase())
+        androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
     }
 
     fun onPackSelected(packId: String) {
@@ -48,7 +53,7 @@ class SetupViewModel @Inject constructor(
         viewModelScope.launch {
             val availablePacks = repository.getPacks(language)
             _packs.value = availablePacks
-            _selectedPack.value = availablePacks.firstOrNull() ?: "basic"
+            _selectedPack.value = availablePacks.firstOrNull() ?: "Easy"
         }
     }
 
@@ -59,9 +64,9 @@ class SetupViewModel @Inject constructor(
         targetScore: Int
     ) {
         viewModelScope.launch {
-            val words = repository.getWordsByPack(
+            val words = repository.getWords(
                 language = _selectedLanguage.value,
-                packId = _selectedPack.value ?: "basic"
+                packId = _selectedPack.value
             )
 
             engine.setupGame(

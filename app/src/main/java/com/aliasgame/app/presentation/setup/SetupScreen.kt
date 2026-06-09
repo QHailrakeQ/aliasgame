@@ -12,8 +12,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.aliasgame.app.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,65 +24,39 @@ fun SetupScreen(
     viewModel: SetupViewModel = hiltViewModel(),
     onStartGame: () -> Unit
 ) {
+    val funnyNames = listOf(
+        stringResource(R.string.funny_name_1),
+        stringResource(R.string.funny_name_2),
+        stringResource(R.string.funny_name_3),
+        stringResource(R.string.funny_name_4),
+        stringResource(R.string.funny_name_5),
+        stringResource(R.string.funny_name_6),
+        stringResource(R.string.funny_name_7),
+        stringResource(R.string.funny_name_8),
+        stringResource(R.string.funny_name_9),
+        stringResource(R.string.funny_name_10)
+    )
     var roundTime by remember { mutableStateOf(60f) }
     var targetScore by remember { mutableStateOf(50f) }
-    var teamNames by remember { mutableStateOf(listOf("Team1", "Team2")) }
+    var teamNames by remember { mutableStateOf( funnyNames.shuffled().take(2) ) }
     val languages by viewModel.languages.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val packs by viewModel.packs.collectAsState()
     val selectedPack by viewModel.selectedPack.collectAsState()
 
-    val labels = remember(selectedLanguage) {
-        when (selectedLanguage) {
-            "UK" -> mapOf(
-                "roundTime" to "Час раунду (сек):",
-                "targetScore" to "Очки для перемоги:",
-                "language" to "Мова:",
-                "category" to "Категорія:",
-                "addTeam" to "Додати команду",
-                "startGame" to "Почати гру",
-                "teamName" to "Назва команди"
-            )
-            "DE" -> mapOf(
-                "roundTime" to "Rundenzeit (sek):",
-                "targetScore" to "Zielpunktzahl:",
-                "language" to "Sprache:",
-                "category" to "Kategorie:",
-                "addTeam" to "Team hinzufügen",
-                "startGame" to "Spiel starten",
-                "teamName" to "Teamname"
-            )
-            "RU" -> mapOf(
-                "roundTime" to "Время раунда (сек):",
-                "targetScore" to "Очки для победы:",
-                "language" to "Язык:",
-                "category" to "Категория:",
-                "addTeam" to "Добавить команду",
-                "startGame" to "Начать игру",
-                "teamName" to "Название команды"
-            )
-            else -> mapOf( // За замовчуванням англійська (EN)
-                "roundTime" to "Round Time (sec):",
-                "targetScore" to "Target Score:",
-                "language" to "Language:",
-                "category" to "Category:",
-                "addTeam" to "Add Team",
-                "startGame" to "Start Game",
-                "teamName" to "Team Name"
-            )
-        }
-    }
+
+
 
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("${labels["roundTime"]} ${roundTime.toInt()}")
+        Text(stringResource(R.string.round_time, roundTime.toInt()))
         Slider(value = roundTime, onValueChange = { roundTime = it }, valueRange = 10f..120f)
 
-        Text("${labels["targetScore"]} ${targetScore.toInt()}")
+        Text(stringResource(R.string.target_score, targetScore.toInt()))
         Slider(value = targetScore, onValueChange = { targetScore = it }, valueRange = 10f..100f)
 
-        Text(text = labels["language"] ?: "", style = MaterialTheme.typography.titleMedium)
+        Text(text = stringResource(R.string.language), style = MaterialTheme.typography.titleMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             languages.forEach { lang ->
                 FilterChip(
@@ -91,7 +67,7 @@ fun SetupScreen(
             }
         }
 
-        Text(text = labels["category"] ?: "", style = MaterialTheme.typography.titleMedium)
+        Text(text = stringResource(R.string.category), style = MaterialTheme.typography.titleMedium)
         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             items(packs){ pack ->
                 FilterChip(
@@ -113,7 +89,7 @@ fun SetupScreen(
                         newList[index] = newName
                         teamNames = newList
                     },
-                    label = { Text("${labels["teamName"]} ${index + 1}") },
+                    label = { Text(stringResource(R.string.team_name_hint, index + 1)) },
                     modifier = Modifier.weight(1f)
                 )
 
@@ -127,11 +103,15 @@ fun SetupScreen(
             }
         }
 
-        Button(onClick =  {
-            teamNames = teamNames + "Team ${teamNames.size + 1}"},
+        Button(
+            onClick = {
+                val nextName = funnyNames.filter { it !in teamNames }.randomOrNull()
+                    ?: "Team ${teamNames.size + 1}"
+                teamNames = teamNames + nextName
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(labels["addTeam"] ?: "")
+            Text(stringResource(R.string.add_team))
         }
 
         Button(onClick = {
@@ -142,8 +122,9 @@ fun SetupScreen(
             )
             onStartGame()
         },
-            modifier = Modifier.fillMaxWidth()) {
-            Text(labels["startGame"] ?: "")
+            modifier = Modifier.fillMaxWidth(),
+            enabled = teamNames.all { it.isNotBlank() }) {
+            Text(stringResource(R.string.start_game))
         }
     }
 }
