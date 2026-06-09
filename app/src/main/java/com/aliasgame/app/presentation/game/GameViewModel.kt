@@ -45,8 +45,11 @@ class GameViewModel @Inject constructor(
         roundWinner = null
         timeLeft = engine.settings.roundTime
         currentWord = engine.getNextWord()
-        startTimer()
         updateState()
+    }
+
+    fun onStartTimer() {
+        startTimer()
     }
 
     fun startTimer() {
@@ -68,7 +71,7 @@ class GameViewModel @Inject constructor(
     fun onWordSwiped(isCorrect: Boolean) {
         if (timeLeft <= 0) return
 
-        currentWord = if(isCorrect) {
+        currentWord = if (isCorrect) {
             engine.onCorrectAnswer()
         } else {
             engine.onSkipWord()
