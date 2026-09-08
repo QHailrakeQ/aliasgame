@@ -1,10 +1,13 @@
 package com.aliasgame.app.presentation.game
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,15 +18,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.Word
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import androidx.compose.foundation.lazy.items
-import com.aliasgame.app.domain.model.RoundResult
-
-
-
 
 @Composable
 fun WordCard(
@@ -33,6 +32,15 @@ fun WordCard(
 ) {
     val offsetY = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
+    val targetColor = when {
+        offsetY.value < -100f -> Color.Green.copy(alpha = 0.3f)
+        offsetY.value > 100f -> Color.Red.copy(alpha = 0.3f)
+        else -> MaterialTheme.colorScheme.surfaceVariant
+    }
+    val backgroundColor by animateColorAsState(
+        targetValue = targetColor,
+        label = "cardColor"
+    )
 
     Card(
         modifier = Modifier
@@ -56,7 +64,8 @@ fun WordCard(
                         }
                     }
                 )
-            }
+            },
+        colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(text = word.text, style = MaterialTheme.typography.headlineMedium)
@@ -115,7 +124,7 @@ fun GameScreen(
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = androidx.compose.material.icons.Icons.Default.Close,
+                imageVector = Icons.Default.Close,
                 contentDescription = "Exit"
             )
         }
@@ -195,9 +204,11 @@ fun GameScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                     Text("Words in this round:", style = MaterialTheme.typography.titleMedium)
                     LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        items(currentState.roundResults) { result ->
+                        itemsIndexed(currentState.roundResults) { index, result ->
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.toggleWordResult(index) }
                                     .padding(8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -207,7 +218,7 @@ fun GameScreen(
                                     text = if (result.isCorrect) "✓" else "✗",
                                     color = if (result.isCorrect) Color.Green else Color.Red,
                                     style = MaterialTheme.typography.headlineSmall
-                                 )
+                                )
                             }
                             HorizontalDivider(thickness = 1.dp, color = Color.LightGray.copy(alpha = 0.5f))
                         }

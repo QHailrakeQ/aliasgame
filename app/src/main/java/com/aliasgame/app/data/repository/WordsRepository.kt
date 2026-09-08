@@ -13,11 +13,16 @@ class WordsRepositoryImpl @Inject constructor(
 ) : WordsRepository {
     private val json = Json { ignoreUnknownKeys = true }
 
+    private fun getInternalLanguageCode(language: String): String {
+        return if (language.uppercase() == "UA") "uk" else language.lowercase()
+    }
+
     override suspend fun getWords(
         language: String,
         packId: String
     ): List<Word> {
-        val fileName = "words_${language.lowercase()}.json"
+        val langCode = getInternalLanguageCode(language)
+        val fileName = "words_${langCode}.json"
         return try {
             val jsonString = context.assets.open(fileName)
                 .bufferedReader()
@@ -30,7 +35,8 @@ class WordsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPacks(language: String): List<String> {
-        val fileName = "words_${language.lowercase()}.json"
+        val langCode = getInternalLanguageCode(language)
+        val fileName = "words_${langCode}.json"
         return try {
             val jsonString = context.assets.open(fileName)
                 .bufferedReader()
@@ -43,6 +49,6 @@ class WordsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLanguages(): List<String> {
-        return listOf("EN",  "UK" , "RU", "DE")
+        return listOf("EN", "UA", "RU", "DE")
     }
 }

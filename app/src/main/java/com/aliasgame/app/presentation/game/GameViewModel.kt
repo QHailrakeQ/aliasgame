@@ -40,6 +40,11 @@ class GameViewModel @Inject constructor(
         )
     }
 
+    fun toggleWordResult(index: Int) {
+        engine.toggleWordResult(index)
+        updateState()
+    }
+
     fun startNextRound() {
         engine.prepareForNextRound()
         isRoundOver = false

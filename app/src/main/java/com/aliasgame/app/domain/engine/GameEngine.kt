@@ -50,7 +50,30 @@ class GameEngine(
     fun addFinalWordResult(isCorrect: Boolean) {
         currentWord?.let {
             currentRoundResults.add(RoundResult(it, isCorrect))
+            if (isCorrect) currentScore += settings.pointsPerCorrectAnswer
+            else currentScore += settings.pointsPerSkip
         }
+    }
+
+    fun toggleWordResult(index: Int) {
+        if (index !in currentRoundResults.indices) return
+        val result = currentRoundResults[index]
+        val newStatus = !result.isCorrect
+
+        // Розраховуємо різницю в балах
+        val diff = if (newStatus) {
+            settings.pointsPerCorrectAnswer - settings.pointsPerSkip
+        } else {
+            settings.pointsPerSkip - settings.pointsPerCorrectAnswer
+        }
+
+        // Команда, яка щойно грала, знаходиться за індексом (currentTeamIndex - 1)
+        // оскільки хід уже перейшов далі в rollNextTeam()
+        val finishedTeamIndex = if (currentTeamIndex == 0) teams.size - 1 else currentTeamIndex - 1
+        val team = teams[finishedTeamIndex]
+        teams[finishedTeamIndex] = team.copy(score = team.score + diff)
+
+        currentRoundResults[index] = result.copy(isCorrect = newStatus)
     }
 
     fun prepareForNextRound() {
@@ -87,6 +110,9 @@ class GameEngine(
         isRoundOver: Boolean = false,
         winner: Team? = null
     ): GameState {
+        // Перевіряємо переможця знову, бо бали могли змінитися після перемикання результатів
+        val finalWinner = winner ?: teams.find { it.score >= settings.targetScore }
+
         return GameState(
             currentTeam = teams[currentTeamIndex],
             currentWord = currentWord,
@@ -95,8 +121,8 @@ class GameEngine(
             isPaused = isPaused,
             isLastWordMode = timeRemaining <= 0 && !isRoundOver,
             isRoundOver = isRoundOver,
-            isGameFinished = winner != null,
-            winner = winner,
+            isGameFinished = finalWinner != null,
+            winner = finalWinner,
             allTeams = teams.toList(),
             maxTime = settings.roundTime,
             roundResults = currentRoundResults.toList()

@@ -41,8 +41,10 @@ class SetupViewModel @Inject constructor(
         _selectedLanguage.value = language
         loadPacks(language)
 
-        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language.lowercase())
-        androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
+
+        val systemLangCode = if (language.uppercase() == "UA") "uk" else language.lowercase()
+        val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(systemLangCode)
+        AppCompatDelegate.setApplicationLocales(appLocale)
     }
 
     fun onPackSelected(packId: String) {
