@@ -172,12 +172,16 @@ fun GameScreen(
     val skipPlayer = remember {
         try { MediaPlayer.create(context, R.raw.skip_sound) } catch (e: Exception) { null }
     }
+    val lastWordPlayer = remember {
+        try { MediaPlayer.create(context, R.raw.last_word_sound) } catch (e: Exception) { null }
+    }
 
     // Clean up media resources
     DisposableEffect(Unit) {
         onDispose {
             correctPlayer?.release()
             skipPlayer?.release()
+            lastWordPlayer?.release()
         }
     }
 
@@ -190,6 +194,13 @@ fun GameScreen(
     val handleSkip = {
         skipPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
         viewModel.onWordSwiped(false)
+    }
+
+    // Audio trigger for the final word mode
+    LaunchedEffect(currentState.isLastWordMode) {
+        if (currentState.isLastWordMode) {
+            lastWordPlayer?.start()
+        }
     }
 
     Box(
