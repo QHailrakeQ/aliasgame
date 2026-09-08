@@ -1,11 +1,13 @@
 package com.aliasgame.app.di
 
 import android.content.Context
+import com.aliasgame.app.data.repository.SettingsRepositoryImpl
 import com.aliasgame.app.data.repository.WordsRepositoryImpl
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.Word
+import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.Module
 import dagger.Provides
@@ -40,13 +42,21 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideSettingsRepository(
+        @ApplicationContext context: Context
+    ): SettingsRepository {
+        return SettingsRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideGameEngine(
         repository: WordsRepository,
         settings: GameSettings
     ): GameEngine {
+        // Initial setup with default parameters
         val words = runBlocking {
-            // Використовуємо початкову мову та пак
-            repository.getWords("UK", "Easy")
+            repository.getWords("EN", "Easy")
         }
 
         val defaultTeams = listOf(
@@ -54,10 +64,8 @@ object AppModule {
             Team("2", "Team 2")
         )
 
-        val finalWords = if (words.isEmpty()) {
+        val finalWords = words.ifEmpty {
             listOf(Word("Apple", "Easy"), Word("Banana", "Easy"))
-        } else {
-            words
         }
 
         return GameEngine(finalWords, defaultTeams, settings)

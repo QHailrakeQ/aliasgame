@@ -20,6 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.aliasgame.app.R
 
+/**
+ * Entry point for game configuration.
+ * Orchestrates session parameters and team management using SetupViewModel.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupScreen(
@@ -38,9 +42,11 @@ fun SetupScreen(
         stringResource(R.string.funny_name_9),
         stringResource(R.string.funny_name_10)
     )
-    var roundTime by remember { mutableStateOf(60f) }
-    var targetScore by remember { mutableStateOf(50f) }
-    var teamNames by remember { mutableStateOf(funnyNames.shuffled().take(2)) }
+
+    // Collecting state from ViewModel
+    val roundTime by viewModel.roundTime.collectAsState()
+    val targetScore by viewModel.targetScore.collectAsState()
+    val teamNames by viewModel.teamNames.collectAsState()
     val languages by viewModel.languages.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val packs by viewModel.packs.collectAsState()
@@ -52,8 +58,8 @@ fun SetupScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF6200EE), // Deep Purple
-                        Color(0xFF03DAC5)  // Teal
+                        Color(0xFF6200EE), // Primary Brand Purple
+                        Color(0xFF03DAC5)  // Secondary Accent Teal
                     )
                 )
             )
@@ -72,7 +78,7 @@ fun SetupScreen(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            // Configuration for game rules: round duration and winning score
+            // Round duration and target score configuration
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -87,7 +93,7 @@ fun SetupScreen(
                         )
                         Slider(
                             value = roundTime,
-                            onValueChange = { roundTime = it },
+                            onValueChange = { viewModel.onRoundTimeChanged(it) },
                             valueRange = 10f..120f,
                             colors = SliderDefaults.colors(
                                 thumbColor = Color(0xFF6200EE),
@@ -104,7 +110,7 @@ fun SetupScreen(
                         )
                         Slider(
                             value = targetScore,
-                            onValueChange = { targetScore = it },
+                            onValueChange = { viewModel.onTargetScoreChanged(it) },
                             valueRange = 10f..100f,
                             colors = SliderDefaults.colors(
                                 thumbColor = Color(0xFF6200EE),
@@ -115,7 +121,7 @@ fun SetupScreen(
                 }
             }
 
-            // Localization and content selection
+            // Localization and content pack selection
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -148,7 +154,7 @@ fun SetupScreen(
                 }
             }
 
-            // Participants management section
+            // Team management section
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -166,7 +172,7 @@ fun SetupScreen(
                                 onValueChange = { newName ->
                                     val newList = teamNames.toMutableList()
                                     newList[index] = newName
-                                    teamNames = newList
+                                    viewModel.onTeamNamesChanged(newList)
                                 },
                                 label = { Text(stringResource(R.string.team_name_hint, index + 1)) },
                                 modifier = Modifier.weight(1f),
@@ -179,7 +185,8 @@ fun SetupScreen(
                             )
                             if (teamNames.size > 2) {
                                 IconButton(onClick = {
-                                    teamNames = teamNames.toMutableList().apply { removeAt(index) }
+                                    val newList = teamNames.toMutableList().apply { removeAt(index) }
+                                    viewModel.onTeamNamesChanged(newList)
                                 }) {
                                     Icon(Icons.Default.Delete, contentDescription = "Remove", tint = Color.Red)
                                 }
@@ -191,7 +198,7 @@ fun SetupScreen(
                         onClick = {
                             val nextName = funnyNames.filter { it !in teamNames }.randomOrNull()
                                 ?: "Team ${teamNames.size + 1}"
-                            teamNames = teamNames + nextName
+                            viewModel.onTeamNamesChanged(teamNames + nextName)
                         },
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
@@ -202,11 +209,10 @@ fun SetupScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Primary action to initialize and start the game session
+            // Primary action to initialize session and transition
             Button(
                 onClick = {
-                    viewModel.startGame(teamNames, roundTime.toLong(), targetScore.toInt())
-                    onStartGame()
+                    viewModel.startGame(onNavigate = onStartGame)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
