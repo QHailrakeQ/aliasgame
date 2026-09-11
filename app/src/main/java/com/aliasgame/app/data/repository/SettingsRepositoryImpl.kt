@@ -1,17 +1,26 @@
 package com.aliasgame.app.data.repository
 
 import android.content.Context
-import androidx.datastore.preferences.core.*
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.aliasgame.app.domain.repository.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// extension property to create DataStore instance
-private val Context.dataStore by preferencesDataStore(name = "settings")
+// Singleton delegate for DataStore access
+private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
@@ -25,43 +34,53 @@ class SettingsRepositoryImpl @Inject constructor(
         val TEAM_NAMES = stringPreferencesKey("team_names")
     }
 
-    override val selectedLanguage: Flow<String> = context.dataStore.data.map { preferences ->
-        preferences[Keys.LANGUAGE] ?: "EN"
-    }
+    override val selectedLanguage: Flow<String> = context.settingsDataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }
+        .map { prefs: Preferences -> prefs[Keys.LANGUAGE] ?: "EN" }
 
-    override val roundTime: Flow<Long> = context.dataStore.data.map { preferences ->
-        preferences[Keys.ROUND_TIME] ?: 60L
-    }
+    override val roundTime: Flow<Long> = context.settingsDataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }
+        .map { prefs: Preferences -> prefs[Keys.ROUND_TIME] ?: 60L }
 
-    override val targetScore: Flow<Int> = context.dataStore.data.map { preferences ->
-        preferences[Keys.TARGET_SCORE] ?: 50
-    }
+    override val targetScore: Flow<Int> = context.settingsDataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }
+        .map { prefs: Preferences -> prefs[Keys.TARGET_SCORE] ?: 50 }
 
-    override val teamNames: Flow<List<String>> = context.dataStore.data.map { preferences ->
-        preferences[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2")
-    }
+    override val teamNames: Flow<List<String>> = context.settingsDataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }
+        .map { prefs: Preferences -> 
+            prefs[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2") 
+        }
 
     override suspend fun saveLanguage(language: String) {
-        context.dataStore.edit { preferences ->
-            preferences[Keys.LANGUAGE] = language
+        context.settingsDataStore.edit { prefs: MutablePreferences ->
+            prefs[Keys.LANGUAGE] = language
         }
     }
 
     override suspend fun saveRoundTime(time: Long) {
-        context.dataStore.edit { preferences ->
-            preferences[Keys.ROUND_TIME] = time
+        context.settingsDataStore.edit { prefs: MutablePreferences ->
+            prefs[Keys.ROUND_TIME] = time
         }
     }
 
     override suspend fun saveTargetScore(score: Int) {
-        context.dataStore.edit { preferences ->
-            preferences[Keys.TARGET_SCORE] = score
+        context.settingsDataStore.edit { prefs: MutablePreferences ->
+            prefs[Keys.TARGET_SCORE] = score
         }
     }
 
     override suspend fun saveTeamNames(names: List<String>) {
-        context.dataStore.edit { preferences ->
-            preferences[Keys.TEAM_NAMES] = names.joinToString(",")
+        context.settingsDataStore.edit { prefs: MutablePreferences ->
+            prefs[Keys.TEAM_NAMES] = names.joinToString(",")
         }
     }
 }
