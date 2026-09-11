@@ -7,9 +7,11 @@ interface SettingsRepository {
     val roundTime: Flow<Long>
     val targetScore: Flow<Int>
     val teamNames: Flow<List<String>>
+    val selectedPack: Flow<String>
 
     suspend fun saveLanguage(language: String)
     suspend fun saveRoundTime(time: Long)
     suspend fun saveTargetScore(score: Int)
     suspend fun saveTeamNames(names: List<String>)
+    suspend fun savePack(packId: String)
 }

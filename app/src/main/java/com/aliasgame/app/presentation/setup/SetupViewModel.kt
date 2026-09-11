@@ -54,6 +54,8 @@ class SetupViewModel @Inject constructor(
             launch { settingsRepository.roundTime.collect { _roundTime.value = it.toFloat() } }
             launch { settingsRepository.targetScore.collect { _targetScore.value = it.toFloat() } }
             launch { settingsRepository.teamNames.collect { _teamNames.value = it } }
+            launch { settingsRepository.selectedPack.collect { _selectedPack.value = it } }
+
 
             loadPacks(_selectedLanguage.value)
         }
@@ -90,6 +92,7 @@ class SetupViewModel @Inject constructor(
 
     fun onPackSelected(packId: String) {
         _selectedPack.value = packId
+        viewModelScope.launch { settingsRepository.savePack(packId) }
     }
 
     private fun loadPacks(language: String) {

@@ -2,12 +2,11 @@ package com.aliasgame.app.presentation.setup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.aliasgame.app.R
@@ -28,7 +28,8 @@ import com.aliasgame.app.R
 @Composable
 fun SetupScreen(
     viewModel: SetupViewModel = hiltViewModel(),
-    onStartGame: () -> Unit
+    onStartGame: () -> Unit,
+    onSelectPack: () -> Unit
 ) {
     val funnyNames = listOf(
         stringResource(R.string.funny_name_1),
@@ -49,7 +50,6 @@ fun SetupScreen(
     val teamNames by viewModel.teamNames.collectAsState()
     val languages by viewModel.languages.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
-    val packs by viewModel.packs.collectAsState()
     val selectedPack by viewModel.selectedPack.collectAsState()
 
     Box(
@@ -140,14 +140,34 @@ fun SetupScreen(
                         }
                     }
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Text(text = stringResource(R.string.category), style = MaterialTheme.typography.titleMedium, color = Color.Black)
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        items(packs) { pack ->
-                            FilterChip(
-                                selected = selectedPack == pack,
-                                onClick = { viewModel.onPackSelected(pack) },
-                                label = { Text(pack) },
-                                shape = RoundedCornerShape(12.dp)
+                    
+                    // Clickable card leading to PackSelectionScreen
+                    OutlinedCard(
+                        onClick = onSelectPack,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.outlinedCardColors(
+                            containerColor = Color.White.copy(alpha = 0.5f)
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = selectedPack,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                                tint = Color(0xFF6200EE)
                             )
                         }
                     }

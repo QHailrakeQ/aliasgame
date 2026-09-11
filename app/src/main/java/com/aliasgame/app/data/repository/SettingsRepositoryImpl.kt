@@ -32,6 +32,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val ROUND_TIME = longPreferencesKey("round_time")
         val TARGET_SCORE = intPreferencesKey("target_score")
         val TEAM_NAMES = stringPreferencesKey("team_names")
+        val SELECTED_PACK = stringPreferencesKey("selected_pack")
     }
 
     override val selectedLanguage: Flow<String> = context.settingsDataStore.data
@@ -56,8 +57,15 @@ class SettingsRepositoryImpl @Inject constructor(
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception
         }
-        .map { prefs: Preferences -> 
-            prefs[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2") 
+        .map { prefs: Preferences ->
+            prefs[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2")
+        }
+
+    override val selectedPack: Flow<String> = context.settingsDataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }.map { preferences: Preferences ->
+            preferences[Keys.SELECTED_PACK] ?: "Easy"
         }
 
     override suspend fun saveLanguage(language: String) {
@@ -81,6 +89,12 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun saveTeamNames(names: List<String>) {
         context.settingsDataStore.edit { prefs: MutablePreferences ->
             prefs[Keys.TEAM_NAMES] = names.joinToString(",")
+        }
+    }
+
+    override suspend fun savePack(packId: String) {
+        context.settingsDataStore.edit { preferences ->
+            preferences[Keys.SELECTED_PACK] = packId
         }
     }
 }
