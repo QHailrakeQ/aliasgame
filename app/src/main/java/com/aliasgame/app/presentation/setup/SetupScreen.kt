@@ -22,7 +22,7 @@ import com.aliasgame.app.R
 
 /**
  * Entry point for game configuration.
- * Orchestrates session parameters and team management using SetupViewModel.
+ * Orchestrates session parameters, team management, and user preferences using SetupViewModel.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,13 +44,15 @@ fun SetupScreen(
         stringResource(R.string.funny_name_10)
     )
 
-    // Collecting state from ViewModel
+    // Observable UI state from ViewModel
     val roundTime by viewModel.roundTime.collectAsState()
     val targetScore by viewModel.targetScore.collectAsState()
     val teamNames by viewModel.teamNames.collectAsState()
     val languages by viewModel.languages.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val selectedPack by viewModel.selectedPack.collectAsState()
+    val isSoundEnabled by viewModel.isSoundEnabled.collectAsState()
+    val isVibrationEnabled by viewModel.isVibrationEnabled.collectAsState()
 
     Box(
         modifier = Modifier
@@ -78,7 +80,7 @@ fun SetupScreen(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            // Round duration and target score configuration
+            // Game rules configuration: duration and target score
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -121,7 +123,7 @@ fun SetupScreen(
                 }
             }
 
-            // Localization and content pack selection
+            // Localization and category selection
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -144,7 +146,6 @@ fun SetupScreen(
 
                     Text(text = stringResource(R.string.category), style = MaterialTheme.typography.titleMedium, color = Color.Black)
                     
-                    // Clickable card leading to PackSelectionScreen
                     OutlinedCard(
                         onClick = onSelectPack,
                         modifier = Modifier.fillMaxWidth(),
@@ -174,7 +175,7 @@ fun SetupScreen(
                 }
             }
 
-            // Team management section
+            // Management of participating teams
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -227,9 +228,46 @@ fun SetupScreen(
                 }
             }
 
+            // Technical preferences: Audio and Haptic feedback
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.elevatedCardColors(containerColor = Color.White.copy(alpha = 0.9f))
+            ) {
+                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Text(text = "Preferences", style = MaterialTheme.typography.titleMedium, color = Color.Black)
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Sound Effects", color = Color.Black)
+                        Switch(
+                            checked = isSoundEnabled,
+                            onCheckedChange = { viewModel.onSoundToggled(it) },
+                            colors = SwitchDefaults.colors(checkedThumbColor = Color(0xFF6200EE))
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Haptic Feedback", color = Color.Black)
+                        Switch(
+                            checked = isVibrationEnabled,
+                            onCheckedChange = { viewModel.onVibrationToggled(it) },
+                            colors = SwitchDefaults.colors(checkedThumbColor = Color(0xFF6200EE))
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Primary action to initialize session and transition
+            // Primary CTA to launch the game session
             Button(
                 onClick = {
                     viewModel.startGame(onNavigate = onStartGame)

@@ -45,6 +45,12 @@ class SetupViewModel @Inject constructor(
     private val _teamNames = MutableStateFlow<List<String>>(listOf("Team 1", "Team 2"))
     val teamNames = _teamNames.asStateFlow()
 
+    private val _isSoundEnabled = MutableStateFlow(true)
+    val isSoundEnabled = _isSoundEnabled.asStateFlow()
+
+    private val _isVibrationEnabled = MutableStateFlow(true)
+    val isVibrationEnabled = _isVibrationEnabled.asStateFlow()
+
     init {
         viewModelScope.launch {
             _languages.value = repository.getLanguages()
@@ -55,7 +61,8 @@ class SetupViewModel @Inject constructor(
             launch { settingsRepository.targetScore.collect { _targetScore.value = it.toFloat() } }
             launch { settingsRepository.teamNames.collect { _teamNames.value = it } }
             launch { settingsRepository.selectedPack.collect { _selectedPack.value = it } }
-
+            launch { settingsRepository.isSoundEnabled.collect { _isSoundEnabled.value = it } }
+            launch { settingsRepository.isVibrationEnabled.collect { _isVibrationEnabled.value = it } }
 
             loadPacks(_selectedLanguage.value)
         }
@@ -73,6 +80,16 @@ class SetupViewModel @Inject constructor(
         val systemLangCode = if (language.uppercase() == "UA") "uk" else language.lowercase()
         val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(systemLangCode)
         AppCompatDelegate.setApplicationLocales(appLocale)
+    }
+
+    fun onSoundToggled(enabled: Boolean) {
+        _isSoundEnabled.value = enabled
+        viewModelScope.launch { settingsRepository.saveSoundEnabled(enabled) }
+    }
+
+    fun onVibrationToggled(enabled: Boolean) {
+        _isVibrationEnabled.value = enabled
+        viewModelScope.launch { settingsRepository.saveVibrationEnabled(enabled) }
     }
 
     fun onRoundTimeChanged(newTime: Float) {
