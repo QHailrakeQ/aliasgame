@@ -2,10 +2,9 @@ package com.aliasgame.app.presentation.game
 
 import android.media.MediaPlayer
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -21,8 +20,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -45,11 +47,11 @@ import kotlin.math.roundToInt
 
 /**
  * Interactive card representing a single word to be guessed.
- * Supports vertical swipe gestures for quick scoring.
  */
 @Composable
 fun WordCard(
     word: Word,
+    vibrationEnabled: Boolean,
     onSwipeUp: () -> Unit,
     onSwipeDown: () -> Unit
 ) {
@@ -76,10 +78,10 @@ fun WordCard(
                     onDragEnd = {
                         scope.launch {
                             if (offsetY.value < -400f) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                if (vibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 onSwipeUp()
                             } else if (offsetY.value > 400f) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                if (vibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 onSwipeDown()
                             }
                             offsetY.animateTo(0f)
@@ -107,9 +109,6 @@ fun WordCard(
     }
 }
 
-/**
- * Dialog for selecting which team gets the point for the final word.
- */
 @Composable
 fun FinalWordDialog(
     word: String,
@@ -154,9 +153,6 @@ fun FinalWordDialog(
     )
 }
 
-/**
- * Main game session screen with audio feedback and state overlays.
- */
 @Composable
 fun GameScreen(
     viewModel: GameViewModel = hiltViewModel(),
@@ -167,8 +163,10 @@ fun GameScreen(
     
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
+    
+    val soundEnabled by viewModel.isSoundEnabled.collectAsState()
+    val vibrationEnabled by viewModel.isVibrationEnabled.collectAsState()
 
-    // Initialize sound players with null-safety
     val correctPlayer = remember {
         try { MediaPlayer.create(context, R.raw.correct_sound) } catch (e: Exception) { null }
     }
@@ -179,7 +177,6 @@ fun GameScreen(
         try { MediaPlayer.create(context, R.raw.last_word_sound) } catch (e: Exception) { null }
     }
 
-    // Clean up media resources
     DisposableEffect(Unit) {
         onDispose {
             correctPlayer?.release()
@@ -188,20 +185,22 @@ fun GameScreen(
         }
     }
 
-    // Centralized word action logic for both swipes and buttons
     val handleCorrect = {
-        correctPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
+        if (soundEnabled) {
+            correctPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
+        }
         viewModel.onWordSwiped(true)
     }
 
     val handleSkip = {
-        skipPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
+        if (soundEnabled) {
+            skipPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
+        }
         viewModel.onWordSwiped(false)
     }
 
-    // Audio trigger for the final word mode
     LaunchedEffect(currentState.isLastWordMode) {
-        if (currentState.isLastWordMode) {
+        if (currentState.isLastWordMode && soundEnabled) {
             lastWordPlayer?.start()
         }
     }
@@ -219,7 +218,6 @@ fun GameScreen(
             modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // HUD: Top bar
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -268,6 +266,7 @@ fun GameScreen(
             currentState.currentWord?.let { word ->
                 WordCard(
                     word = word,
+                    vibrationEnabled = vibrationEnabled,
                     onSwipeUp = handleCorrect,
                     onSwipeDown = handleSkip
                 )
@@ -275,13 +274,15 @@ fun GameScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Action Controls
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); handleSkip() },
+                    onClick = { 
+                        if (vibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        handleSkip() 
+                    },
                     modifier = Modifier.size(100.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5252)),
@@ -300,7 +301,10 @@ fun GameScreen(
                 }
 
                 Button(
-                    onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); handleCorrect() },
+                    onClick = { 
+                        if (vibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        handleCorrect() 
+                    },
                     modifier = Modifier.size(100.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
@@ -311,7 +315,6 @@ fun GameScreen(
             }
         }
 
-        // Overlay implementations (Pause, Results, Ready, Victory)
         if (currentState.isPaused) {
             PauseOverlay(onContinue = { viewModel.resumeGame() })
         }
@@ -446,7 +449,7 @@ private fun RoundResultsOverlay(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = onNextRound,
+                    onClick = { onNextRound() },
                     modifier = Modifier.fillMaxWidth().height(64.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03DAC5))
@@ -509,6 +512,48 @@ private fun ReadyOverlay(teamName: String, onStart: () -> Unit) {
 }
 
 @Composable
+private fun ConfettiEffect() {
+    val pieces = remember {
+        val colors = listOf(Color.Yellow, Color.Cyan, Color.Magenta, Color.Green, Color.Red, Color.White)
+        List(70) {
+            ConfettiPiece(
+                xPercent = (0..100).random() / 100f,
+                yOffset = (0..100).random() / 100f,
+                color = colors.random(),
+                size = (10..25).random().toFloat(),
+                speed = (1..4).random().toFloat()
+            )
+        }
+    }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "confetti")
+    val progress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(4000, easing = LinearEasing)
+        ),
+        label = "progress"
+    )
+
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        pieces.forEach { piece ->
+            val yProgress = (progress * piece.speed + piece.yOffset) % 1f
+            val y = yProgress * size.height
+            val x = piece.xPercent * size.width
+            
+            rotate(degrees = progress * 360 * piece.speed) {
+                drawRect(
+                    color = piece.color,
+                    topLeft = Offset(x, y),
+                    size = Size(piece.size, piece.size / 2)
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize().background(
@@ -516,6 +561,8 @@ private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
         ),
         contentAlignment = Alignment.Center
     ) {
+        ConfettiEffect()
+
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
             Text(text = "🏆", fontSize = 100.sp)
             Text(stringResource(R.string.game_finished), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold, color = Color.White)
@@ -534,3 +581,11 @@ private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
         }
     }
 }
+
+private data class ConfettiPiece(
+    val xPercent: Float,
+    val yOffset: Float,
+    val color: Color,
+    val size: Float,
+    val speed: Float
+)
