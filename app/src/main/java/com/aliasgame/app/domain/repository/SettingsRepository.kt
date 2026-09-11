@@ -8,7 +8,12 @@ interface SettingsRepository {
     val targetScore: Flow<Int>
     val teamNames: Flow<List<String>>
     val selectedPack: Flow<String>
+    val isSoundEnabled: Flow<Boolean>
+    val isVibrationEnabled: Flow<Boolean>
 
+
+    suspend fun saveSoundEnabled(enabled: Boolean)
+    suspend fun saveVibrationEnabled(enabled: Boolean)
     suspend fun saveLanguage(language: String)
     suspend fun saveRoundTime(time: Long)
     suspend fun saveTargetScore(score: Int)

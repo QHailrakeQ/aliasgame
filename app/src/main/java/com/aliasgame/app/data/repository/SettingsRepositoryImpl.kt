@@ -2,13 +2,7 @@ package com.aliasgame.app.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.MutablePreferences
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.aliasgame.app.domain.repository.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,68 +27,63 @@ class SettingsRepositoryImpl @Inject constructor(
         val TARGET_SCORE = intPreferencesKey("target_score")
         val TEAM_NAMES = stringPreferencesKey("team_names")
         val SELECTED_PACK = stringPreferencesKey("selected_pack")
+        val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
+        val VIBRATION_ENABLED = booleanPreferencesKey("vibration_enabled")
     }
 
     override val selectedLanguage: Flow<String> = context.settingsDataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { prefs: Preferences -> prefs[Keys.LANGUAGE] ?: "EN" }
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.LANGUAGE] ?: "EN" }
 
     override val roundTime: Flow<Long> = context.settingsDataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { prefs: Preferences -> prefs[Keys.ROUND_TIME] ?: 60L }
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.ROUND_TIME] ?: 60L }
 
     override val targetScore: Flow<Int> = context.settingsDataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { prefs: Preferences -> prefs[Keys.TARGET_SCORE] ?: 50 }
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.TARGET_SCORE] ?: 50 }
 
     override val teamNames: Flow<List<String>> = context.settingsDataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { prefs: Preferences ->
-            prefs[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2")
-        }
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2") }
 
     override val selectedPack: Flow<String> = context.settingsDataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }.map { preferences: Preferences ->
-            preferences[Keys.SELECTED_PACK] ?: "Easy"
-        }
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.SELECTED_PACK] ?: "Easy" }
+
+    override val isSoundEnabled: Flow<Boolean> = context.settingsDataStore.data
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.SOUND_ENABLED] ?: true }
+
+    override val isVibrationEnabled: Flow<Boolean> = context.settingsDataStore.data
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { it[Keys.VIBRATION_ENABLED] ?: true }
 
     override suspend fun saveLanguage(language: String) {
-        context.settingsDataStore.edit { prefs: MutablePreferences ->
-            prefs[Keys.LANGUAGE] = language
-        }
+        context.settingsDataStore.edit { it[Keys.LANGUAGE] = language }
     }
 
     override suspend fun saveRoundTime(time: Long) {
-        context.settingsDataStore.edit { prefs: MutablePreferences ->
-            prefs[Keys.ROUND_TIME] = time
-        }
+        context.settingsDataStore.edit { it[Keys.ROUND_TIME] = time }
     }
 
     override suspend fun saveTargetScore(score: Int) {
-        context.settingsDataStore.edit { prefs: MutablePreferences ->
-            prefs[Keys.TARGET_SCORE] = score
-        }
+        context.settingsDataStore.edit { it[Keys.TARGET_SCORE] = score }
     }
 
     override suspend fun saveTeamNames(names: List<String>) {
-        context.settingsDataStore.edit { prefs: MutablePreferences ->
-            prefs[Keys.TEAM_NAMES] = names.joinToString(",")
-        }
+        context.settingsDataStore.edit { it[Keys.TEAM_NAMES] = names.joinToString(",") }
     }
 
     override suspend fun savePack(packId: String) {
-        context.settingsDataStore.edit { preferences ->
-            preferences[Keys.SELECTED_PACK] = packId
-        }
+        context.settingsDataStore.edit { it[Keys.SELECTED_PACK] = packId }
+    }
+
+    override suspend fun saveSoundEnabled(enabled: Boolean) {
+        context.settingsDataStore.edit { it[Keys.SOUND_ENABLED] = enabled }
+    }
+
+    override suspend fun saveVibrationEnabled(enabled: Boolean) {
+        context.settingsDataStore.edit { it[Keys.VIBRATION_ENABLED] = enabled }
     }
 }
