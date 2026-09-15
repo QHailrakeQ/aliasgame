@@ -1,3 +1,30 @@
 <resources>
-    <string name="app_name">AliasGame</string>
+    <string name="app_name">Alias Game</string>
+    <string name="setup_title">Game Setup</string>
+    <string name="round_time">Round Time: %1$d sec</string>
+    <string name="target_score">Target Score: %1$d</string>
+    <string name="language">Language</string>
+    <string name="category">Category</string>
+    <string name="add_team">Add Team</string>
+    <string name="start_game">Start Game</string>
+    <string name="team_name_hint">Team %1$d Name</string>
+    <string name="round_over">Round is over!</string>
+    <string name="next_round">Next Round</string>
+    <string name="game_finished">Game is finished!</string>
+    <string name="winner_title">🎉 WE HAVE A WINNER! 🎉</string>
+    <string name="back_to_menu">Back to Menu</string>
+    <string name="ready_title">Next Team:</string>
+    <string name="ready_button">I\'m ready!</string>
+    <string name="points_count">%1$d points</string>
+
+    <string name="funny_name_1">Hungry Rhinos</string>
+    <string name="funny_name_2">Crazy Squirrels</string>
+    <string name="funny_name_3">Iron Ducks</string>
+    <string name="funny_name_4">Cosmic Dumplings</string>
+    <string name="funny_name_5">Fast Snails</string>
+    <string name="funny_name_6">Flying Pigs</string>
+    <string name="funny_name_7">Wise Owls</string>
+    <string name="funny_name_8">Happy Bandits</string>
+    <string name="funny_name_9">Sleepy Pandas</string>
+    <string name="funny_name_10">Dancing Crocodiles</string>
 </resources>

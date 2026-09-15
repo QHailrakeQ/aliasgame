@@ -1,18 +1,18 @@
 package com.aliasgame.app.di
 
 import android.content.Context
+import com.aliasgame.app.data.repository.SettingsRepositoryImpl
 import com.aliasgame.app.data.repository.WordsRepositoryImpl
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.Team
-import com.aliasgame.app.domain.model.Word
+import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.runBlocking
 import javax.inject.Singleton
 
 @Module
@@ -40,25 +40,22 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideSettingsRepository(
+        @ApplicationContext context: Context
+    ): SettingsRepository {
+        return SettingsRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideGameEngine(
-        repository: WordsRepository,
         settings: GameSettings
     ): GameEngine {
-        val words = runBlocking {
-            repository.getWordsByPack("basic")
-        }
-
-        val defaultTeams = listOf(
-            Team("1", "Team 1"),
-            Team("2", "Team 2")
+        // Initialize engine with default/empty state to avoid main thread blocking
+        return GameEngine(
+            allWords = emptyList(),
+            initialTeams = listOf(Team("1", "Team 1"), Team("2", "Team 2")),
+            settings = settings
         )
-
-        val finalWords = if (words.isEmpty()) {
-            listOf(Word("Apple", "basic"), Word("Banana", "basic"))
-        } else {
-            words
-        }
-
-        return GameEngine(finalWords, defaultTeams, settings)
     }
 }
