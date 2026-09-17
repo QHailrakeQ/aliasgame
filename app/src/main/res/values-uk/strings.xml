@@ -8,4 +8,55 @@
     <string name="add_team">Додати команду</string>
     <string name="start_game">Почати гру</string>
     <string name="team_name_hint">Назва команди %1$d</string>
+    <string name="round_over">Раунд завершено!</string>
+    <string name="next_round">Наступний раунд</string>
+    <string name="game_finished">Гру закінчено!</string>
+    <string name="winner_title">🎉 МАЄМО ПЕРЕМОЖЦЯ! 🎉</string>
+    <string name="back_to_menu">В меню</string>
+    <string name="ready_title">Наступна команда:</string>
+    <string name="ready_button">Я готовий!</string>
+    <string name="points_count">%1$d балів</string>
+
+    <!-- Funny Team Names -->
+    <string name="funny_name_1">Голодні носороги</string>
+    <string name="funny_name_2">Скажені білки</string>
+    <string name="funny_name_3">Залізні качки</string>
+    <string name="funny_name_4">Космічні вареники</string>
+    <string name="funny_name_5">Швидкі равлики</string>
+    <string name="funny_name_6">Літаючі свині</string>
+    <string name="funny_name_7">Мудрі сови</string>
+    <string name="funny_name_8">Веселі бандити</string>
+    <string name="funny_name_9">Сонні панди</string>
+    <string name="funny_name_10">Танцюючі крокодили</string>
+
+    <!-- Configuration and Metadata -->
+    <string name="teams_header">Команди</string>
+    <string name="preferences_header">Налаштування</string>
+    <string name="sound_effects">Звукові ефекти</string>
+    <string name="haptic_feedback">Вібрація</string>
+    <string name="select_category_title">Оберіть категорію</string>
+
+    <!-- Difficulty Levels -->
+    <string name="difficulty_easy">Легкий</string>
+    <string name="difficulty_medium">Середній</string>
+    <string name="difficulty_hard">Складний</string>
+    <string name="difficulty_insane">Божевільний</string>
+
+    <!-- Category Descriptions -->
+    <string name="desc_easy">Прості повсякденні слова. Чудово підходить для дітей та новачків.</string>
+    <string name="desc_medium">Загальні слова для збалансованого ігрового процесу.</string>
+    <string name="desc_hard">Складні терміни та абстрактні поняття для експертів.</string>
+    <string name="desc_insane">Наукові терміни, рідкісні слова та головоломки.</string>
+
+    <!-- Game Screen Strings -->
+    <string name="no_more_words">Більше немає слів</string>
+    <string name="skip_button">ПРОПУСТИТИ</string>
+    <string name="got_it_button">ВГАДАНО</string>
+    <string name="pause_title">Пауза</string>
+    <string name="resume_button">Продовжити</string>
+    <string name="tap_to_toggle">Натисніть на слово, щоб змінити результат:</string>
+    <string name="last_word_label">Останнє слово: %1$s</string>
+    <string name="who_got_point">Хто вгадав слово?</string>
+    <string name="no_one_correct">Ніхто не вгадав</string>
+    <string name="score_label">Рахунок: %1$d</string>
 </resources>

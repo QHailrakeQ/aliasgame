@@ -6,7 +6,10 @@ import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.GameState
 import com.aliasgame.app.domain.model.RoundResult
 
-
+/**
+ * Core engine managing game logic, scoring, and session state.
+ * Implements a fair-play round system where every team gets an equal number of turns.
+ */
 class GameEngine(
     var allWords: List<Word>,
     val initialTeams: List<Team>,
@@ -21,6 +24,9 @@ class GameEngine(
     private var currentScore = 0
     private var isPaused = false
 
+    /**
+     * Retrieves the next available word from the dictionary.
+     */
     fun getNextWord(): Word? {
         val availableWords = allWords.filter { !usedWords.contains(it) }
         if (availableWords.isEmpty()) {
@@ -33,6 +39,9 @@ class GameEngine(
         return nextWord
     }
 
+    /**
+     * Records a correct answer and increments score based on settings.
+     */
     fun onCorrectAnswer(): Word? {
         val word = currentWord ?: return null
         currentRoundResults.add(RoundResult(word, true))
@@ -40,6 +49,9 @@ class GameEngine(
         return getNextWord()
     }
 
+    /**
+     * Records a skipped word and applies the configured penalty/points.
+     */
     fun onSkipWord(): Word? {
         val word = currentWord ?: return null
         currentRoundResults.add(RoundResult(word, false))
@@ -47,6 +59,9 @@ class GameEngine(
         return getNextWord()
     }
 
+    /**
+     * Handles the outcome of the final word in a round.
+     */
     fun addFinalWordResult(isCorrect: Boolean) {
         currentWord?.let {
             currentRoundResults.add(RoundResult(it, isCorrect))
@@ -55,20 +70,23 @@ class GameEngine(
         }
     }
 
+    /**
+     * Toggles a previous word result in the round overview.
+     * Updates the associated team's score reactively.
+     */
     fun toggleWordResult(index: Int) {
         if (index !in currentRoundResults.indices) return
         val result = currentRoundResults[index]
         val newStatus = !result.isCorrect
 
-        // Розраховуємо різницю в балах
+        // Calculate score delta based on settings
         val diff = if (newStatus) {
             settings.pointsPerCorrectAnswer - settings.pointsPerSkip
         } else {
             settings.pointsPerSkip - settings.pointsPerCorrectAnswer
         }
 
-        // Команда, яка щойно грала, знаходиться за індексом (currentTeamIndex - 1)
-        // оскільки хід уже перейшов далі в rollNextTeam()
+        // Target the team that just completed their turn
         val finishedTeamIndex = if (currentTeamIndex == 0) teams.size - 1 else currentTeamIndex - 1
         val team = teams[finishedTeamIndex]
         teams[finishedTeamIndex] = team.copy(score = team.score + diff)
@@ -88,30 +106,46 @@ class GameEngine(
         isPaused = false
     }
 
+    /**
+     * Transitions turn to the next team and evaluates win conditions.
+     * Winner is only determined after a complete round cycle where every team has played.
+     */
     fun rollNextTeam(): Team? {
         val team = teams[currentTeamIndex]
         val updatedTeam = team.copy(score = team.score + currentScore)
         teams[currentTeamIndex] = updatedTeam
 
-        val winner = if (updatedTeam.score >= settings.targetScore) updatedTeam else null
-
         currentTeamIndex = (currentTeamIndex + 1) % teams.size
         currentScore = 0
 
-        return winner
+        // Check for winners only when a full cycle is complete (back to the first team)
+        if (currentTeamIndex == 0) {
+            val potentialWinners = teams.filter { it.score >= settings.targetScore }
+            if (potentialWinners.isNotEmpty()) {
+                return potentialWinners.maxByOrNull { it.score }
+            }
+        }
+
+        return null
     }
 
     fun getTeams(): List<Team> {
         return teams.toList()
     }
 
+    /**
+     * Generates an immutable snapshot of the current game state for the UI layer.
+     */
     fun getCurrentState(
-        timeRemaining: Long, currentWord: Word?,
+        timeRemaining: Long, 
+        currentWord: Word?,
         isRoundOver: Boolean = false,
         winner: Team? = null
     ): GameState {
-        // Перевіряємо переможця знову, бо бали могли змінитися після перемикання результатів
-        val finalWinner = winner ?: teams.find { it.score >= settings.targetScore }
+        // Evaluate victory only at the end of a round cycle
+        val finalWinner = winner ?: if (currentTeamIndex == 0) {
+            teams.filter { it.score >= settings.targetScore }.maxByOrNull { it.score }
+        } else null
 
         return GameState(
             currentTeam = teams[currentTeamIndex],
@@ -136,6 +170,9 @@ class GameEngine(
         }
     }
 
+    /**
+     * Initializes a new game session with provided configuration.
+     */
     fun setupGame(teamNames: List<String>,
                   newSettings: GameSettings,
                   newWords: List<Word>) {

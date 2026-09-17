@@ -16,4 +16,47 @@
     <string name="ready_title">Nächstes Team:</string>
     <string name="ready_button">Ich bin bereit!</string>
     <string name="points_count">%1$d Punkte</string>
+
+    <!-- Funny Team Names -->
+    <string name="funny_name_1">Hungrige Nashörner</string>
+    <string name="funny_name_2">Verrückte Eichhörnchen</string>
+    <string name="funny_name_3">Eiserne Enten</string>
+    <string name="funny_name_4">Kosmische Knödel</string>
+    <string name="funny_name_5">Schnelle Schnecken</string>
+    <string name="funny_name_6">Fliegende Schweine</string>
+    <string name="funny_name_7">Weise Eulen</string>
+    <string name="funny_name_8">Glückliche Banditen</string>
+    <string name="funny_name_9">Schläfrige Pandas</string>
+    <string name="funny_name_10">Tanzende Krokodile</string>
+
+    <!-- Configuration -->
+    <string name="teams_header">Teams</string>
+    <string name="preferences_header">Einstellungen</string>
+    <string name="sound_effects">Soundeffekte</string>
+    <string name="haptic_feedback">Vibration</string>
+    <string name="select_category_title">Kategorie wählen</string>
+
+    <!-- Difficulty -->
+    <string name="difficulty_easy">Leicht</string>
+    <string name="difficulty_medium">Mittel</string>
+    <string name="difficulty_hard">Schwer</string>
+    <string name="difficulty_insane">Wahnsinn</string>
+
+    <!-- Descriptions -->
+    <string name="desc_easy">Einfache Alltagswörter. Ideal für Kinder und Anfänger.</string>
+    <string name="desc_medium">Allgemeinwissen für ausgewogenes Gameplay.</string>
+    <string name="desc_hard">Komplexe Begriffe und abstrakte Konzepte.</string>
+    <string name="desc_insane">Wissenschaftliche Begriffe und knifflige Rätsel.</string>
+
+    <!-- Game Screen -->
+    <string name="no_more_words">Keine Wörter mehr verfügbar</string>
+    <string name="skip_button">ÜBERSPRINGEN</string>
+    <string name="got_it_button">ERTRATEN</string>
+    <string name="pause_title">Pause</string>
+    <string name="resume_button">Weiter</string>
+    <string name="tap_to_toggle">Wort тиppen, um Ergebnis zu ändern:</string>
+    <string name="last_word_label">Letztes Wort: %1$s</string>
+    <string name="who_got_point">Wer hat den Punkt bekommen?</string>
+    <string name="no_one_correct">Niemand ist richtig</string>
+    <string name="score_label">Punktestand: %1$d</string>
 </resources>

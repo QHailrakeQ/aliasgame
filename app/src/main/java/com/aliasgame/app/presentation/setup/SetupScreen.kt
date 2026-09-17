@@ -22,7 +22,7 @@ import com.aliasgame.app.R
 
 /**
  * Entry point for game configuration.
- * Orchestrates session parameters, team management, and user preferences using SetupViewModel.
+ * Orchestrates session parameters, team management, and user preferences.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +44,6 @@ fun SetupScreen(
         stringResource(R.string.funny_name_10)
     )
 
-    // Observable UI state from ViewModel
     val roundTime by viewModel.roundTime.collectAsState()
     val targetScore by viewModel.targetScore.collectAsState()
     val teamNames by viewModel.teamNames.collectAsState()
@@ -60,8 +59,8 @@ fun SetupScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF6200EE), // Primary Brand Purple
-                        Color(0xFF03DAC5)  // Secondary Accent Teal
+                        Color(0xFF6200EE),
+                        Color(0xFF03DAC5)
                     )
                 )
             )
@@ -80,7 +79,7 @@ fun SetupScreen(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
-            // Game rules configuration: duration and target score
+            // Game Session Configuration
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -123,14 +122,18 @@ fun SetupScreen(
                 }
             }
 
-            // Localization and category selection
+            // Localization and Category Selection
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.elevatedCardColors(containerColor = Color.White.copy(alpha = 0.9f))
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(text = stringResource(R.string.language), style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                    Text(
+                        text = stringResource(R.string.language), 
+                        style = MaterialTheme.typography.titleMedium, 
+                        color = Color.Black
+                    )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         languages.forEach { lang ->
                             FilterChip(
@@ -144,7 +147,11 @@ fun SetupScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(text = stringResource(R.string.category), style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                    Text(
+                        text = stringResource(R.string.category), 
+                        style = MaterialTheme.typography.titleMedium, 
+                        color = Color.Black
+                    )
                     
                     OutlinedCard(
                         onClick = onSelectPack,
@@ -159,8 +166,15 @@ fun SetupScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            val localizedPackName = when (selectedPack.lowercase()) {
+                                "easy" -> stringResource(R.string.difficulty_easy)
+                                "medium" -> stringResource(R.string.difficulty_medium)
+                                "hard" -> stringResource(R.string.difficulty_hard)
+                                "insane" -> stringResource(R.string.difficulty_insane)
+                                else -> selectedPack
+                            }
                             Text(
-                                text = selectedPack,
+                                text = localizedPackName,
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
@@ -175,14 +189,18 @@ fun SetupScreen(
                 }
             }
 
-            // Management of participating teams
+            // Team Management
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.elevatedCardColors(containerColor = Color.White.copy(alpha = 0.9f))
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(text = "Teams", style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                    Text(
+                        text = stringResource(R.string.teams_header), 
+                        style = MaterialTheme.typography.titleMedium, 
+                        color = Color.Black
+                    )
                     teamNames.forEachIndexed { index, name ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -228,21 +246,25 @@ fun SetupScreen(
                 }
             }
 
-            // Technical preferences: Audio and Haptic feedback
+            // Gameplay Preferences
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.elevatedCardColors(containerColor = Color.White.copy(alpha = 0.9f))
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text(text = "Preferences", style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                    Text(
+                        text = stringResource(R.string.preferences_header), 
+                        style = MaterialTheme.typography.titleMedium, 
+                        color = Color.Black
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Sound Effects", color = Color.Black)
+                        Text(stringResource(R.string.sound_effects), color = Color.Black)
                         Switch(
                             checked = isSoundEnabled,
                             onCheckedChange = { viewModel.onSoundToggled(it) },
@@ -255,7 +277,7 @@ fun SetupScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Haptic Feedback", color = Color.Black)
+                        Text(stringResource(R.string.haptic_feedback), color = Color.Black)
                         Switch(
                             checked = isVibrationEnabled,
                             onCheckedChange = { viewModel.onVibrationToggled(it) },
@@ -267,7 +289,7 @@ fun SetupScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Primary CTA to launch the game session
+            // Primary Launch CTA
             Button(
                 onClick = {
                     viewModel.startGame(onNavigate = onStartGame)
