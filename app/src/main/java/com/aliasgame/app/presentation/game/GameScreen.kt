@@ -364,9 +364,9 @@ fun GameScreen(
             )
         }
 
-        if (currentState.isGameFinished && currentState.winner != null) {
+        if (currentState.isGameFinished && currentState.winners.isNotEmpty()) {
             VictoryOverlay(
-                winner = currentState.winner,
+                winners = currentState.winners,
                 onExit = onExit
             )
         }
@@ -587,9 +587,12 @@ private fun ConfettiEffect() {
 
 /**
  * Full-screen victory overlay displayed when the match ends.
+ * Handles both single winner and draw cases.
  */
 @Composable
-private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
+private fun VictoryOverlay(winners: List<Team>, onExit: () -> Unit) {
+    val isDraw = winners.size > 1
+    
     Box(
         modifier = Modifier.fillMaxSize().background(
             Brush.verticalGradient(listOf(Color(0xFFFFD700), Color(0xFFFFA500)))
@@ -598,27 +601,46 @@ private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
     ) {
         ConfettiEffect()
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, 
+            modifier = Modifier.padding(24.dp)
+        ) {
             Text(text = "🏆", fontSize = 100.sp)
             Text(
-                text = stringResource(R.string.game_finished), 
+                text = if (isDraw) stringResource(R.string.draw_title) else stringResource(R.string.game_finished), 
                 style = MaterialTheme.typography.headlineLarge, 
                 fontWeight = FontWeight.Bold, 
                 color = Color.White
             )
+            
             Spacer(modifier = Modifier.height(16.dp))
+            
+            if (isDraw) {
+                Text(
+                    text = stringResource(R.string.winners_share),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+            }
+
+            winners.forEach { winner ->
+                Text(
+                    text = winner.name, 
+                    style = MaterialTheme.typography.displayMedium, 
+                    fontWeight = FontWeight.Black, 
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             Text(
-                text = winner.name, 
-                style = MaterialTheme.typography.displayMedium, 
-                fontWeight = FontWeight.Black, 
-                color = Color.White
-            )
-            Text(
-                text = stringResource(R.string.points_count, winner.score), 
+                text = stringResource(R.string.points_count, winners.firstOrNull()?.score ?: 0), 
                 style = MaterialTheme.typography.headlineSmall, 
                 color = Color.White.copy(alpha = 0.9f)
             )
+            
             Spacer(modifier = Modifier.height(48.dp))
+
             Button(
                 onClick = onExit,
                 modifier = Modifier.fillMaxWidth().height(64.dp),

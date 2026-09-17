@@ -16,6 +16,8 @@
     <string name="ready_title">Next Team:</string>
     <string name="ready_button">I\'m ready!</string>
     <string name="points_count">%1$d points</string>
+    <string name="draw_title">IT\'S A DRAW!</string>
+    <string name="winners_share">The winners are:</string>
 
     <!-- Predefined Team Names -->
     <string name="funny_name_1">Hungry Rhinos</string>

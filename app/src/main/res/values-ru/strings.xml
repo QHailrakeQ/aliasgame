@@ -16,6 +16,8 @@
     <string name="ready_title">Следующая команда:</string>
     <string name="ready_button">Я готов!</string>
     <string name="points_count">%1$d очков</string>
+    <string name="draw_title">НИЧЬЯ!</string>
+    <string name="winners_share">Победители:</string>
 
     <!-- Funny Team Names -->
     <string name="funny_name_1">Голодные носороги</string>

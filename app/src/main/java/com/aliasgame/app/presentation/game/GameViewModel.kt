@@ -34,7 +34,7 @@ class GameViewModel @Inject constructor(
     private var currentWord: Word? = null
     private var timeLeft = engine.settings.roundTime
     private var timerJob: Job? = null
-    private var roundWinner: Team? = null
+    private var roundWinners: List<Team> = emptyList()
     private var isRoundOver = false
 
     // Persistent preferences observed during gameplay
@@ -54,7 +54,7 @@ class GameViewModel @Inject constructor(
             timeLeft,
             currentWord = currentWord,
             isRoundOver = isRoundOver,
-            winner = roundWinner
+            winners = roundWinners
         )
     }
 
@@ -72,7 +72,7 @@ class GameViewModel @Inject constructor(
     fun startNextRound() {
         engine.prepareForNextRound()
         isRoundOver = false
-        roundWinner = null
+        roundWinners = emptyList()
         timeLeft = engine.settings.roundTime
         currentWord = engine.getNextWord()
         updateState()
@@ -122,7 +122,7 @@ class GameViewModel @Inject constructor(
     }
 
     private fun finishRound() {
-        roundWinner = engine.rollNextTeam()
+        roundWinners = engine.rollNextTeam()
         isRoundOver = true
         updateState()
     }
