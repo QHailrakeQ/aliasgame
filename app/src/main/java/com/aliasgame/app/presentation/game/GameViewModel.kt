@@ -3,24 +3,21 @@ package com.aliasgame.app.presentation.game
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
-import com.aliasgame.app.domain.model.GameState
-import com.aliasgame.app.domain.model.Team
-import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * ViewModel for the Game screen.
- * Manages the active game session, timer, and reactive game state.
+ * Manages the active game session, timer, and unified UI state.
  */
 @HiltViewModel
 class GameViewModel @Inject constructor(
@@ -28,113 +25,137 @@ class GameViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    private val _gameState = MutableStateFlow<GameState?>(null)
-    val gameState = _gameState.asStateFlow()
+    private val _uiState = MutableStateFlow(GameUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private var currentWord: Word? = null
-    private var timeLeft = engine.settings.roundTime
+    private val _uiEffect = Channel<GameUiEffect>()
+    val uiEffect = _uiEffect.receiveAsFlow()
+
     private var timerJob: Job? = null
-    private var roundWinners: List<Team> = emptyList()
-    private var isRoundOver = false
-
-    // Persistent preferences observed during gameplay
-    val isSoundEnabled: StateFlow<Boolean> = settingsRepository.isSoundEnabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
-
-    val isVibrationEnabled: StateFlow<Boolean> = settingsRepository.isVibrationEnabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
     init {
-        currentWord = engine.getNextWord()
-        updateState()
+        // Observe persistent preferences
+        viewModelScope.launch {
+            launch {
+                settingsRepository.isSoundEnabled.collect { enabled ->
+                    _uiState.update { it.copy(isSoundEnabled = enabled) }
+                }
+            }
+            launch {
+                settingsRepository.isVibrationEnabled.collect { enabled ->
+                    _uiState.update { it.copy(isVibrationEnabled = enabled) }
+                }
+            }
+        }
+        
+        // Initialize game session
+        val firstWord = engine.getNextWord()
+        syncState(currentWord = firstWord)
     }
 
-    private fun updateState() {
-        _gameState.value = engine.getCurrentState(
-            timeLeft,
+    /**
+     * Synchronizes internal engine state with the observable UI state.
+     */
+    private fun syncState(
+        currentWord: com.aliasgame.app.domain.model.Word? = _uiState.value.currentWord,
+        isRoundOver: Boolean = _uiState.value.isRoundOver,
+        winners: List<com.aliasgame.app.domain.model.Team> = _uiState.value.winners
+    ) {
+        val engineState = engine.getCurrentState(
+            timeRemaining = _uiState.value.timeRemaining,
             currentWord = currentWord,
             isRoundOver = isRoundOver,
-            winners = roundWinners
+            winners = winners
         )
-    }
-
-    /**
-     * Toggles the result of a specific word in the current round results.
-     */
-    fun toggleWordResult(index: Int) {
-        engine.toggleWordResult(index)
-        updateState()
-    }
-
-    /**
-     * Resets parameters and prepares the engine for the next team's turn.
-     */
-    fun startNextRound() {
-        engine.prepareForNextRound()
-        isRoundOver = false
-        roundWinners = emptyList()
-        timeLeft = engine.settings.roundTime
-        currentWord = engine.getNextWord()
-        updateState()
+        
+        _uiState.update { 
+            it.copy(
+                currentTeam = engineState.currentTeam,
+                currentWord = engineState.currentWord,
+                score = engineState.score,
+                timeRemaining = engineState.timeRemaining,
+                maxTime = engineState.maxTime,
+                isPaused = engineState.isPaused,
+                isLastWordMode = engineState.isLastWordMode,
+                isRoundOver = engineState.isRoundOver,
+                isGameFinished = engineState.isGameFinished,
+                winners = engineState.winners,
+                allTeams = engineState.allTeams,
+                roundResults = engineState.roundResults
+            )
+        }
     }
 
     fun onStartTimer() {
+        if (timerJob?.isActive == true) return
+        _uiState.update { it.copy(timeRemaining = engine.settings.roundTime) }
         startTimer()
     }
 
     private fun startTimer() {
-        if (timerJob?.isActive == true) return
         timerJob = viewModelScope.launch {
-            while (timeLeft > 0) {
+            while (_uiState.value.timeRemaining > 0) {
                 delay(1000)
-                timeLeft--
-                updateState()
+                _uiState.update { it.copy(timeRemaining = it.timeRemaining - 1) }
+                syncState()
             }
-            onTimerFinished()
+            _uiEffect.send(GameUiEffect.PlayTimerEndSound)
+            syncState()
         }
     }
 
-    private fun onTimerFinished() {
-        updateState()
-    }
-
-    /**
-     * Processes a word action (correct or skip) and fetches the next word.
-     */
     fun onWordSwiped(isCorrect: Boolean) {
-        if (timeLeft <= 0) return
+        if (_uiState.value.timeRemaining <= 0) return
 
-        currentWord = if (isCorrect) {
-            engine.onCorrectAnswer()
-        } else {
-            engine.onSkipWord()
+        viewModelScope.launch {
+            _uiEffect.send(if (isCorrect) GameUiEffect.PlayCorrectSound else GameUiEffect.PlaySkipSound)
         }
-        updateState()
+
+        val nextWord = if (isCorrect) engine.onCorrectAnswer() else engine.onSkipWord()
+        syncState(currentWord = nextWord)
     }
 
-    /**
-     * Handles the result of the final "overtime" word.
-     */
     fun onFinalWordProcessed(winnerTeamId: String?) {
         engine.addFinalWordResult(isCorrect = winnerTeamId != null)
         winnerTeamId?.let { engine.addPointToTeam(it) }
-        finishRound()
+        
+        val roundWinners = engine.rollNextTeam()
+        syncState(isRoundOver = true, winners = roundWinners)
     }
 
-    private fun finishRound() {
-        roundWinners = engine.rollNextTeam()
-        isRoundOver = true
-        updateState()
+    fun toggleWordResult(index: Int) {
+        engine.toggleWordResult(index)
+        syncState()
+    }
+
+    fun startNextRound() {
+        engine.prepareForNextRound()
+        val nextWord = engine.getNextWord()
+        _uiState.update { 
+            it.copy(
+                isRoundOver = false, 
+                winners = emptyList(), 
+                timeRemaining = engine.settings.roundTime 
+            ) 
+        }
+        syncState(currentWord = nextWord)
     }
 
     fun pauseGame() {
         timerJob?.cancel()
         engine.pause()
-        updateState()
+        syncState()
     }
 
     fun resumeGame() {
         engine.resume()
         startTimer()
+        syncState()
+    }
+
+    fun onExitGame() {
+        viewModelScope.launch {
+            _uiEffect.send(GameUiEffect.NavigateBack)
+        }
     }
 }

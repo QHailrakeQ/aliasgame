@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -37,8 +36,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
-import com.aliasgame.app.domain.model.GameState
 import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.Word
@@ -46,9 +45,205 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
- * Interactive card representing a single word to be guessed.
- * Implements vertical swipe gestures for scoring.
+ * Main Game Screen implementation.
+ * Manages side effects (sounds, navigation) and orchestrates game sub-components.
  */
+@Composable
+fun GameScreen(
+    viewModel: GameViewModel = hiltViewModel(),
+    onExit: () -> Unit
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    // Audio Players management
+    val correctPlayer = remember { try { MediaPlayer.create(context, R.raw.correct_sound) } catch (e: Exception) { null } }
+    val skipPlayer = remember { try { MediaPlayer.create(context, R.raw.skip_sound) } catch (e: Exception) { null } }
+    val timerEndPlayer = remember { try { MediaPlayer.create(context, R.raw.last_word_sound) } catch (e: Exception) { null } }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            correctPlayer?.release()
+            skipPlayer?.release()
+            timerEndPlayer?.release()
+        }
+    }
+
+    // Handle Side Effects
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                GameUiEffect.PlayCorrectSound -> if (state.isSoundEnabled) correctPlayer?.start()
+                GameUiEffect.PlaySkipSound -> if (state.isSoundEnabled) skipPlayer?.start()
+                GameUiEffect.PlayTimerEndSound -> if (state.isSoundEnabled) timerEndPlayer?.start()
+                GameUiEffect.NavigateBack -> onExit()
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.verticalGradient(listOf(Color(0xFF6200EE), Color(0xFF03DAC5))))
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            GameHUD(
+                teamName = state.currentTeam?.name ?: "",
+                score = state.score,
+                timeRemaining = state.timeRemaining,
+                onExitClick = viewModel::onExitGame
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            state.currentWord?.let { word ->
+                WordCard(
+                    word = word,
+                    vibrationEnabled = state.isVibrationEnabled,
+                    onSwipeUp = { viewModel.onWordSwiped(true) },
+                    onSwipeDown = { viewModel.onWordSwiped(false) }
+                )
+            } ?: Text(
+                text = stringResource(R.string.no_more_words),
+                color = Color.White,
+                style = MaterialTheme.typography.headlineLarge
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            GameControls(
+                isVibrationEnabled = state.isVibrationEnabled,
+                onSkip = { viewModel.onWordSwiped(false) },
+                onPause = viewModel::pauseGame,
+                onCorrect = { viewModel.onWordSwiped(true) }
+            )
+        }
+
+        // State Overlays
+        if (state.isPaused) {
+            PauseOverlay(onContinue = viewModel::resumeGame)
+        }
+
+        if (state.isLastWordMode) {
+            FinalWordDialog(
+                word = state.currentWord?.text ?: "",
+                teams = state.allTeams,
+                onTeamSelected = viewModel::onFinalWordProcessed
+            )
+        }
+
+        if (state.isRoundOver) {
+            RoundResultsOverlay(
+                results = state.roundResults,
+                teams = state.allTeams,
+                onToggleResult = viewModel::toggleWordResult,
+                onNextRound = viewModel::startNextRound
+            )
+        }
+
+        if (state.isReadyToStart()) {
+            ReadyOverlay(
+                teamName = state.currentTeam?.name ?: "",
+                onStart = viewModel::onStartTimer
+            )
+        }
+
+        if (state.isGameFinished && state.winners.isNotEmpty()) {
+            VictoryOverlay(
+                winners = state.winners,
+                onExit = viewModel::onExitGame
+            )
+        }
+    }
+}
+
+private fun GameUiState.isReadyToStart() = 
+    !isRoundOver && !isPaused && !isGameFinished && timeRemaining == 0L && currentTeam != null
+
+@Composable
+private fun GameHUD(
+    teamName: String,
+    score: Int,
+    timeRemaining: Long,
+    onExitClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = onExitClick,
+            modifier = Modifier.background(Color.White.copy(alpha = 0.2f), CircleShape)
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Exit", tint = Color.White)
+        }
+        
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(teamName, style = MaterialTheme.typography.headlineSmall, color = Color.White, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.score_label, score), style = MaterialTheme.typography.titleMedium, color = Color.White.copy(alpha = 0.8f))
+        }
+
+        Surface(
+            shape = CircleShape,
+            color = if (timeRemaining < 10) Color(0xFFFF5252) else Color.White.copy(alpha = 0.2f),
+            modifier = Modifier.size(56.dp),
+            border = if (timeRemaining < 10) BorderStroke(2.dp, Color.White) else null
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text(timeRemaining.toString(), style = MaterialTheme.typography.titleLarge, color = Color.White, fontWeight = FontWeight.ExtraBold)
+            }
+        }
+    }
+}
+
+@Composable
+private fun GameControls(
+    isVibrationEnabled: Boolean,
+    onSkip: () -> Unit,
+    onPause: () -> Unit,
+    onCorrect: () -> Unit
+) {
+    val haptic = LocalHapticFeedback.current
+    val triggerHaptic = { if (isVibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        ControlButton(stringResource(R.string.skip_button), Color(0xFFFF5252), 100.dp) {
+            triggerHaptic(); onSkip()
+        }
+        
+        IconButton(
+            onClick = onPause,
+            modifier = Modifier.size(64.dp).background(Color.White.copy(alpha = 0.3f), CircleShape).align(Alignment.CenterVertically)
+        ) {
+            Text("||", fontWeight = FontWeight.Bold, color = Color.White)
+        }
+
+        ControlButton(stringResource(R.string.got_it_button), Color(0xFF4CAF50), 100.dp) {
+            triggerHaptic(); onCorrect()
+        }
+    }
+}
+
+@Composable
+private fun ControlButton(text: String, color: Color, size: androidx.compose.ui.unit.Dp, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.size(size),
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(containerColor = color),
+        elevation = ButtonDefaults.buttonElevation(8.dp)
+    ) {
+        Text(text, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+    }
+}
+
 @Composable
 fun WordCard(
     word: Word,
@@ -99,63 +294,31 @@ fun WordCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 12.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = word.text,
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(24.dp)
-            )
+            Text(word.text, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.padding(24.dp))
         }
     }
 }
 
-/**
- * Dialog for resolving the last word point attribution.
- */
 @Composable
-fun FinalWordDialog(
-    word: String,
-    teams: List<Team>,
-    onTeamSelected: (String?) -> Unit
-) {
+fun FinalWordDialog(word: String, teams: List<Team>, onTeamSelected: (String?) -> Unit) {
     AlertDialog(
         onDismissRequest = { },
         shape = RoundedCornerShape(28.dp),
-        title = { 
-            Text(
-                text = stringResource(R.string.last_word_label, word),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            ) 
-        },
+        title = { Text(stringResource(R.string.last_word_label, word), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) },
         text = {
             Column {
-                Text(
-                    text = stringResource(R.string.who_got_point), 
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Text(stringResource(R.string.who_got_point), style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
                 teams.forEach { team ->
                     Button(
                         onClick = { onTeamSelected(team.id) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
-                    ) {
-                        Text(team.name)
-                    }
+                    ) { Text(team.name) }
                 }
-                TextButton(
-                    onClick = { onTeamSelected(null) },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(R.string.no_one_correct), 
-                        color = Color.Gray
-                    )
+                TextButton(onClick = { onTeamSelected(null) }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.no_one_correct), color = Color.Gray)
                 }
             }
         },
@@ -163,244 +326,14 @@ fun FinalWordDialog(
     )
 }
 
-/**
- * Primary gameplay screen orchestrating the match session.
- */
-@Composable
-fun GameScreen(
-    viewModel: GameViewModel = hiltViewModel(),
-    onExit: () -> Unit
-) {
-    val state by viewModel.gameState.collectAsState()
-    val currentState = state ?: return
-    
-    val context = LocalContext.current
-    val haptic = LocalHapticFeedback.current
-    
-    val soundEnabled by viewModel.isSoundEnabled.collectAsState()
-    val vibrationEnabled by viewModel.isVibrationEnabled.collectAsState()
-
-    val correctPlayer = remember {
-        try { MediaPlayer.create(context, R.raw.correct_sound) } catch (e: Exception) { null }
-    }
-    val skipPlayer = remember {
-        try { MediaPlayer.create(context, R.raw.skip_sound) } catch (e: Exception) { null }
-    }
-    val lastWordPlayer = remember {
-        try { MediaPlayer.create(context, R.raw.last_word_sound) } catch (e: Exception) { null }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            correctPlayer?.release()
-            skipPlayer?.release()
-            lastWordPlayer?.release()
-        }
-    }
-
-    val handleCorrect = {
-        if (soundEnabled) {
-            correctPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
-        }
-        viewModel.onWordSwiped(true)
-    }
-
-    val handleSkip = {
-        if (soundEnabled) {
-            skipPlayer?.let { if (it.isPlaying) it.pause(); it.seekTo(0); it.start() }
-        }
-        viewModel.onWordSwiped(false)
-    }
-
-    LaunchedEffect(currentState.isLastWordMode) {
-        if (currentState.isLastWordMode && soundEnabled) {
-            lastWordPlayer?.start()
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF6200EE), Color(0xFF03DAC5))
-                )
-            )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Top bar with team info and timer
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = onExit,
-                    modifier = Modifier.background(Color.White.copy(alpha = 0.2f), CircleShape)
-                ) {
-                    Icon(Icons.Default.Close, contentDescription = "Exit", tint = Color.White)
-                }
-                
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = currentState.currentTeam.name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = stringResource(R.string.score_label, currentState.score),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                }
-
-                Surface(
-                    shape = CircleShape,
-                    color = if (currentState.timeRemaining < 10) Color(0xFFFF5252) else Color.White.copy(alpha = 0.2f),
-                    modifier = Modifier.size(56.dp),
-                    border = if (currentState.timeRemaining < 10) BorderStroke(2.dp, Color.White) else null
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = currentState.timeRemaining.toString(),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Color.White,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Game word card
-            currentState.currentWord?.let { word ->
-                WordCard(
-                    word = word,
-                    vibrationEnabled = vibrationEnabled,
-                    onSwipeUp = handleCorrect,
-                    onSwipeDown = handleSkip
-                )
-            } ?: Text(
-                text = stringResource(R.string.no_more_words), 
-                color = Color.White, 
-                style = MaterialTheme.typography.headlineLarge
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Lower controls
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Button(
-                    onClick = { 
-                        if (vibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        handleSkip() 
-                    },
-                    modifier = Modifier.size(100.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5252)),
-                    elevation = ButtonDefaults.buttonElevation(8.dp)
-                ) {
-                    Text(stringResource(R.string.skip_button), fontWeight = FontWeight.Bold)
-                }
-                
-                Button(
-                    onClick = { viewModel.pauseGame() },
-                    modifier = Modifier.size(64.dp).align(Alignment.CenterVertically),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.3f))
-                ) {
-                    Text("||", fontWeight = FontWeight.Bold, color = Color.White)
-                }
-
-                Button(
-                    onClick = { 
-                        if (vibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        handleCorrect() 
-                    },
-                    modifier = Modifier.size(100.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                    elevation = ButtonDefaults.buttonElevation(8.dp)
-                ) {
-                    Text(stringResource(R.string.got_it_button), fontWeight = FontWeight.Bold)
-                }
-            }
-        }
-
-        // Session state overlays
-        if (currentState.isPaused) {
-            PauseOverlay(onContinue = { viewModel.resumeGame() })
-        }
-
-        if (currentState.isLastWordMode) {
-            FinalWordDialog(
-                word = currentState.currentWord?.text ?: "",
-                teams = currentState.allTeams,
-                onTeamSelected = { teamId: String? -> viewModel.onFinalWordProcessed(teamId) }
-            )
-        }
-
-        if (currentState.isRoundOver) {
-            RoundResultsOverlay(
-                results = currentState.roundResults,
-                teams = currentState.allTeams,
-                onToggleResult = { viewModel.toggleWordResult(it) },
-                onNextRound = { viewModel.startNextRound() }
-            )
-        }
-
-        if (currentState.isReadyToStart()) {
-            ReadyOverlay(
-                teamName = currentState.currentTeam.name,
-                onStart = { viewModel.onStartTimer() }
-            )
-        }
-
-        if (currentState.isGameFinished && currentState.winners.isNotEmpty()) {
-            VictoryOverlay(
-                winners = currentState.winners,
-                onExit = onExit
-            )
-        }
-    }
-}
-
-private fun GameState.isReadyToStart() = !isRoundOver && !isPaused && !isGameFinished && timeRemaining == maxTime
-
 @Composable
 private fun PauseOverlay(onContinue: () -> Unit) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.7f)),
-        contentAlignment = Alignment.Center
-    ) {
-        ElevatedCard(
-            shape = RoundedCornerShape(32.dp),
-            colors = CardDefaults.elevatedCardColors(containerColor = Color.White)
-        ) {
-            Column(
-                modifier = Modifier.padding(40.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.pause_title), 
-                    style = MaterialTheme.typography.headlineMedium, 
-                    fontWeight = FontWeight.Bold
-                )
+    Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.7f)), contentAlignment = Alignment.Center) {
+        ElevatedCard(shape = RoundedCornerShape(32.dp), colors = CardDefaults.elevatedCardColors(containerColor = Color.White)) {
+            Column(Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource(R.string.pause_title), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = onContinue,
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
-                ) {
+                Button(onClick = onContinue, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))) {
                     Text(stringResource(R.string.resume_button))
                 }
             }
@@ -409,37 +342,13 @@ private fun PauseOverlay(onContinue: () -> Unit) {
 }
 
 @Composable
-private fun RoundResultsOverlay(
-    results: List<RoundResult>,
-    teams: List<Team>,
-    onToggleResult: (Int) -> Unit,
-    onNextRound: () -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)).padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        ElevatedCard(
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(32.dp),
-            colors = CardDefaults.elevatedCardColors(containerColor = Color.White)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.round_over),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF6200EE)
-                )
+private fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, onToggleResult: (Int) -> Unit, onNextRound: () -> Unit) {
+    Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)).padding(24.dp), contentAlignment = Alignment.Center) {
+        ElevatedCard(Modifier.fillMaxSize(), shape = RoundedCornerShape(32.dp), colors = CardDefaults.elevatedCardColors(containerColor = Color.White)) {
+            Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource(R.string.round_over), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = Color(0xFF6200EE))
                 Spacer(modifier = Modifier.height(16.dp))
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                     teams.forEach { team ->
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(team.name, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -447,42 +356,19 @@ private fun RoundResultsOverlay(
                         }
                     }
                 }
-                
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = stringResource(R.string.tap_to_toggle), 
-                    style = MaterialTheme.typography.labelMedium, 
-                    color = Color.Gray
-                )
-                
-                LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                Text(stringResource(R.string.tap_to_toggle), style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                LazyColumn(Modifier.weight(1f).fillMaxWidth()) {
                     itemsIndexed(results) { index, result ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onToggleResult(index) }
-                                .padding(vertical = 12.dp, horizontal = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        Row(Modifier.fillMaxWidth().clickable { onToggleResult(index) }.padding(vertical = 12.dp, horizontal = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text(result.word.text, style = MaterialTheme.typography.bodyLarge)
-                            Icon(
-                                imageVector = if (result.isCorrect) Icons.Default.Check else Icons.Default.Close,
-                                contentDescription = null,
-                                tint = if (result.isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
-                            )
+                            Icon(imageVector = if (result.isCorrect) Icons.Default.Check else Icons.Default.Close, contentDescription = null, tint = if (result.isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336))
                         }
                         HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { onNextRound() },
-                    modifier = Modifier.fillMaxWidth().height(64.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03DAC5))
-                ) {
+                Button(onClick = onNextRound, modifier = Modifier.fillMaxWidth().height(64.dp), shape = RoundedCornerShape(20.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03DAC5))) {
                     Text(stringResource(R.string.next_round), style = MaterialTheme.typography.titleLarge, color = Color(0xFF00332E))
                 }
             }
@@ -492,47 +378,16 @@ private fun RoundResultsOverlay(
 
 @Composable
 private fun ReadyOverlay(teamName: String, onStart: () -> Unit) {
-
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1.0f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
-    )
+    val scale by infiniteTransition.animateFloat(initialValue = 1.0f, targetValue = 1.05f, animationSpec = infiniteRepeatable(animation = tween(800, easing = LinearEasing), repeatMode = RepeatMode.Reverse), label = "scale")
 
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)),
-        contentAlignment = Alignment.Center
-    ) {
-        ElevatedCard(
-            modifier = Modifier.padding(32.dp),
-            shape = RoundedCornerShape(32.dp),
-            colors = CardDefaults.elevatedCardColors(containerColor = Color.White)
-        ) {
-            Column(
-                modifier = Modifier.padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+    Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)), contentAlignment = Alignment.Center) {
+        ElevatedCard(Modifier.padding(32.dp), shape = RoundedCornerShape(32.dp), colors = CardDefaults.elevatedCardColors(containerColor = Color.White)) {
+            Column(Modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(stringResource(R.string.ready_title), style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = teamName,
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Black,
-                    color = Color(0xFF6200EE),
-                    textAlign = TextAlign.Center
-                )
+                Text(teamName, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.Black, color = Color(0xFF6200EE), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(32.dp))
-                Button(
-                    onClick = onStart,
-                    modifier = Modifier.fillMaxWidth().height(64.dp)
-                        .graphicsLayer(scaleX = scale, scaleY = scale),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03DAC5))
-                ) {
+                Button(onClick = onStart, modifier = Modifier.fillMaxWidth().height(64.dp).graphicsLayer(scaleX = scale, scaleY = scale), shape = RoundedCornerShape(20.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03DAC5))) {
                     Text(stringResource(R.string.ready_button), style = MaterialTheme.typography.titleLarge, color = Color(0xFF00332E))
                 }
             }
@@ -540,127 +395,45 @@ private fun ReadyOverlay(teamName: String, onStart: () -> Unit) {
     }
 }
 
-/**
- * Animated confetti celebration for the winner.
- */
-@Composable
-private fun ConfettiEffect() {
-    val pieces = remember {
-        val colors = listOf(Color.Yellow, Color.Cyan, Color.Magenta, Color.Green, Color.Red, Color.White)
-        List(70) {
-            ConfettiPiece(
-                xPercent = (0..100).random() / 100f,
-                yOffset = (0..100).random() / 100f,
-                color = colors.random(),
-                size = (10..25).random().toFloat(),
-                speed = (1..4).random().toFloat()
-            )
-        }
-    }
-
-    val infiniteTransition = rememberInfiniteTransition(label = "confetti")
-    val progress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing)
-        ),
-        label = "progress"
-    )
-
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        pieces.forEach { piece ->
-            val yProgress = (progress * piece.speed + piece.yOffset) % 1f
-            val y = yProgress * size.height
-            val x = piece.xPercent * size.width
-            
-            rotate(degrees = progress * 360 * piece.speed) {
-                drawRect(
-                    color = piece.color,
-                    topLeft = Offset(x, y),
-                    size = Size(piece.size, piece.size / 2)
-                )
-            }
-        }
-    }
-}
-
-/**
- * Full-screen victory overlay displayed when the match ends.
- * Handles both single winner and draw cases.
- */
 @Composable
 private fun VictoryOverlay(winners: List<Team>, onExit: () -> Unit) {
     val isDraw = winners.size > 1
-    
-    Box(
-        modifier = Modifier.fillMaxSize().background(
-            Brush.verticalGradient(listOf(Color(0xFFFFD700), Color(0xFFFFA500)))
-        ),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFFFFD700), Color(0xFFFFA500)))), contentAlignment = Alignment.Center) {
         ConfettiEffect()
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally, 
-            modifier = Modifier.padding(24.dp)
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
             Text(text = "🏆", fontSize = 100.sp)
-            Text(
-                text = if (isDraw) stringResource(R.string.draw_title) else stringResource(R.string.game_finished), 
-                style = MaterialTheme.typography.headlineLarge, 
-                fontWeight = FontWeight.Bold, 
-                color = Color.White
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            if (isDraw) {
-                Text(
-                    text = stringResource(R.string.winners_share),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White.copy(alpha = 0.9f)
-                )
-            }
-
-            winners.forEach { winner ->
-                Text(
-                    text = winner.name, 
-                    style = MaterialTheme.typography.displayMedium, 
-                    fontWeight = FontWeight.Black, 
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Text(
-                text = stringResource(R.string.points_count, winners.firstOrNull()?.score ?: 0), 
-                style = MaterialTheme.typography.headlineSmall, 
-                color = Color.White.copy(alpha = 0.9f)
-            )
-            
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Button(
-                onClick = onExit,
-                modifier = Modifier.fillMaxWidth().height(64.dp),
-                shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-            ) {
-                Text(
-                    text = stringResource(R.string.back_to_menu), 
-                    color = Color.Black, 
-                    fontWeight = FontWeight.Bold
-                )
+            Text(if (isDraw) stringResource(R.string.draw_title) else stringResource(R.string.game_finished), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold, color = Color.White)
+            Spacer(Modifier.height(16.dp))
+            if (isDraw) Text(stringResource(R.string.winners_share), style = MaterialTheme.typography.titleMedium, color = Color.White.copy(alpha = 0.9f))
+            winners.forEach { winner -> Text(winner.name, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.Black, color = Color.White, textAlign = TextAlign.Center) }
+            Text(stringResource(R.string.points_count, winners.firstOrNull()?.score ?: 0), style = MaterialTheme.typography.headlineSmall, color = Color.White.copy(alpha = 0.9f))
+            Spacer(Modifier.height(48.dp))
+            Button(onClick = onExit, modifier = Modifier.fillMaxWidth().height(64.dp), shape = RoundedCornerShape(20.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.White)) {
+                Text(stringResource(R.string.back_to_menu), color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
 
-private data class ConfettiPiece(
-    val xPercent: Float,
-    val yOffset: Float,
-    val color: Color,
-    val size: Float,
-    val speed: Float
-)
+@Composable
+private fun ConfettiEffect() {
+    val progress by rememberInfiniteTransition(label = "conf").animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(animation = tween(4000, easing = LinearEasing)),
+        label = "p"
+    )
+    androidx.compose.foundation.Canvas(Modifier.fillMaxSize()) {
+        repeat(70) { i ->
+            val y = ((progress + (i * 0.015f)) % 1f) * size.height
+            val x = (i * 0.014f) * size.width
+            rotate(progress * 360) {
+                drawRect(
+                    color = Color(android.graphics.Color.HSVToColor(floatArrayOf((i * 5f) % 360, 1f, 1f))),
+                    topLeft = Offset(x, y),
+                    size = Size(20f, 10f)
+                )
+            }
+        }
+    }
+}

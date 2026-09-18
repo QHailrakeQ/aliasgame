@@ -19,11 +19,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
 
 /**
  * Screen for choosing a difficulty category (word pack).
  * Features a modern card-based layout with localized indicators and descriptions.
+ * Now synchronized with unified SetupUiState.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +33,7 @@ fun PackSelectionScreen(
     viewModel: SetupViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
-    val packs by viewModel.packs.collectAsState()
-    val selectedPack by viewModel.selectedPack.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
@@ -51,42 +52,17 @@ fun PackSelectionScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Header with navigation back and localized title
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier.background(Color.White.copy(alpha = 0.2f), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = stringResource(R.string.select_category_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            SelectionHeader(onBack = onBack)
 
-            // Scrollable list of categories
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 32.dp)
             ) {
-                items(packs) { pack ->
+                items(state.packs) { pack ->
                     PackItem(
                         name = pack,
-                        isSelected = pack == selectedPack,
+                        isSelected = pack == state.selectedPack,
                         onClick = {
                             viewModel.onPackSelected(pack)
                             onBack()
@@ -99,12 +75,39 @@ fun PackSelectionScreen(
 }
 
 @Composable
+private fun SelectionHeader(onBack: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier.background(Color.White.copy(alpha = 0.2f), CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = stringResource(R.string.select_category_title),
+            style = MaterialTheme.typography.headlineMedium,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
 private fun PackItem(
     name: String,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // Determine color based on internal pack name
     val packColor = when (name.lowercase()) {
         "easy" -> Color(0xFF4CAF50)
         "medium" -> Color(0xFFFFC107)
@@ -113,7 +116,6 @@ private fun PackItem(
         else -> Color(0xFF6200EE)
     }
 
-    // Localized name mapping
     val displayName = when (name.lowercase()) {
         "easy" -> stringResource(R.string.difficulty_easy)
         "medium" -> stringResource(R.string.difficulty_medium)
@@ -122,7 +124,6 @@ private fun PackItem(
         else -> name
     }
 
-    // Localized description mapping
     val description = when (name.lowercase()) {
         "easy" -> stringResource(R.string.desc_easy)
         "medium" -> stringResource(R.string.desc_medium)
