@@ -282,12 +282,20 @@ private fun PreferencesCard(
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(stringResource(R.string.preferences_header), style = MaterialTheme.typography.titleMedium, color = Color.Black)
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(stringResource(R.string.sound_effects), color = Color.Black)
                 Switch(isSoundEnabled, onSoundToggle)
             }
 
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(stringResource(R.string.haptic_feedback), color = Color.Black)
                 Switch(isVibrationEnabled, onVibrationToggle)
             }
