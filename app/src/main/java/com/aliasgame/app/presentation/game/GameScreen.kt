@@ -47,6 +47,7 @@ import kotlin.math.roundToInt
 
 /**
  * Interactive card representing a single word to be guessed.
+ * Implements vertical swipe gestures for scoring.
  */
 @Composable
 fun WordCard(
@@ -109,6 +110,9 @@ fun WordCard(
     }
 }
 
+/**
+ * Dialog for resolving the last word point attribution.
+ */
 @Composable
 fun FinalWordDialog(
     word: String,
@@ -120,14 +124,17 @@ fun FinalWordDialog(
         shape = RoundedCornerShape(28.dp),
         title = { 
             Text(
-                text = "Last word: $word",
+                text = stringResource(R.string.last_word_label, word),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             ) 
         },
         text = {
             Column {
-                Text("Who got the point?", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = stringResource(R.string.who_got_point), 
+                    style = MaterialTheme.typography.bodyLarge
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 teams.forEach { team ->
                     Button(
@@ -145,7 +152,10 @@ fun FinalWordDialog(
                     onClick = { onTeamSelected(null) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("No one is correct", color = Color.Gray)
+                    Text(
+                        text = stringResource(R.string.no_one_correct), 
+                        color = Color.Gray
+                    )
                 }
             }
         },
@@ -153,6 +163,9 @@ fun FinalWordDialog(
     )
 }
 
+/**
+ * Primary gameplay screen orchestrating the match session.
+ */
 @Composable
 fun GameScreen(
     viewModel: GameViewModel = hiltViewModel(),
@@ -218,6 +231,7 @@ fun GameScreen(
             modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Top bar with team info and timer
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -238,7 +252,7 @@ fun GameScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "Score: ${currentState.score}",
+                        text = stringResource(R.string.score_label, currentState.score),
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White.copy(alpha = 0.8f)
                     )
@@ -263,6 +277,7 @@ fun GameScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Game word card
             currentState.currentWord?.let { word ->
                 WordCard(
                     word = word,
@@ -270,10 +285,15 @@ fun GameScreen(
                     onSwipeUp = handleCorrect,
                     onSwipeDown = handleSkip
                 )
-            } ?: Text("No more words", color = Color.White, style = MaterialTheme.typography.headlineLarge)
+            } ?: Text(
+                text = stringResource(R.string.no_more_words), 
+                color = Color.White, 
+                style = MaterialTheme.typography.headlineLarge
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // Lower controls
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -288,7 +308,7 @@ fun GameScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5252)),
                     elevation = ButtonDefaults.buttonElevation(8.dp)
                 ) {
-                    Text("SKIP", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.skip_button), fontWeight = FontWeight.Bold)
                 }
                 
                 Button(
@@ -310,11 +330,12 @@ fun GameScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                     elevation = ButtonDefaults.buttonElevation(8.dp)
                 ) {
-                    Text("GOT IT", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.got_it_button), fontWeight = FontWeight.Bold)
                 }
             }
         }
 
+        // Session state overlays
         if (currentState.isPaused) {
             PauseOverlay(onContinue = { viewModel.resumeGame() })
         }
@@ -343,9 +364,9 @@ fun GameScreen(
             )
         }
 
-        if (currentState.isGameFinished && currentState.winner != null) {
+        if (currentState.isGameFinished && currentState.winners.isNotEmpty()) {
             VictoryOverlay(
-                winner = currentState.winner,
+                winners = currentState.winners,
                 onExit = onExit
             )
         }
@@ -368,7 +389,11 @@ private fun PauseOverlay(onContinue: () -> Unit) {
                 modifier = Modifier.padding(40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Game Paused", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+                Text(
+                    text = stringResource(R.string.pause_title), 
+                    style = MaterialTheme.typography.headlineMedium, 
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = onContinue,
@@ -376,7 +401,7 @@ private fun PauseOverlay(onContinue: () -> Unit) {
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
                 ) {
-                    Text("Resume Game")
+                    Text(stringResource(R.string.resume_button))
                 }
             }
         }
@@ -424,7 +449,11 @@ private fun RoundResultsOverlay(
                 }
                 
                 Spacer(modifier = Modifier.height(24.dp))
-                Text("Tap word to toggle:", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                Text(
+                    text = stringResource(R.string.tap_to_toggle), 
+                    style = MaterialTheme.typography.labelMedium, 
+                    color = Color.Gray
+                )
                 
                 LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
                     itemsIndexed(results) { index, result ->
@@ -511,6 +540,9 @@ private fun ReadyOverlay(teamName: String, onStart: () -> Unit) {
     }
 }
 
+/**
+ * Animated confetti celebration for the winner.
+ */
 @Composable
 private fun ConfettiEffect() {
     val pieces = remember {
@@ -553,8 +585,14 @@ private fun ConfettiEffect() {
     }
 }
 
+/**
+ * Full-screen victory overlay displayed when the match ends.
+ * Handles both single winner and draw cases.
+ */
 @Composable
-private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
+private fun VictoryOverlay(winners: List<Team>, onExit: () -> Unit) {
+    val isDraw = winners.size > 1
+    
     Box(
         modifier = Modifier.fillMaxSize().background(
             Brush.verticalGradient(listOf(Color(0xFFFFD700), Color(0xFFFFA500)))
@@ -563,20 +601,57 @@ private fun VictoryOverlay(winner: Team, onExit: () -> Unit) {
     ) {
         ConfettiEffect()
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, 
+            modifier = Modifier.padding(24.dp)
+        ) {
             Text(text = "🏆", fontSize = 100.sp)
-            Text(stringResource(R.string.game_finished), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold, color = Color.White)
+            Text(
+                text = if (isDraw) stringResource(R.string.draw_title) else stringResource(R.string.game_finished), 
+                style = MaterialTheme.typography.headlineLarge, 
+                fontWeight = FontWeight.Bold, 
+                color = Color.White
+            )
+            
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = winner.name, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.Black, color = Color.White)
-            Text(stringResource(R.string.points_count, winner.score), style = MaterialTheme.typography.headlineSmall, color = Color.White.copy(alpha = 0.9f))
+            
+            if (isDraw) {
+                Text(
+                    text = stringResource(R.string.winners_share),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
+            }
+
+            winners.forEach { winner ->
+                Text(
+                    text = winner.name, 
+                    style = MaterialTheme.typography.displayMedium, 
+                    fontWeight = FontWeight.Black, 
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.points_count, winners.firstOrNull()?.score ?: 0), 
+                style = MaterialTheme.typography.headlineSmall, 
+                color = Color.White.copy(alpha = 0.9f)
+            )
+            
             Spacer(modifier = Modifier.height(48.dp))
+
             Button(
                 onClick = onExit,
                 modifier = Modifier.fillMaxWidth().height(64.dp),
                 shape = RoundedCornerShape(20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
             ) {
-                Text(stringResource(R.string.back_to_menu), color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    text = stringResource(R.string.back_to_menu), 
+                    color = Color.Black, 
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

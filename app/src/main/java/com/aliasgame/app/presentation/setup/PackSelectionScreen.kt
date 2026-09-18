@@ -15,13 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.aliasgame.app.R
 
 /**
  * Screen for choosing a difficulty category (word pack).
- * Features a modern card-based layout with difficulty indicators and descriptions.
+ * Features a modern card-based layout with localized indicators and descriptions.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,8 +40,8 @@ fun PackSelectionScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF6200EE), // Primary Brand Purple
-                        Color(0xFF03DAC5)  // Secondary Accent Teal
+                        Color(0xFF6200EE),
+                        Color(0xFF03DAC5)
                     )
                 )
             )
@@ -49,7 +51,7 @@ fun PackSelectionScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Header with navigation back
+            // Header with navigation back and localized title
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -68,7 +70,7 @@ fun PackSelectionScreen(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "Select Category",
+                    text = stringResource(R.string.select_category_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
@@ -87,7 +89,7 @@ fun PackSelectionScreen(
                         isSelected = pack == selectedPack,
                         onClick = {
                             viewModel.onPackSelected(pack)
-                            onBack() // Navigate back after making a choice
+                            onBack()
                         }
                     )
                 }
@@ -102,7 +104,7 @@ private fun PackItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // Difficulty-based visual feedback
+    // Determine color based on internal pack name
     val packColor = when (name.lowercase()) {
         "easy" -> Color(0xFF4CAF50)
         "medium" -> Color(0xFFFFC107)
@@ -111,12 +113,22 @@ private fun PackItem(
         else -> Color(0xFF6200EE)
     }
 
+    // Localized name mapping
+    val displayName = when (name.lowercase()) {
+        "easy" -> stringResource(R.string.difficulty_easy)
+        "medium" -> stringResource(R.string.difficulty_medium)
+        "hard" -> stringResource(R.string.difficulty_hard)
+        "insane" -> stringResource(R.string.difficulty_insane)
+        else -> name
+    }
+
+    // Localized description mapping
     val description = when (name.lowercase()) {
-        "easy" -> "Simple everyday words. Great for kids and beginners."
-        "medium" -> "General knowledge words for balanced gameplay."
-        "hard" -> "Complex terms and abstract concepts for experts."
-        "insane" -> "Scientific terms, rare words, and brain-teasers."
-        else -> "Dive into the $name world collection!"
+        "easy" -> stringResource(R.string.desc_easy)
+        "medium" -> stringResource(R.string.desc_medium)
+        "hard" -> stringResource(R.string.desc_hard)
+        "insane" -> stringResource(R.string.desc_insane)
+        else -> "Collection: $name"
     }
 
     ElevatedCard(
@@ -133,7 +145,6 @@ private fun PackItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Visual indicator of difficulty level
             Surface(
                 modifier = Modifier.size(14.dp),
                 shape = CircleShape,
@@ -144,7 +155,7 @@ private fun PackItem(
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = name,
+                    text = displayName,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black

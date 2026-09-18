@@ -6,7 +6,10 @@ import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.GameState
 import com.aliasgame.app.domain.model.RoundResult
 
-
+/**
+ * Core engine managing game logic, scoring, and session state.
+ * Implements a fair-play round system where every team gets an equal number of turns.
+ */
 class GameEngine(
     var allWords: List<Word>,
     val initialTeams: List<Team>,
@@ -60,15 +63,12 @@ class GameEngine(
         val result = currentRoundResults[index]
         val newStatus = !result.isCorrect
 
-        // Розраховуємо різницю в балах
         val diff = if (newStatus) {
             settings.pointsPerCorrectAnswer - settings.pointsPerSkip
         } else {
             settings.pointsPerSkip - settings.pointsPerCorrectAnswer
         }
 
-        // Команда, яка щойно грала, знаходиться за індексом (currentTeamIndex - 1)
-        // оскільки хід уже перейшов далі в rollNextTeam()
         val finishedTeamIndex = if (currentTeamIndex == 0) teams.size - 1 else currentTeamIndex - 1
         val team = teams[finishedTeamIndex]
         teams[finishedTeamIndex] = team.copy(score = team.score + diff)
@@ -88,17 +88,27 @@ class GameEngine(
         isPaused = false
     }
 
-    fun rollNextTeam(): Team? {
+    /**
+     * Shifts turn and evaluates win conditions at the end of a round cycle.
+     * Returns a list of winners if the game is finished (can be multiple for a draw).
+     */
+    fun rollNextTeam(): List<Team> {
         val team = teams[currentTeamIndex]
         val updatedTeam = team.copy(score = team.score + currentScore)
         teams[currentTeamIndex] = updatedTeam
 
-        val winner = if (updatedTeam.score >= settings.targetScore) updatedTeam else null
-
         currentTeamIndex = (currentTeamIndex + 1) % teams.size
         currentScore = 0
 
-        return winner
+        if (currentTeamIndex == 0) {
+            val potentialWinners = teams.filter { it.score >= settings.targetScore }
+            if (potentialWinners.isNotEmpty()) {
+                val maxScore = potentialWinners.maxOf { it.score }
+                return potentialWinners.filter { it.score == maxScore }
+            }
+        }
+
+        return emptyList()
     }
 
     fun getTeams(): List<Team> {
@@ -106,12 +116,20 @@ class GameEngine(
     }
 
     fun getCurrentState(
-        timeRemaining: Long, currentWord: Word?,
+        timeRemaining: Long, 
+        currentWord: Word?,
         isRoundOver: Boolean = false,
-        winner: Team? = null
+        winners: List<Team> = emptyList()
     ): GameState {
-        // Перевіряємо переможця знову, бо бали могли змінитися після перемикання результатів
-        val finalWinner = winner ?: teams.find { it.score >= settings.targetScore }
+        val finalWinners = if (winners.isNotEmpty()) {
+            winners
+        } else if (currentTeamIndex == 0) {
+            val potentialWinners = teams.filter { it.score >= settings.targetScore }
+            if (potentialWinners.isNotEmpty()) {
+                val maxScore = potentialWinners.maxOf { it.score }
+                potentialWinners.filter { it.score == maxScore }
+            } else emptyList()
+        } else emptyList()
 
         return GameState(
             currentTeam = teams[currentTeamIndex],
@@ -121,8 +139,8 @@ class GameEngine(
             isPaused = isPaused,
             isLastWordMode = timeRemaining <= 0 && !isRoundOver,
             isRoundOver = isRoundOver,
-            isGameFinished = finalWinner != null,
-            winner = finalWinner,
+            isGameFinished = finalWinners.isNotEmpty(),
+            winners = finalWinners,
             allTeams = teams.toList(),
             maxTime = settings.roundTime,
             roundResults = currentRoundResults.toList()

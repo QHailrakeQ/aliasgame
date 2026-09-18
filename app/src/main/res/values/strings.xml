@@ -16,7 +16,10 @@
     <string name="ready_title">Next Team:</string>
     <string name="ready_button">I\'m ready!</string>
     <string name="points_count">%1$d points</string>
+    <string name="draw_title">IT\'S A DRAW!</string>
+    <string name="winners_share">The winners are:</string>
 
+    <!-- Predefined Team Names -->
     <string name="funny_name_1">Hungry Rhinos</string>
     <string name="funny_name_2">Crazy Squirrels</string>
     <string name="funny_name_3">Iron Ducks</string>
@@ -27,4 +30,35 @@
     <string name="funny_name_8">Happy Bandits</string>
     <string name="funny_name_9">Sleepy Pandas</string>
     <string name="funny_name_10">Dancing Crocodiles</string>
+
+    <!-- Categories and Configuration -->
+    <string name="teams_header">Teams</string>
+    <string name="preferences_header">Preferences</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="haptic_feedback">Haptic Feedback</string>
+    <string name="select_category_title">Select Category</string>
+
+    <!-- Difficulty Levels -->
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="difficulty_insane">Insane</string>
+
+    <!-- Category Descriptions -->
+    <string name="desc_easy">Simple everyday words. Great for kids and beginners.</string>
+    <string name="desc_medium">General knowledge words for balanced gameplay.</string>
+    <string name="desc_hard">Complex terms and abstract concepts for experts.</string>
+    <string name="desc_insane">Scientific terms, rare words, and brain-teasers.</string>
+
+    <!-- Gameplay Interface -->
+    <string name="no_more_words">No more words available</string>
+    <string name="skip_button">SKIP</string>
+    <string name="got_it_button">GOT IT</string>
+    <string name="pause_title">Game Paused</string>
+    <string name="resume_button">Resume Game</string>
+    <string name="tap_to_toggle">Tap word to toggle result:</string>
+    <string name="last_word_label">Last word: %1$s</string>
+    <string name="who_got_point">Who got the point?</string>
+    <string name="no_one_correct">No one is correct</string>
+    <string name="score_label">Score: %1$d</string>
 </resources>

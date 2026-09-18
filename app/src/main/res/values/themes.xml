@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Використовуємо тему AppCompat, щоб MainActivity (AppCompatActivity) працювала коректно -->
+    <!-- Style for the Splash Screen -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#6200EE</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.AliasGame
+        </item>
+    </style>
     <style name="Theme.AliasGame" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Стандартні атрибути AppCompat -->
+
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryDark">@color/purple_700</item>
         <item name="colorAccent">@color/teal_200</item>
 
-        <!-- Налаштування кольору статус-бару -->
+
         <item name="android:statusBarColor">@color/purple_700</item>
     </style>
 </resources>

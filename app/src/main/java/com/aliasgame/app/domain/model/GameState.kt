@@ -9,7 +9,7 @@ data class GameState(
     val isLastWordMode: Boolean = false,
     val isGameFinished: Boolean = false,
     val isRoundOver: Boolean = false,
-    val winner: Team? = null,
+    val winners: List<Team> = emptyList(),
     val allTeams: List<Team> = emptyList(),
     val maxTime: Long,
     val roundResults: List<RoundResult> = emptyList()

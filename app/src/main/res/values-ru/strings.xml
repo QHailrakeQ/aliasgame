@@ -16,4 +16,49 @@
     <string name="ready_title">Следующая команда:</string>
     <string name="ready_button">Я готов!</string>
     <string name="points_count">%1$d очков</string>
+    <string name="draw_title">НИЧЬЯ!</string>
+    <string name="winners_share">Победители:</string>
+
+    <!-- Funny Team Names -->
+    <string name="funny_name_1">Голодные носороги</string>
+    <string name="funny_name_2">Сумасшедшие белки</string>
+    <string name="funny_name_3">Железные утки</string>
+    <string name="funny_name_4">Космические вареники</string>
+    <string name="funny_name_5">Быстрые улитки</string>
+    <string name="funny_name_6">Летучие свиньи</string>
+    <string name="funny_name_7">Мудрые совы</string>
+    <string name="funny_name_8">Веселые бандиты</string>
+    <string name="funny_name_9">Сонные панды</string>
+    <string name="funny_name_10">Танцующие крокодилы</string>
+
+    <!-- Categories and Configuration -->
+    <string name="teams_header">Команды</string>
+    <string name="preferences_header">Настройки</string>
+    <string name="sound_effects">Звуковые эффекты</string>
+    <string name="haptic_feedback">Вибрация</string>
+    <string name="select_category_title">Выберите категорию</string>
+
+    <!-- Difficulty Levels -->
+    <string name="difficulty_easy">Легкий</string>
+    <string name="difficulty_medium">Средний</string>
+    <string name="difficulty_hard">Сложный</string>
+    <string name="difficulty_insane">Безумный</string>
+
+    <!-- Category Descriptions -->
+    <string name="desc_easy">Простые повседневные слова. Отлично подходит для детей и новичков.</string>
+    <string name="desc_medium">Общие знания для сбалансированного игрового процесса.</string>
+    <string name="desc_hard">Сложные термины и абстрактные понятия для экспертов.</string>
+    <string name="desc_insane">Научные термины, редкие слова и головоломки.</string>
+
+    <!-- Game Screen Strings -->
+    <string name="no_more_words">Слова закончились</string>
+    <string name="skip_button">ПРОПУСТИТЬ</string>
+    <string name="got_it_button">УГАДАНО</string>
+    <string name="pause_title">Пауза</string>
+    <string name="resume_button">Продолжить</string>
+    <string name="tap_to_toggle">Нажмите на слово, чтобы изменить результат:</string>
+    <string name="last_word_label">Последнее слово: %1$s</string>
+    <string name="who_got_point">Кто угадал слово?</string>
+    <string name="no_one_correct">Никто не угадал</string>
+    <string name="score_label">Счет: %1$d</string>
 </resources>

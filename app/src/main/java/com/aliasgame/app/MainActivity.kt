@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.aliasgame.app.presentation.game.GameScreen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.NavHost
@@ -23,7 +24,10 @@ import com.aliasgame.app.presentation.setup.SetupScreen
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // installSplashScreen has to be called before super.onCreate
+        installSplashScreen()
         super.onCreate(savedInstanceState)
+        
         setContent {
             MaterialTheme {
                 Surface(
@@ -35,26 +39,22 @@ class MainActivity : AppCompatActivity() {
                         navController = navController,
                         startDestination = "setup",
                         enterTransition = {
-                            slideInHorizontally (initialOffsetX = { it }) + fadeIn()
+                            slideInHorizontally(initialOffsetX = { it }) + fadeIn()
                         },
                         exitTransition = {
-                            slideOutHorizontally (targetOffsetX = { -it }) + fadeOut()
+                            slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
                         },
                         popEnterTransition = {
-                            slideInHorizontally (initialOffsetX = { -it }) + fadeIn()
+                            slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
                         },
                         popExitTransition = {
-                            slideOutHorizontally (targetOffsetX = { it }) + fadeOut()
+                            slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
                         }
-
                     ) {
                         composable("setup") {
-                            SetupScreen(onStartGame = {
-                                navController.navigate("game")
-                            },
-                                        onSelectPack = {
-                                            navController.navigate("pack_selection")
-                                }
+                            SetupScreen(
+                                onStartGame = { navController.navigate("game") },
+                                onSelectPack = { navController.navigate("pack_selection") }
                             )
                         }
                         composable("game") {
@@ -71,6 +71,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 }
