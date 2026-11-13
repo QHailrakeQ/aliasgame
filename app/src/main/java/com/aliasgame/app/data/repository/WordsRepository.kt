@@ -23,29 +23,21 @@ class WordsRepositoryImpl @Inject constructor(
     ): List<Word> {
         val langCode = getInternalLanguageCode(language)
         val fileName = "words_${langCode}.json"
-        return try {
-            val jsonString = context.assets.open(fileName)
-                .bufferedReader()
-                .use { it.readText() }
-            val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
-            allWords.filter { it.packId == packId }
-        } catch (e: Exception) {
-            emptyList()
-        }
+        val jsonString = context.assets.open(fileName)
+            .bufferedReader()
+            .use { it.readText() }
+        val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
+        return allWords.filter { it.packId == packId }
     }
 
     override suspend fun getPacks(language: String): List<String> {
         val langCode = getInternalLanguageCode(language)
         val fileName = "words_${langCode}.json"
-        return try {
-            val jsonString = context.assets.open(fileName)
-                .bufferedReader()
-                .use { it.readText() }
-            val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
-            allWords.map { it.packId }.distinct()
-        } catch (e: Exception) {
-            emptyList()
-        }
+        val jsonString = context.assets.open(fileName)
+            .bufferedReader()
+            .use { it.readText() }
+        val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
+        return allWords.map { it.packId }.distinct()
     }
 
     override suspend fun getLanguages(): List<String> {

@@ -12,6 +12,7 @@ data class GameUiState(
     val currentWord: Word? = null,
     val score: Int = 0,
     val timeRemaining: Long = 0,
+    val isTimerRunning: Boolean = false,
     val maxTime: Long = 0,
     val isPaused: Boolean = false,
     val isLastWordMode: Boolean = false,
@@ -21,7 +22,8 @@ data class GameUiState(
     val allTeams: List<Team> = emptyList(),
     val roundResults: List<RoundResult> = emptyList(),
     val isSoundEnabled: Boolean = true,
-    val isVibrationEnabled: Boolean = true
+    val isVibrationEnabled: Boolean = true,
+    val isEntranceAnimationPlayed: Boolean = false
 )
 
 /**

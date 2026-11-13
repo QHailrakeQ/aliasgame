@@ -11,7 +11,9 @@ import com.aliasgame.app.domain.usecase.GetPacksUseCase
 import com.aliasgame.app.domain.usecase.GetWordsUseCase
 import com.aliasgame.app.domain.usecase.SaveSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -21,7 +23,7 @@ import javax.inject.Inject
 
 /**
  * ViewModel responsible for managing game setup state and persisting user preferences.
- * Uses a unified SetupUiState and encapsulates logic in Use Cases.
+ * Implements debouncing for I/O and activity-recreating operations for smooth UX.
  */
 @HiltViewModel
 class SetupViewModel @Inject constructor(
@@ -39,11 +41,14 @@ class SetupViewModel @Inject constructor(
     private val _uiEffect = Channel<SetupUiEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
+    private var languageJob: Job? = null
+    private var settingsJob: Job? = null
+
     init {
         viewModelScope.launch {
             _uiState.update { it.copy(languages = repository.getLanguages()) }
 
-            // Initial synchronization with persistent storage
+            // Observe and synchronize persistent storage
             launch {
                 settingsRepository.selectedLanguage.collect { lang ->
                     _uiState.update { it.copy(selectedLanguage = lang) }
@@ -83,8 +88,26 @@ class SetupViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Signals that the initial entrance animation has been played to prevent replaying it.
+     */
+    fun onEntranceAnimationFinished() {
+        _uiState.update { it.copy(isEntranceAnimationPlayed = true) }
+    }
+
+    /**
+     * Updates language with optimistic UI update and debounced persistence.
+     */
     fun onLanguageSelected(language: String) {
-        viewModelScope.launch {
+        if (_uiState.value.selectedLanguage == language) return
+        
+        // Optimistic update for immediate visual feedback
+        _uiState.update { it.copy(selectedLanguage = language) }
+        loadPacks(language)
+        
+        languageJob?.cancel()
+        languageJob = viewModelScope.launch {
+            delay(500) // Slightly longer delay to let user finish selecting
             saveSettingsUseCase.saveLanguage(language)
             val systemLangCode = if (language.uppercase() == "UA") "uk" else language.lowercase()
             val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(systemLangCode)
@@ -93,45 +116,60 @@ class SetupViewModel @Inject constructor(
     }
 
     fun onSoundToggled(enabled: Boolean) {
+        _uiState.update { it.copy(isSoundEnabled = enabled) }
         viewModelScope.launch { saveSettingsUseCase.saveSoundEnabled(enabled) }
     }
 
     fun onVibrationToggled(enabled: Boolean) {
+        _uiState.update { it.copy(isVibrationEnabled = enabled) }
         viewModelScope.launch { saveSettingsUseCase.saveVibrationEnabled(enabled) }
     }
 
     fun onRoundTimeChanged(newTime: Float) {
-        viewModelScope.launch { saveSettingsUseCase.saveRoundTime(newTime.toLong()) }
+        _uiState.update { it.copy(roundTime = newTime) }
+        debounceSettingsSave { saveSettingsUseCase.saveRoundTime(newTime.toLong()) }
     }
 
     fun onTargetScoreChanged(newScore: Float) {
-        viewModelScope.launch { saveSettingsUseCase.saveTargetScore(newScore.toInt()) }
+        _uiState.update { it.copy(targetScore = newScore) }
+        debounceSettingsSave { saveSettingsUseCase.saveTargetScore(newScore.toInt()) }
     }
 
     fun onTeamNamesChanged(newNames: List<String>) {
-        viewModelScope.launch { saveSettingsUseCase.saveTeamNames(newNames) }
+        _uiState.update { it.copy(teamNames = newNames) }
+        debounceSettingsSave { saveSettingsUseCase.saveTeamNames(newNames) }
     }
 
     fun onPackSelected(packId: String) {
+        _uiState.update { it.copy(selectedPack = packId) }
         viewModelScope.launch { saveSettingsUseCase.savePack(packId) }
+    }
+
+    private fun debounceSettingsSave(action: suspend () -> Unit) {
+        settingsJob?.cancel()
+        settingsJob = viewModelScope.launch {
+            delay(300)
+            action()
+        }
     }
 
     private fun loadPacks(language: String) {
         viewModelScope.launch {
-            val availablePacks = getPacksUseCase(language)
-            _uiState.update { state ->
-                val nextPack = if (state.selectedPack !in availablePacks) {
-                    availablePacks.firstOrNull() ?: "Easy"
-                } else state.selectedPack
-                state.copy(packs = availablePacks, selectedPack = nextPack)
-            }
+            getPacksUseCase(language)
+                .onSuccess { availablePacks ->
+                    _uiState.update { state ->
+                        val nextPack = if (state.selectedPack !in availablePacks) {
+                            availablePacks.firstOrNull() ?: "Easy"
+                        } else state.selectedPack
+                        state.copy(packs = availablePacks, selectedPack = nextPack)
+                    }
+                }
+                .onFailure { error ->
+                    _uiEffect.send(SetupUiEffect.ShowError(error.message ?: "Failed to load categories"))
+                }
         }
     }
 
-    /**
-     * Configures the game engine using GetWordsUseCase.
-     * Implements error handling for missing assets or empty packs.
-     */
     fun startGame() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }

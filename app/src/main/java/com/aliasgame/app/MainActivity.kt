@@ -26,6 +26,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // installSplashScreen has to be called before super.onCreate
         installSplashScreen()
+        
+        // Priority 2: Smooth activity transition for language changes
+        if (savedInstanceState != null) {
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
+
         super.onCreate(savedInstanceState)
         
         setContent {

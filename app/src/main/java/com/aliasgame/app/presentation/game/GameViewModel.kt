@@ -54,6 +54,13 @@ class GameViewModel @Inject constructor(
     }
 
     /**
+     * Signals that the initial entrance animation has been played.
+     */
+    fun onEntranceAnimationFinished() {
+        _uiState.update { it.copy(isEntranceAnimationPlayed = true) }
+    }
+
+    /**
      * Synchronizes internal engine state with the observable UI state.
      */
     private fun syncState(
@@ -65,7 +72,8 @@ class GameViewModel @Inject constructor(
             timeRemaining = _uiState.value.timeRemaining,
             currentWord = currentWord,
             isRoundOver = isRoundOver,
-            winners = winners
+            winners = winners,
+            isTimerRunning = _uiState.value.isTimerRunning
         )
         
         _uiState.update { 
@@ -74,6 +82,7 @@ class GameViewModel @Inject constructor(
                 currentWord = engineState.currentWord,
                 score = engineState.score,
                 timeRemaining = engineState.timeRemaining,
+                isTimerRunning = engineState.isTimerRunning,
                 maxTime = engineState.maxTime,
                 isPaused = engineState.isPaused,
                 isLastWordMode = engineState.isLastWordMode,
@@ -88,7 +97,7 @@ class GameViewModel @Inject constructor(
 
     fun onStartTimer() {
         if (timerJob?.isActive == true) return
-        _uiState.update { it.copy(timeRemaining = engine.settings.roundTime) }
+        _uiState.update { it.copy(timeRemaining = engine.settings.roundTime, isTimerRunning = true) }
         startTimer()
     }
 
@@ -120,6 +129,7 @@ class GameViewModel @Inject constructor(
         winnerTeamId?.let { engine.addPointToTeam(it) }
         
         val roundWinners = engine.rollNextTeam()
+        _uiState.update { it.copy(isTimerRunning = false) }
         syncState(isRoundOver = true, winners = roundWinners)
     }
 
@@ -135,7 +145,8 @@ class GameViewModel @Inject constructor(
             it.copy(
                 isRoundOver = false, 
                 winners = emptyList(), 
-                timeRemaining = engine.settings.roundTime 
+                timeRemaining = 0L,
+                isTimerRunning = false
             ) 
         }
         syncState(currentWord = nextWord)
