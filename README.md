@@ -1,58 +1,103 @@
-# Alias Game 🎭
+# Alias Game
 
-A modern, high-performance Android implementation of the popular board game "Alias", built with **Jetpack Compose** and **Clean Architecture**.
+Alias Game is an Android party game inspired by the word-guessing game Alias. It is built with **Kotlin** and **Jetpack Compose**.
 
-## 🌟 Key Features
+## Features
 
-- **Fair Play Logic**: Ensures a balanced experience where every team gets an equal number of turns before a winner is declared, allowing for exciting draw scenarios.
-- **Multilingual Support**: Fully localized in 4 languages: English, Ukrainian, German, and Russian.
-- **Interactive Gameplay**: Card-based UI with vertical swipe gestures for quick scoring (Swipe Up for Correct, Swipe Down for Skip).
-- **Audio-Visual Feedback**: Haptic feedback and sound effects for immersive gameplay.
-- **Customizable Sessions**: Configure round time, target score, and team names with persistent storage.
-- **Dynamic Word Packs**: Word categories are loaded dynamically from localized JSON assets.
+- **Flexible game setup:** set the round duration and target score; add, rename, and remove teams.
+- **Localized word packs:** choose English, Ukrainian, Russian, or German, then select a difficulty category whose words are loaded from local JSON assets.
+- **Timed team turns:** start and pause or resume a countdown for each team.
+- **Word scoring:** mark words as correct or skipped with vertical card swipes or on-screen buttons.
+- **Last-word decision:** when the timer expires, award the final word to a team or mark it as unclaimed.
+- **Round review:** review each word's result after a round and correct a result before continuing.
+- **Fair game completion:** every team gets a turn in the round cycle before the game can end; tied top-scoring teams can win together.
+- **Optional feedback:** enable or disable sound effects and haptic feedback.
+- **Saved preferences:** language, word pack, team names, round duration, target score, sound, and haptic settings are persisted with DataStore.
 
-## 🛠 Tech Stack
+## Tech Stack
 
-- **UI**: [Jetpack Compose](https://developer.android.com/jetpack/compose) (100% Declarative UI)
-- **Architecture**: MVVM + Clean Architecture principles
-- **Dependency Injection**: [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
-- **Asynchronous**: [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html)
-- **Data Persistence**: [Jetpack DataStore](https://developer.android.com/topic/libraries/architecture/datastore) (Preferences)
-- **Navigation**: [Compose Navigation](https://developer.android.com/jetpack/compose/navigation)
-- **Splash Screen**: [Modern Splash Screen API](https://developer.android.com/develop/ui/views/launch/splash-screen)
+- **Language:** Kotlin
+- **UI:** Jetpack Compose
+- **Architecture:** Clean Architecture layers in a single Gradle module (`:app`), with ViewModels in the presentation layer
+- **Dependency injection:** Hilt
+- **Asynchronous state:** Kotlin Coroutines and Flow
+- **Preferences:** Jetpack DataStore Preferences
+- **Navigation:** Navigation Compose
+- **Word data:** localized JSON assets
 
-## 🏗 Architecture Overview
+## Architecture
 
-The project follows a modular **Clean Architecture** approach:
-- **Presentation Layer**: Jetpack Compose screens and ViewModels managing UI state through `StateFlow`.
-- **Domain Layer**: Contains pure business logic, including the `GameEngine`, models, and repository interfaces. Independent of Android framework.
-- **Data Layer**: Implementation of repositories, handling DataStore persistence and local JSON word source.
+The app is organized into three Clean Architecture layers within the `:app` module:
 
-## 💾 Data Management: Why DataStore?
+- **Presentation:** Compose screens and ViewModels that expose UI state.
+- **Domain:** game models, use cases, repository interfaces, and the framework-independent `GameEngine`.
+- **Data:** repository implementations for DataStore preferences and JSON word packs.
 
-For this project, **Jetpack DataStore** was chosen over Room for several reasons:
-1. **Lightweight Configuration**: The game stores simple key-value pairs (settings, current team names). Room (SQLite) would be overkill for these requirements.
-2. **Reactive Flow**: DataStore is built on Coroutines and Flow, providing out-of-the-box reactive updates to the UI when settings change.
-3. **Safety**: It handles data updates transactionally on a background thread, preventing ANR (Application Not Responding) issues common with SharedPreferences.
+This is a layered structure inside one Gradle module, not a multi-module project.
 
-*Note: Word packs are stored in localized JSON assets for high performance and easy content updates without requiring a complex database migration.*
+## Preferences and Word Data
 
-## 📸 Screenshots
+DataStore stores the small set of user preferences, including game settings and team names. Its Flow-based API lets the presentation layer observe preference changes. Word packs are bundled as localized JSON assets and loaded locally.
 
-| Setup Screen | Pack Selection | Gameplay |
-| :---: | :---: | :---: |
-| ![Setup](https://via.placeholder.com/200x400?text=Setup+UI) | ![Packs](https://via.placeholder.com/200x400?text=Packs+UI) | ![Game](https://via.placeholder.com/200x400?text=Gameplay+UI) |
+## Screenshots
 
-## 🚀 Getting Started
+Screenshots below are stored in the repository under `docs/` and use relative paths.
+
+### Setup
+
+<p align="center">
+  <img src="docs/setup-screen(2).jpg" alt="Team names, sound and haptic preferences, and the start game button" width="220">
+</p>
+
+### Categories
+
+The category selector is part of the setup screen; the repository does not include a separate screenshot of the category list.
+
+<p align="center">
+  <img src="docs/setup-screen(1).jpg" alt="Game settings with the selected word category" width="220">
+</p>
+
+### Gameplay
+
+<table>
+  <tr>
+    <td align="center"><strong>Ready to start</strong><br><img src="docs/strating-game-screen.jpg" alt="Ready screen before a team's turn" width="180"></td>
+    <td align="center"><strong>Word card</strong><br><img src="docs/gameplay-screen.jpg" alt="Gameplay word card with skip, pause, and correct controls" width="180"></td>
+    <td align="center"><strong>Last word</strong><br><img src="docs/last-word-screen.jpg" alt="Last-word team decision when the timer expires" width="180"></td>
+  </tr>
+</table>
+
+### Results
+
+<table>
+  <tr>
+    <td align="center"><strong>Round results</strong><br><img src="docs/end-round-screen.jpg" alt="Round scores and reviewable word results" width="200"></td>
+    <td align="center"><strong>Game winner</strong><br><img src="docs/finish-game-screen.jpg" alt="Final game result" width="200"></td>
+  </tr>
+</table>
+
+## Testing
+
+The repository currently contains:
+
+- **6 dedicated `GameEngine` unit tests** covering scoring, turn rotation, fair play, draws, and correcting word results.
+- **1 template arithmetic unit test** (`2 + 2`).
+- **1 template instrumented test** that checks the app package name.
+- **No dedicated UI tests** currently exist.
+
+## Continuous Integration
+
+The GitHub Actions workflow runs `lintDebug`, `testDebugUnitTest`, and `assembleDebug` on its configured push and pull-request events. It does **not** run instrumented tests; `connectedAndroidTest` is not part of the workflow.
+
+## Getting Started
 
 1. Clone the repository.
-2. Open the project in **Android Studio Ladybug** or newer.
-3. Ensure you have **JDK 17** configured in Gradle settings.
-4. Sync the project and run the `:app` module on an emulator or a physical device.
+2. Open the project in Android Studio.
+3. Configure JDK 17 for Gradle.
+4. Sync the project and run the `:app` module on an emulator or physical device.
 
-## 🛤 Roadmap
+## Roadmap
 
-- [ ] Unit tests for `GameEngine` logic.
-- [ ] Enhanced error handling for asset loading.
-- [ ] UI decomposition into smaller reusable components.
-- [ ] CI/CD integration with GitHub Actions.
+- [ ] Add dedicated automated UI tests for setup and gameplay flows.
+- [ ] Expand unit-test coverage to word loading, settings persistence, and presentation logic.
+- [ ] Improve diagnostics and recovery for missing or malformed word-pack assets.
