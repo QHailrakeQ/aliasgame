@@ -14,6 +14,7 @@ data class SetupUiState(
     val isSoundEnabled: Boolean = true,
     val isVibrationEnabled: Boolean = true,
     val isLoading: Boolean = false,
+    val isEntranceAnimationPlayed: Boolean = false,
     val errorMessage: String? = null
 )
 

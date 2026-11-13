@@ -1,6 +1,7 @@
 package com.aliasgame.app.domain.usecase
 
 import com.aliasgame.app.domain.repository.WordsRepository
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 /**
@@ -9,11 +10,13 @@ import javax.inject.Inject
 class GetPacksUseCase @Inject constructor(
     private val repository: WordsRepository
 ) {
-    suspend operator fun invoke(language: String): List<String> {
+    suspend operator fun invoke(language: String): Result<List<String>> {
         return try {
-            repository.getPacks(language)
+            Result.success(repository.getPacks(language))
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            emptyList()
+            Result.failure(e)
         }
     }
 }

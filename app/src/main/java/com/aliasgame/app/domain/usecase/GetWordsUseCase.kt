@@ -2,6 +2,7 @@ package com.aliasgame.app.domain.usecase
 
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.repository.WordsRepository
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 /**
@@ -19,6 +20,8 @@ class GetWordsUseCase @Inject constructor(
             } else {
                 Result.success(words)
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Result.failure(e)
         }

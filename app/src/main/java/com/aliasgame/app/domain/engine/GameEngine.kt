@@ -8,7 +8,6 @@ import com.aliasgame.app.domain.model.RoundResult
 
 /**
  * Core engine managing game logic, scoring, and session state.
- * Implements a fair-play round system where every team gets an equal number of turns.
  */
 class GameEngine(
     var allWords: List<Word>,
@@ -88,10 +87,6 @@ class GameEngine(
         isPaused = false
     }
 
-    /**
-     * Shifts turn and evaluates win conditions at the end of a round cycle.
-     * Returns a list of winners if the game is finished (can be multiple for a draw).
-     */
     fun rollNextTeam(): List<Team> {
         val team = teams[currentTeamIndex]
         val updatedTeam = team.copy(score = team.score + currentScore)
@@ -115,11 +110,16 @@ class GameEngine(
         return teams.toList()
     }
 
+    /**
+     * Generates state snapshot.
+     * @param isTimerRunning critical flag to distinguish between start-of-game and end-of-round.
+     */
     fun getCurrentState(
         timeRemaining: Long, 
         currentWord: Word?,
         isRoundOver: Boolean = false,
-        winners: List<Team> = emptyList()
+        winners: List<Team> = emptyList(),
+        isTimerRunning: Boolean = false
     ): GameState {
         val finalWinners = if (winners.isNotEmpty()) {
             winners
@@ -136,8 +136,9 @@ class GameEngine(
             currentWord = currentWord,
             score = currentScore,
             timeRemaining = timeRemaining,
+            isTimerRunning = isTimerRunning,
             isPaused = isPaused,
-            isLastWordMode = timeRemaining <= 0 && !isRoundOver,
+            isLastWordMode = timeRemaining <= 0 && isTimerRunning && !isRoundOver,
             isRoundOver = isRoundOver,
             isGameFinished = finalWinners.isNotEmpty(),
             winners = finalWinners,
