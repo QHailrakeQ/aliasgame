@@ -88,7 +88,7 @@ private fun SelectionHeader(onBack: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.content_desc_back),
                 tint = Color.White
             )
         }
@@ -171,7 +171,7 @@ private fun PackItem(
             if (isSelected) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = "Selected",
+                    contentDescription = stringResource(R.string.content_desc_selected),
                     tint = Color(0xFF6200EE),
                     modifier = Modifier.size(28.dp)
                 )

@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.aliasgame.app.presentation.game.GameScreen
@@ -17,8 +18,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aliasgame.app.presentation.setup.PackSelectionScreen
 import com.aliasgame.app.presentation.setup.SetupScreen
+import com.aliasgame.app.presentation.setup.SetupViewModel
 
 
 @AndroidEntryPoint
@@ -68,8 +71,15 @@ class MainActivity : AppCompatActivity() {
                                 navController.popBackStack("setup", inclusive = false)
                             })
                         }
-                        composable("pack_selection") {
+                        composable("pack_selection") { backStackEntry ->
+                            // Obtain SetupViewModel scoped to the "setup" destination
+                            val parentEntry = remember(backStackEntry) {
+                                navController.getBackStackEntry("setup")
+                            }
+                            val sharedViewModel: SetupViewModel = hiltViewModel(parentEntry)
+                            
                             PackSelectionScreen(
+                                viewModel = sharedViewModel,
                                 onBack = { navController.popBackStack() }
                             )
                         }
