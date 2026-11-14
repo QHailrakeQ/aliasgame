@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
@@ -31,6 +30,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -211,7 +212,7 @@ private fun GameItemContainer(
 }
 
 private fun GameUiState.isReadyToStart() = 
-    !isRoundOver && !isPaused && !isGameFinished && timeRemaining == 0L && currentTeam != null
+    !isRoundOver && !isPaused && !isGameFinished && timeRemaining == 0L && currentTeam != null && currentWord != null
 
 @Composable
 private fun GameHUD(
@@ -235,7 +236,11 @@ private fun GameHUD(
                 onClick = onExitClick,
                 modifier = Modifier.background(Color.White.copy(alpha = 0.1f), CircleShape)
             ) {
-                Icon(Icons.Default.Close, contentDescription = "Exit", tint = Color.White)
+                Icon(
+                    Icons.Default.Close, 
+                    contentDescription = stringResource(R.string.content_desc_exit), 
+                    tint = Color.White
+                )
             }
             
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -289,9 +294,13 @@ private fun GameControls(
             }
         }
         
+        val pauseDescription = stringResource(R.string.content_desc_pause)
         IconButton(
             onClick = onPause,
-            modifier = Modifier.size(56.dp).background(Color.White.copy(alpha = 0.1f), CircleShape)
+            modifier = Modifier
+                .size(56.dp)
+                .background(Color.White.copy(alpha = 0.1f), CircleShape)
+                .semantics { contentDescription = pauseDescription }
         ) {
             Text("||", fontWeight = FontWeight.Black, color = Color.White, fontSize = 20.sp)
         }
@@ -386,6 +395,7 @@ fun FinalWordDialog(word: String, teams: List<Team>, onTeamSelected: (String?) -
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(stringResource(R.string.who_got_point), style = Typography.bodyLarge, color = Color.White.copy(alpha = 0.7f))
                     Spacer(modifier = Modifier.height(24.dp))
+                    
                     teams.forEach { team ->
                         Button(
                             onClick = { onTeamSelected(team.id) },
@@ -394,8 +404,16 @@ fun FinalWordDialog(word: String, teams: List<Team>, onTeamSelected: (String?) -
                             colors = ButtonDefaults.buttonColors(containerColor = GlassWhite)
                         ) { Text(team.name, fontWeight = FontWeight.Bold) }
                     }
-                    TextButton(onClick = { onTeamSelected(null) }, modifier = Modifier.padding(top = 8.dp)) {
-                        Text(stringResource(R.string.no_one_correct), color = Color.White.copy(alpha = 0.5f))
+                    
+                    // Added "Nobody" option as a full button for better visibility and consistency
+                    Button(
+                        onClick = { onTeamSelected(null) },
+                        modifier = Modifier.fillMaxWidth().height(56.dp).padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.1f)),
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f))
+                    ) { 
+                        Text(stringResource(R.string.no_one_correct), color = Color.White.copy(alpha = 0.7f), fontWeight = FontWeight.Bold) 
                     }
                 }
             }
@@ -453,17 +471,27 @@ private fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, o
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(stringResource(R.string.tap_to_toggle), style = Typography.bodySmall, color = Color.White.copy(alpha = 0.5f))
                 
+                val correctDesc = stringResource(R.string.content_desc_correct_icon)
+                val wrongDesc = stringResource(R.string.content_desc_wrong_icon)
+
                 LazyColumn(Modifier.weight(1f).fillMaxWidth()) {
                     itemsIndexed(results) { index, result ->
+                        val isLastWord = index == results.size - 1
                         Row(
-                            Modifier.fillMaxWidth().clickable { onToggleResult(index) }.padding(vertical = 12.dp, horizontal = 8.dp),
+                            Modifier.fillMaxWidth()
+                                .then(if (!isLastWord) Modifier.clickable { onToggleResult(index) } else Modifier)
+                                .padding(vertical = 12.dp, horizontal = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(result.word.text, style = Typography.bodyLarge, color = Color.White)
+                            Text(
+                                text = result.word.text + if (isLastWord) " (${stringResource(R.string.got_it_button)})" else "",
+                                style = Typography.bodyLarge,
+                                color = if (isLastWord) Color.White.copy(alpha = 0.7f) else Color.White
+                            )
                             Icon(
                                 imageVector = if (result.isCorrect) Icons.Default.Check else Icons.Default.Close,
-                                contentDescription = null,
+                                contentDescription = if (result.isCorrect) correctDesc else wrongDesc,
                                 tint = if (result.isCorrect) Color(0xFF4CAF50) else Color(0xFFFF0266)
                             )
                         }

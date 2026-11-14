@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
+import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import com.aliasgame.app.domain.usecase.GetPacksUseCase
@@ -30,6 +31,7 @@ class SetupViewModel @Inject constructor(
     private val engine: GameEngine,
     private val repository: WordsRepository,
     private val settingsRepository: SettingsRepository,
+    private val sessionRepository: GameSessionRepository,
     private val getWordsUseCase: GetWordsUseCase,
     private val getPacksUseCase: GetPacksUseCase,
     private val saveSettingsUseCase: SaveSettingsUseCase
@@ -174,6 +176,9 @@ class SetupViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             
+            // Clear any previous interrupted session before starting a new one
+            sessionRepository.clearSession()
+
             getWordsUseCase(
                 language = _uiState.value.selectedLanguage,
                 packId = _uiState.value.selectedPack

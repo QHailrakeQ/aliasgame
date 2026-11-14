@@ -1,11 +1,13 @@
 package com.aliasgame.app.di
 
 import android.content.Context
+import com.aliasgame.app.data.repository.GameSessionRepositoryImpl
 import com.aliasgame.app.data.repository.SettingsRepositoryImpl
 import com.aliasgame.app.data.repository.WordsRepositoryImpl
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.Team
+import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.Module
@@ -44,6 +46,14 @@ object AppModule {
         @ApplicationContext context: Context
     ): SettingsRepository {
         return SettingsRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGameSessionRepository(
+        @ApplicationContext context: Context
+    ): GameSessionRepository {
+        return GameSessionRepositoryImpl(context)
     }
 
     @Provides

@@ -5,16 +5,17 @@ import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.GameState
 import com.aliasgame.app.domain.model.RoundResult
+import com.aliasgame.app.domain.repository.GameSessionSnapshot
 
 /**
  * Core engine managing game logic, scoring, and session state.
  */
 class GameEngine(
     var allWords: List<Word>,
-    val initialTeams: List<Team>,
+    var initialTeams: List<Team>,
     var settings: GameSettings
 ) {
-    private val teams = initialTeams.toMutableList()
+    private var teams = initialTeams.toMutableList()
     private val currentRoundResults = mutableListOf<RoundResult>()
 
     private var currentWord: Word? = null
@@ -23,12 +24,24 @@ class GameEngine(
     private var currentScore = 0
     private var isPaused = false
 
+    /**
+     * Retrieves the next word from the dictionary.
+     * Implements Reshuffle policy: if all words are used, the dictionary is reset.
+     */
     fun getNextWord(): Word? {
-        val availableWords = allWords.filter { !usedWords.contains(it) }
-        if (availableWords.isEmpty()) {
+        if (allWords.isEmpty()) {
             currentWord = null
             return null
         }
+
+        var availableWords = allWords.filter { !usedWords.contains(it) }
+        
+        if (availableWords.isEmpty()) {
+            // Dictionary exhausted -> Reshuffle
+            usedWords.clear()
+            availableWords = allWords
+        }
+
         val nextWord = availableWords.random()
         usedWords.add(nextWord)
         currentWord = nextWord
@@ -49,11 +62,12 @@ class GameEngine(
         return getNextWord()
     }
 
+    /**
+     * Records the final word result. 
+     */
     fun addFinalWordResult(isCorrect: Boolean) {
         currentWord?.let {
             currentRoundResults.add(RoundResult(it, isCorrect))
-            if (isCorrect) currentScore += settings.pointsPerCorrectAnswer
-            else currentScore += settings.pointsPerSkip
         }
     }
 
@@ -110,10 +124,6 @@ class GameEngine(
         return teams.toList()
     }
 
-    /**
-     * Generates state snapshot.
-     * @param isTimerRunning critical flag to distinguish between start-of-game and end-of-round.
-     */
     fun getCurrentState(
         timeRemaining: Long, 
         currentWord: Word?,
@@ -170,5 +180,45 @@ class GameEngine(
         this.currentScore = 0
         this.isPaused = false
         currentRoundResults.clear()
+    }
+
+    /**
+     * Creates a snapshot of the current engine state for persistence.
+     */
+    fun createSessionSnapshot(
+        timeRemaining: Long,
+        isRoundOver: Boolean,
+        language: String,
+        packId: String
+    ): GameSessionSnapshot {
+        return GameSessionSnapshot(
+            teams = teams.toList(),
+            currentRoundResults = currentRoundResults.toList(),
+            currentWord = currentWord,
+            currentTeamIndex = currentTeamIndex,
+            usedWords = usedWords.toList(),
+            currentScore = currentScore,
+            settings = settings,
+            language = language,
+            packId = packId,
+            timeRemaining = timeRemaining,
+            isRoundOver = isRoundOver
+        )
+    }
+
+    /**
+     * Restores engine state from a saved snapshot.
+     */
+    fun restoreSession(snapshot: GameSessionSnapshot, allWords: List<Word>) {
+        this.allWords = allWords
+        this.teams = snapshot.teams.toMutableList()
+        this.currentRoundResults.clear()
+        this.currentRoundResults.addAll(snapshot.currentRoundResults)
+        this.currentWord = snapshot.currentWord
+        this.currentTeamIndex = snapshot.currentTeamIndex
+        this.usedWords = snapshot.usedWords.toMutableList()
+        this.currentScore = snapshot.currentScore
+        this.settings = snapshot.settings
+        this.isPaused = true // Always restore in paused state
     }
 }

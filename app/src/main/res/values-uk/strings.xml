@@ -36,7 +36,7 @@
     <string name="preferences_header">Налаштування</string>
     <string name="sound_effects">Звукові ефекти</string>
     <string name="haptic_feedback">Вібрація</string>
-    <string name="select_category_title">Оберіть категорію</string>
+    <string name="select_category_title">Оберіть категорія</string>
 
     <!-- Difficulty Levels -->
     <string name="difficulty_easy">Легкий</string>
@@ -61,4 +61,12 @@
     <string name="who_got_point">Хто вгадав слово?</string>
     <string name="no_one_correct">Ніхто не вгадав</string>
     <string name="score_label">Рахунок: %1$d</string>
+
+    <!-- Accessibility -->
+    <string name="content_desc_back">Назад</string>
+    <string name="content_desc_selected">Вибрано</string>
+    <string name="content_desc_exit">Вихід</string>
+    <string name="content_desc_correct_icon">Правильно</string>
+    <string name="content_desc_wrong_icon">Неправильно</string>
+    <string name="content_desc_pause">Пауза</string>
 </resources>

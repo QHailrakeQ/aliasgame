@@ -61,4 +61,12 @@
     <string name="who_got_point">Who got the point?</string>
     <string name="no_one_correct">No one is correct</string>
     <string name="score_label">Score: %1$d</string>
+
+    <!-- Accessibility -->
+    <string name="content_desc_back">Back</string>
+    <string name="content_desc_selected">Selected</string>
+    <string name="content_desc_exit">Exit</string>
+    <string name="content_desc_correct_icon">Correct</string>
+    <string name="content_desc_wrong_icon">Wrong</string>
+    <string name="content_desc_pause">Pause</string>
 </resources>

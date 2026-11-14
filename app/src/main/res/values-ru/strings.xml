@@ -27,7 +27,7 @@
     <string name="funny_name_5">Быстрые улитки</string>
     <string name="funny_name_6">Летучие свиньи</string>
     <string name="funny_name_7">Мудрые совы</string>
-    <string name="funny_name_8">Веселые бандиты</string>
+    <string name="funny_name_8">Веселые бандити</string>
     <string name="funny_name_9">Сонные панды</string>
     <string name="funny_name_10">Танцующие крокодилы</string>
 
@@ -52,7 +52,7 @@
 
     <!-- Game Screen Strings -->
     <string name="no_more_words">Слова закончились</string>
-    <string name="skip_button">ПРОПУСТИТЬ</string>
+    <string name="skip_button">ПРОПУСТИТИ</string>
     <string name="got_it_button">УГАДАНО</string>
     <string name="pause_title">Пауза</string>
     <string name="resume_button">Продолжить</string>
@@ -61,4 +61,11 @@
     <string name="who_got_point">Кто угадал слово?</string>
     <string name="no_one_correct">Никто не угадал</string>
     <string name="score_label">Счет: %1$d</string>
+
+    <!-- Accessibility -->
+    <string name="content_desc_back">Назад</string>
+    <string name="content_desc_selected">Выбрано</string>
+    <string name="content_desc_exit">Выход</string>
+    <string name="content_desc_correct_icon">Правильно</string>
+    <string name="content_desc_wrong_icon">Неправильно</string>
 </resources>
