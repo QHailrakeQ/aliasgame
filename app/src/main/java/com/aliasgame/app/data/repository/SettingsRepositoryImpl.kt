@@ -9,12 +9,35 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 // Singleton delegate for DataStore access
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
+/**
+ * Unambiguous codec for team names that supports legacy CSV format.
+ * Encodes names as a JSON array with a versioned prefix.
+ */
+internal object TeamNamesCodec {
+    private const val PREFIX = "JSON_V1:"
+
+    fun encode(names: List<String>): String {
+        return PREFIX + Json.encodeToString(names)
+    }
+
+    fun decode(encoded: String): List<String> {
+        if (encoded.startsWith(PREFIX)) {
+            // New format: starts with prefix, followed by JSON array
+            return Json.decodeFromString<List<String>>(encoded.removePrefix(PREFIX))
+        }
+        // Legacy format: comma-separated values
+        return encoded.split(",")
+    }
+}
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
@@ -45,7 +68,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override val teamNames: Flow<List<String>> = context.settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
-        .map { it[Keys.TEAM_NAMES]?.split(",") ?: listOf("Team 1", "Team 2") }
+        .map { it[Keys.TEAM_NAMES]?.let { encoded -> TeamNamesCodec.decode(encoded) } ?: listOf("Team 1", "Team 2") }
 
     override val selectedPack: Flow<String> = context.settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
@@ -72,7 +95,7 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveTeamNames(names: List<String>) {
-        context.settingsDataStore.edit { it[Keys.TEAM_NAMES] = names.joinToString(",") }
+        context.settingsDataStore.edit { it[Keys.TEAM_NAMES] = TeamNamesCodec.encode(names) }
     }
 
     override suspend fun savePack(packId: String) {
