@@ -4,9 +4,20 @@ import android.content.Context
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 import javax.inject.Inject
+
+@Serializable
+private data class WordDto(
+    val text: String,
+    val packId: String
+)
+
+private fun WordDto.toDomain() = Word(
+    text = text,
+    packId = packId
+)
 
 class WordsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
@@ -26,8 +37,8 @@ class WordsRepositoryImpl @Inject constructor(
         val jsonString = context.assets.open(fileName)
             .bufferedReader()
             .use { it.readText() }
-        val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
-        return allWords.filter { it.packId == packId }
+        val allDtos: List<WordDto> = json.decodeFromString(jsonString)
+        return allDtos.map { it.toDomain() }.filter { it.packId == packId }
     }
 
     override suspend fun getPacks(language: String): List<String> {
@@ -36,8 +47,8 @@ class WordsRepositoryImpl @Inject constructor(
         val jsonString = context.assets.open(fileName)
             .bufferedReader()
             .use { it.readText() }
-        val allWords: List<Word> = json.decodeFromString<List<Word>>(jsonString)
-        return allWords.map { it.packId }.distinct()
+        val allDtos: List<WordDto> = json.decodeFromString(jsonString)
+        return allDtos.map { it.packId }.distinct()
     }
 
     override suspend fun getLanguages(): List<String> {

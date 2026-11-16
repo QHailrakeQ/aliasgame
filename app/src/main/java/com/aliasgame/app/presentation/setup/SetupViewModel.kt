@@ -1,13 +1,13 @@
 package com.aliasgame.app.presentation.setup
 
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
+import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import com.aliasgame.app.domain.usecase.GetPacksUseCase
+import com.aliasgame.app.domain.usecase.EmptyWordPackException
 import com.aliasgame.app.domain.usecase.GetWordsUseCase
 import com.aliasgame.app.domain.usecase.SaveSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,16 +20,18 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 /**
- * ViewModel responsible for managing game setup state and persisting user preferences.
- * Implements debouncing for I/O and activity-recreating operations for smooth UX.
+ * ViewModel for Game Setup.
+ * Manages game rules using bounded integer increments/decrements.
  */
 @HiltViewModel
 class SetupViewModel @Inject constructor(
     private val engine: GameEngine,
     private val repository: WordsRepository,
     private val settingsRepository: SettingsRepository,
+    private val sessionRepository: GameSessionRepository,
     private val getWordsUseCase: GetWordsUseCase,
     private val getPacksUseCase: GetPacksUseCase,
     private val saveSettingsUseCase: SaveSettingsUseCase
@@ -41,28 +43,39 @@ class SetupViewModel @Inject constructor(
     private val _uiEffect = Channel<SetupUiEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    private var languageJob: Job? = null
     private var settingsJob: Job? = null
+    private var packsJob: Job? = null
+
+    // Constants for game rules
+    companion object {
+        const val MIN_ROUND_TIME = 10L
+        const val MAX_ROUND_TIME = 120L
+        const val STEP_ROUND_TIME = 10L
+
+        const val MIN_TARGET_SCORE = 10
+        const val MAX_TARGET_SCORE = 100
+        const val STEP_TARGET_SCORE = 10
+    }
 
     init {
         viewModelScope.launch {
-            _uiState.update { it.copy(languages = repository.getLanguages()) }
-
-            // Observe and synchronize persistent storage
+            // Synchronize with global language to load correct packs
             launch {
                 settingsRepository.selectedLanguage.collect { lang ->
                     _uiState.update { it.copy(selectedLanguage = lang) }
                     loadPacks(lang)
                 }
             }
+            
+            // Observe game-specific persistent settings with clamping
             launch {
                 settingsRepository.roundTime.collect { time ->
-                    _uiState.update { it.copy(roundTime = time.toFloat()) }
+                    _uiState.update { it.copy(roundTime = normalizeRoundTime(time)) }
                 }
             }
             launch {
                 settingsRepository.targetScore.collect { score ->
-                    _uiState.update { it.copy(targetScore = score.toFloat()) }
+                    _uiState.update { it.copy(targetScore = normalizeTargetScore(score)) }
                 }
             }
             launch {
@@ -75,64 +88,44 @@ class SetupViewModel @Inject constructor(
                     _uiState.update { it.copy(selectedPack = pack) }
                 }
             }
-            launch {
-                settingsRepository.isSoundEnabled.collect { enabled ->
-                    _uiState.update { it.copy(isSoundEnabled = enabled) }
-                }
-            }
-            launch {
-                settingsRepository.isVibrationEnabled.collect { enabled ->
-                    _uiState.update { it.copy(isVibrationEnabled = enabled) }
-                }
-            }
         }
     }
 
-    /**
-     * Signals that the initial entrance animation has been played to prevent replaying it.
-     */
     fun onEntranceAnimationFinished() {
         _uiState.update { it.copy(isEntranceAnimationPlayed = true) }
     }
 
-    /**
-     * Updates language with optimistic UI update and debounced persistence.
-     */
-    fun onLanguageSelected(language: String) {
-        if (_uiState.value.selectedLanguage == language) return
+    fun onRoundTimeChanged(newTime: Long) {
+        val normalizedTime = normalizeRoundTime(newTime)
+        if (_uiState.value.roundTime == normalizedTime) return
         
-        // Optimistic update for immediate visual feedback
-        _uiState.update { it.copy(selectedLanguage = language) }
-        loadPacks(language)
-        
-        languageJob?.cancel()
-        languageJob = viewModelScope.launch {
-            delay(500) // Slightly longer delay to let user finish selecting
-            saveSettingsUseCase.saveLanguage(language)
-            val systemLangCode = if (language.uppercase() == "UA") "uk" else language.lowercase()
-            val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(systemLangCode)
-            AppCompatDelegate.setApplicationLocales(appLocale)
-        }
+        _uiState.update { it.copy(roundTime = normalizedTime) }
+        debounceSettingsSave { saveSettingsUseCase.saveRoundTime(normalizedTime) }
     }
 
-    fun onSoundToggled(enabled: Boolean) {
-        _uiState.update { it.copy(isSoundEnabled = enabled) }
-        viewModelScope.launch { saveSettingsUseCase.saveSoundEnabled(enabled) }
+    fun onTargetScoreChanged(newScore: Int) {
+        val normalizedScore = normalizeTargetScore(newScore)
+        if (_uiState.value.targetScore == normalizedScore) return
+
+        _uiState.update { it.copy(targetScore = normalizedScore) }
+        debounceSettingsSave { saveSettingsUseCase.saveTargetScore(normalizedScore) }
     }
 
-    fun onVibrationToggled(enabled: Boolean) {
-        _uiState.update { it.copy(isVibrationEnabled = enabled) }
-        viewModelScope.launch { saveSettingsUseCase.saveVibrationEnabled(enabled) }
-    }
+    private fun normalizeRoundTime(value: Long): Long =
+        normalizeStepperValue(value, MIN_ROUND_TIME, MAX_ROUND_TIME, STEP_ROUND_TIME)
 
-    fun onRoundTimeChanged(newTime: Float) {
-        _uiState.update { it.copy(roundTime = newTime) }
-        debounceSettingsSave { saveSettingsUseCase.saveRoundTime(newTime.toLong()) }
-    }
+    private fun normalizeTargetScore(value: Int): Int =
+        normalizeStepperValue(
+            value.toLong(),
+            MIN_TARGET_SCORE.toLong(),
+            MAX_TARGET_SCORE.toLong(),
+            STEP_TARGET_SCORE.toLong()
+        ).toInt()
 
-    fun onTargetScoreChanged(newScore: Float) {
-        _uiState.update { it.copy(targetScore = newScore) }
-        debounceSettingsSave { saveSettingsUseCase.saveTargetScore(newScore.toInt()) }
+    private fun normalizeStepperValue(value: Long, min: Long, max: Long, step: Long): Long {
+        val bounded = value.coerceIn(min, max)
+        val steps = ((bounded - min).toDouble() / step).roundToLong()
+        return (min + steps * step).coerceIn(min, max)
     }
 
     fun onTeamNamesChanged(newNames: List<String>) {
@@ -154,35 +147,58 @@ class SetupViewModel @Inject constructor(
     }
 
     private fun loadPacks(language: String) {
-        viewModelScope.launch {
+        packsJob?.cancel()
+        _uiState.update {
+            it.copy(isLoadingPacks = true, hasPacksLoadError = false)
+        }
+        packsJob = viewModelScope.launch {
             getPacksUseCase(language)
                 .onSuccess { availablePacks ->
                     _uiState.update { state ->
                         val nextPack = if (state.selectedPack !in availablePacks) {
                             availablePacks.firstOrNull() ?: "Easy"
                         } else state.selectedPack
-                        state.copy(packs = availablePacks, selectedPack = nextPack)
+                        state.copy(
+                            packs = availablePacks,
+                            selectedPack = nextPack,
+                            isLoadingPacks = false,
+                            hasPacksLoadError = false
+                        )
                     }
                 }
                 .onFailure { error ->
+                    _uiState.update {
+                        it.copy(isLoadingPacks = false, hasPacksLoadError = true)
+                    }
                     _uiEffect.send(SetupUiEffect.ShowError(error.message ?: "Failed to load categories"))
                 }
         }
     }
 
+    fun retryLoadPacks() {
+        loadPacks(_uiState.value.selectedLanguage)
+    }
+
     fun startGame() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            
+            sessionRepository.clearSession()
+
             getWordsUseCase(
                 language = _uiState.value.selectedLanguage,
                 packId = _uiState.value.selectedPack
             ).onSuccess { words ->
+                if (words.isEmpty()) {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEffect.send(SetupUiEffect.ShowNoWordsAvailable)
+                    return@onSuccess
+                }
+
                 engine.setupGame(
                     _uiState.value.teamNames,
                     engine.settings.copy(
-                        roundTime = _uiState.value.roundTime.toLong(),
-                        targetScore = _uiState.value.targetScore.toInt()
+                        roundTime = _uiState.value.roundTime,
+                        targetScore = _uiState.value.targetScore
                     ),
                     words
                 )
@@ -190,7 +206,11 @@ class SetupViewModel @Inject constructor(
                 _uiEffect.send(SetupUiEffect.NavigateToGame)
             }.onFailure { error ->
                 _uiState.update { it.copy(isLoading = false) }
-                _uiEffect.send(SetupUiEffect.ShowError(error.message ?: "Failed to load words"))
+                if (error is EmptyWordPackException) {
+                    _uiEffect.send(SetupUiEffect.ShowNoWordsAvailable)
+                } else {
+                    _uiEffect.send(SetupUiEffect.ShowError(error.message ?: "Failed to load words"))
+                }
             }
         }
     }

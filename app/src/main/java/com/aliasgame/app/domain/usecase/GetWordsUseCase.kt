@@ -5,6 +5,8 @@ import com.aliasgame.app.domain.repository.WordsRepository
 import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
+class EmptyWordPackException : Exception()
+
 /**
  * Use case to fetch words for a specific language and pack.
  * Includes validation to ensure the game doesn't start with an empty dictionary.
@@ -16,7 +18,7 @@ class GetWordsUseCase @Inject constructor(
         return try {
             val words = repository.getWords(language, packId)
             if (words.isEmpty()) {
-                Result.failure(Exception("No words found for this category"))
+                Result.failure(EmptyWordPackException())
             } else {
                 Result.success(words)
             }
