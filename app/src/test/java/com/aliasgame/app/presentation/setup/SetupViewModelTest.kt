@@ -11,9 +11,11 @@ import com.aliasgame.app.domain.usecase.GetPacksUseCase
 import com.aliasgame.app.domain.usecase.GetWordsUseCase
 import com.aliasgame.app.domain.usecase.SaveSettingsUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -53,6 +55,9 @@ class SetupViewModelTest {
             getPacksUseCase,
             saveSettingsUseCase
         )
+        
+        // Ensure init block collectors process initial repository values
+        testDispatcher.scheduler.runCurrent()
     }
 
     @After
@@ -61,32 +66,88 @@ class SetupViewModelTest {
     }
 
     @Test
-    fun `onPackSelected updates UI state immediately`() = runTest {
-        val newPack = "Hard"
-        viewModel.onPackSelected(newPack)
+    fun `onRoundTimeChanged clamps value to max limit`() = runTest {
+        viewModel.onRoundTimeChanged(200L) // Above 120
         runCurrent()
-        
-        assertEquals(newPack, viewModel.uiState.value.selectedPack)
+        assertEquals(120L, viewModel.uiState.value.roundTime)
     }
 
     @Test
-    fun `onPackSelected triggers persistence`() = runTest {
-        val newPack = "Insane"
-        viewModel.onPackSelected(newPack)
+    fun `onRoundTimeChanged clamps value to min limit`() = runTest {
+        viewModel.onRoundTimeChanged(5L) // Below 10
+        runCurrent()
+        assertEquals(10L, viewModel.uiState.value.roundTime)
+    }
+
+    @Test
+    fun `onTargetScoreChanged updates state correctly`() = runTest {
+        viewModel.onTargetScoreChanged(80)
+        runCurrent()
+        assertEquals(80, viewModel.uiState.value.targetScore)
+    }
+
+    @Test
+    fun `stepper values are normalized to the nearest configured step`() = runTest {
+        viewModel.onRoundTimeChanged(18L)
+        viewModel.onTargetScoreChanged(13)
+
+        assertEquals(20L, viewModel.uiState.value.roundTime)
+        assertEquals(10, viewModel.uiState.value.targetScore)
+    }
+
+    @Test
+    fun `clamping works when loading from repository`() = runTest {
+        // Setup repo with invalid values
+        settingsRepository.roundTimeFlow.value = 300L
+        settingsRepository.targetScoreFlow.value = 5
+        
+        // Re-initialize viewmodel to trigger collect with new values
+        val getWordsUseCase = GetWordsUseCase(wordsRepository)
+        val getPacksUseCase = GetPacksUseCase(wordsRepository)
+        val saveSettingsUseCase = SaveSettingsUseCase(settingsRepository)
+        viewModel = SetupViewModel(
+            engine, wordsRepository, settingsRepository, sessionRepository,
+            getWordsUseCase, getPacksUseCase, saveSettingsUseCase
+        )
         
         advanceUntilIdle()
         
-        assertEquals(newPack, settingsRepository.savedPack)
+        assertEquals(120L, viewModel.uiState.value.roundTime)
+        assertEquals(10, viewModel.uiState.value.targetScore)
+    }
+
+    @Test
+    fun `stored values are normalized to valid stepper values`() = runTest {
+        settingsRepository.roundTimeFlow.value = 18L
+        settingsRepository.targetScoreFlow.value = 13
+
+        advanceUntilIdle()
+
+        assertEquals(20L, viewModel.uiState.value.roundTime)
+        assertEquals(10, viewModel.uiState.value.targetScore)
+    }
+
+    @Test
+    fun `starting a game with an empty pack reports an error instead of navigating`() = runTest {
+        val effect = async { viewModel.uiEffect.first() }
+
+        viewModel.startGame()
+        advanceUntilIdle()
+
+        assertEquals(SetupUiEffect.ShowNoWordsAvailable, effect.await())
+        assertEquals(false, viewModel.uiState.value.isLoading)
     }
 
     // Fakes
     private class FakeSettingsRepository : SettingsRepository {
         var savedPack: String? = null
         private val selectedPackFlow = MutableStateFlow("Easy")
+        val roundTimeFlow = MutableStateFlow(60L)
+        val targetScoreFlow = MutableStateFlow(50)
         
         override val selectedLanguage = flowOf("EN")
-        override val roundTime = flowOf(60L)
-        override val targetScore = flowOf(50)
+        override val roundTime = roundTimeFlow
+        override val targetScore = targetScoreFlow
         override val teamNames = flowOf(listOf("T1", "T2"))
         override val selectedPack = selectedPackFlow
         override val isSoundEnabled = flowOf(true)

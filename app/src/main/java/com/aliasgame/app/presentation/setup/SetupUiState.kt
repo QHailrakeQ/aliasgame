@@ -1,18 +1,19 @@
 package com.aliasgame.app.presentation.setup
 
 /**
- * Represent the complete UI state for the Setup screen.
+ * Represent the UI state for the Game Setup screen.
+ * Global settings (language, sound, vibration) are now managed in SettingsViewModel.
+ * Values for time and score are now integers to match bounded stepper logic.
  */
 data class SetupUiState(
-    val languages: List<String> = emptyList(),
     val selectedLanguage: String = "EN",
     val packs: List<String> = emptyList(),
+    val isLoadingPacks: Boolean = false,
+    val hasPacksLoadError: Boolean = false,
     val selectedPack: String = "Easy",
-    val roundTime: Float = 60f,
-    val targetScore: Float = 50f,
+    val roundTime: Long = 60,
+    val targetScore: Int = 50,
     val teamNames: List<String> = listOf("", ""),
-    val isSoundEnabled: Boolean = true,
-    val isVibrationEnabled: Boolean = true,
     val isLoading: Boolean = false,
     val isEntranceAnimationPlayed: Boolean = false,
     val errorMessage: String? = null
@@ -24,4 +25,5 @@ data class SetupUiState(
 sealed interface SetupUiEffect {
     data object NavigateToGame : SetupUiEffect
     data class ShowError(val message: String) : SetupUiEffect
+    data object ShowNoWordsAvailable : SetupUiEffect
 }

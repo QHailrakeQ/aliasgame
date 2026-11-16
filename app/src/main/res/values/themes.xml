@@ -2,18 +2,18 @@
 <resources>
     <!-- Style for the Splash Screen -->
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#6200EE</item>
+        <!-- Match BgStart (#12005E) for visual continuity -->
+        <item name="windowSplashScreenBackground">#12005E</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <item name="postSplashScreenTheme">@style/Theme.AliasGame
-        </item>
+        <item name="postSplashScreenTheme">@style/Theme.AliasGame</item>
     </style>
+
     <style name="Theme.AliasGame" parent="Theme.AppCompat.DayNight.NoActionBar">
-
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
-
-
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryDark">#311B92</item>
+        <item name="colorAccent">#03DAC5</item>
+        <item name="android:windowBackground">#12005E</item>
+        <item name="android:statusBarColor">#12005E</item>
+        <item name="android:navigationBarColor">#12005E</item>
     </style>
 </resources>

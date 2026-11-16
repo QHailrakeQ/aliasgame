@@ -11,8 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
@@ -29,39 +31,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
+import com.aliasgame.app.ui.components.GlassCard
+import com.aliasgame.app.ui.components.PartyBackground
+import com.aliasgame.app.ui.components.PartyScreenHeader
 import com.aliasgame.app.ui.theme.*
 
 /**
- * Modernized Setup Screen with optimized performance and coordinated transitions.
- * Entrance animations are persisted via SetupViewModel to ensure smooth UX during
- * navigation and configuration changes.
+ * Modernized Setup Screen focusing on game rules and teams.
+ * Rules are now managed via bounded steppers for better precision.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupScreen(
     viewModel: SetupViewModel = hiltViewModel(),
     onStartGame: () -> Unit,
-    onSelectPack: () -> Unit
+    onSelectPack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val noWordsMessage = stringResource(R.string.no_words_for_category)
 
-    // Initialize animation progress. If already played, we start at 1f (fully visible).
     val entryProgress = remember {
         Animatable(if (state.isEntranceAnimationPlayed) 1f else 0f) 
     }
 
-    // Trigger entrance animation only if it hasn't been played yet.
     LaunchedEffect(state.isEntranceAnimationPlayed) {
         if (!state.isEntranceAnimationPlayed) {
             val result = entryProgress.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(durationMillis = 800, easing = EaseOutQuart)
             )
-            // Persist the completion state only if the animation finished naturally.
             if (result.endReason == AnimationEndReason.Finished) {
                 viewModel.onEntranceAnimationFinished()
             }
@@ -73,6 +76,7 @@ fun SetupScreen(
             when (effect) {
                 is SetupUiEffect.NavigateToGame -> onStartGame()
                 is SetupUiEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
+                SetupUiEffect.ShowNoWordsAvailable -> snackbarHostState.showSnackbar(noWordsMessage)
             }
         }
     }
@@ -81,55 +85,39 @@ fun SetupScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = Color.Transparent
     ) { padding ->
-        Box(
+        PartyBackground(modifier = Modifier.padding(padding)) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Brush.verticalGradient(listOf(BgStart, BgEnd)))
-                .padding(padding)
+                .padding(horizontal = GameSpacing.screenHorizontal)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(GameSpacing.section)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                Spacer(modifier = Modifier.height(32.dp))
-                
-                Text(
-                    text = stringResource(R.string.setup_title).uppercase(),
-                    style = Typography.displaySmall,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .graphicsLayer {
-                            // Coordinate title with the same entry progress
-                            alpha = entryProgress.value
-                            translationY = (1f - entryProgress.value) * -30f
-                        }
-                )
+            PartyScreenHeader(
+                title = stringResource(R.string.setup_title),
+                onBack = onBack,
+                modifier = Modifier.padding(top = GameSpacing.screenVertical)
+            )
 
-                // Coordinated transitions for all items
+                // Game Rules (Time and Target Score)
                 SetupItemContainer(progress = entryProgress.value, index = 0) {
                     GameRulesCard(
                         roundTime = state.roundTime,
                         targetScore = state.targetScore,
-                        onRoundTimeChange = viewModel::onRoundTimeChanged,
-                        onTargetScoreChange = viewModel::onTargetScoreChanged
+                        onRoundTimeChange = { viewModel.onRoundTimeChanged(it) },
+                        onTargetScoreChange = { viewModel.onTargetScoreChanged(it) }
                     )
                 }
 
+                // Word Pack Selection
                 SetupItemContainer(progress = entryProgress.value, index = 1) {
-                    LocalizationCard(
-                        languages = state.languages,
-                        selectedLanguage = state.selectedLanguage,
+                    PackSelectionCard(
                         selectedPack = state.selectedPack,
-                        onLanguageSelect = viewModel::onLanguageSelected,
                         onPackClick = onSelectPack
                     )
                 }
 
+                // Team Management
                 SetupItemContainer(progress = entryProgress.value, index = 2) {
                     TeamManagementCard(
                         teamNames = state.teamNames,
@@ -137,24 +125,15 @@ fun SetupScreen(
                     )
                 }
 
+                // Start Game button
                 SetupItemContainer(progress = entryProgress.value, index = 3) {
-                    PreferencesCard(
-                        isSoundEnabled = state.isSoundEnabled,
-                        isVibrationEnabled = state.isVibrationEnabled,
-                        onSoundToggle = viewModel::onSoundToggled,
-                        onVibrationToggle = viewModel::onVibrationToggled
-                    )
-                }
-
-                // Start Game button follows the exact same coordinated entry system
-                SetupItemContainer(progress = entryProgress.value, index = 4) {
                     Button(
                         onClick = viewModel::startGame,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(72.dp)
                             .padding(bottom = 16.dp),
-                        shape = RoundedCornerShape(24.dp),
+                        shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = GameAccent,
                             contentColor = Color.White
@@ -178,23 +157,18 @@ fun SetupScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(48.dp))
-            }
+                Spacer(modifier = Modifier.height(GameSpacing.section))
+        }
         }
     }
 }
 
-/**
- * Coordinates item visibility and movement during the entrance sequence.
- * Uses index-based staggering synchronized with global entrance progress.
- */
 @Composable
 private fun SetupItemContainer(
     progress: Float,
     index: Int,
     content: @Composable () -> Unit
 ) {
-    // Smoother stagger logic with localized thresholds
     val startThreshold = index * 0.12f
     val itemAlpha = ((progress - startThreshold) / 0.35f).coerceIn(0f, 1f)
     val itemTranslation = (1f - itemAlpha) * 40f
@@ -230,27 +204,38 @@ private fun SectionHeader(title: String, icon: ImageVector) {
 
 @Composable
 private fun GameRulesCard(
-    roundTime: Float,
-    targetScore: Float,
-    onRoundTimeChange: (Float) -> Unit,
-    onTargetScoreChange: (Float) -> Unit
+    roundTime: Long,
+    targetScore: Int,
+    onRoundTimeChange: (Long) -> Unit,
+    onTargetScoreChange: (Int) -> Unit
 ) {
     SetupCard {
         Column {
             SectionHeader(stringResource(R.string.preferences_header), Icons.Default.Settings)
             
-            Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                RuleSlider(
-                    label = stringResource(R.string.round_time, roundTime.toInt()),
+            Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                ValueStepper(
+                    title = stringResource(R.string.round_time_label),
+                    valueText = stringResource(R.string.round_time_value, roundTime),
                     value = roundTime,
-                    range = 10f..120f,
+                    minValue = SetupViewModel.MIN_ROUND_TIME,
+                    maxValue = SetupViewModel.MAX_ROUND_TIME,
+                    step = SetupViewModel.STEP_ROUND_TIME,
+                    decrementDescription = stringResource(R.string.content_desc_decrement),
+                    incrementDescription = stringResource(R.string.content_desc_increment),
                     onValueChange = onRoundTimeChange
                 )
-                RuleSlider(
-                    label = stringResource(R.string.target_score, targetScore.toInt()),
-                    value = targetScore,
-                    range = 10f..100f,
-                    onValueChange = onTargetScoreChange
+                
+                ValueStepper(
+                    title = stringResource(R.string.target_score_label),
+                    valueText = stringResource(R.string.target_score_value, targetScore),
+                    value = targetScore.toLong(),
+                    minValue = SetupViewModel.MIN_TARGET_SCORE.toLong(),
+                    maxValue = SetupViewModel.MAX_TARGET_SCORE.toLong(),
+                    step = SetupViewModel.STEP_TARGET_SCORE.toLong(),
+                    decrementDescription = stringResource(R.string.content_desc_decrement),
+                    incrementDescription = stringResource(R.string.content_desc_increment),
+                    onValueChange = { onTargetScoreChange(it.toInt()) }
                 )
             }
         }
@@ -258,73 +243,92 @@ private fun GameRulesCard(
 }
 
 @Composable
-private fun RuleSlider(label: String, value: Float, range: ClosedFloatingPointRange<Float>, onValueChange: (Float) -> Unit) {
+private fun ValueStepper(
+    title: String,
+    valueText: String,
+    value: Long,
+    minValue: Long,
+    maxValue: Long,
+    step: Long,
+    decrementDescription: String,
+    incrementDescription: String,
+    onValueChange: (Long) -> Unit
+) {
     Column {
-        Text(label, style = Typography.titleMedium, color = Color.White)
-        Slider(
-            value = value,
-            onValueChange = onValueChange,
-            valueRange = range,
-            colors = SliderDefaults.colors(
-                thumbColor = Color.White,
-                activeTrackColor = GameSecondary,
-                inactiveTrackColor = Color.White.copy(alpha = 0.2f)
-            )
+        Text(
+            text = title,
+            style = Typography.titleMedium,
+            color = Color.White.copy(alpha = 0.6f)
         )
+        Spacer(Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            StepperButton(
+                icon = Icons.Default.Remove,
+                contentDescription = decrementDescription,
+                enabled = value > minValue,
+                onClick = { onValueChange(value - step) }
+            )
+            
+            Text(
+                text = valueText,
+                modifier = Modifier.weight(1f),
+                style = Typography.displaySmall.copy(fontSize = 32.sp),
+                color = Color.White,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
+            
+            StepperButton(
+                icon = Icons.Default.Add,
+                contentDescription = incrementDescription,
+                enabled = value < maxValue,
+                onClick = { onValueChange(value + step) }
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LocalizationCard(
-    languages: List<String>,
-    selectedLanguage: String,
+private fun StepperButton(
+    icon: ImageVector,
+    contentDescription: String,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+    val alpha by animateFloatAsState(if (enabled) 1f else 0.3f, label = "StepperAlpha")
+    
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.size(56.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = GlassWhite,
+        border = BorderStroke(1.dp, if (enabled) GameSecondary.copy(alpha = 0.5f) else GlassWhiteBorder)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = if (enabled) GameSecondary else Color.White.copy(alpha = 0.3f),
+                modifier = Modifier.graphicsLayer { this.alpha = alpha }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PackSelectionCard(
     selectedPack: String,
-    onLanguageSelect: (String) -> Unit,
     onPackClick: () -> Unit
 ) {
     SetupCard {
         Column {
-            SectionHeader(stringResource(R.string.language), Icons.Default.Translate)
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                languages.forEach { lang ->
-                    val isSelected = selectedLanguage == lang
-                    val backgroundColor by animateColorAsState(
-                        targetValue = if (isSelected) GameSecondary else GlassWhite,
-                        label = "LangBg"
-                    )
-                    val textColor by animateColorAsState(
-                        targetValue = if (isSelected) BgStart else Color.White,
-                        label = "LangText"
-                    )
-                    
-                    Surface(
-                        onClick = { onLanguageSelect(lang) },
-                        modifier = Modifier.weight(1f).height(48.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        color = backgroundColor,
-                        border = if (isSelected) null else BorderStroke(1.dp, GlassWhiteBorder)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                lang,
-                                style = Typography.titleSmall,
-                                color = textColor,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(stringResource(R.string.category), style = Typography.titleMedium, color = Color.White)
-            Spacer(modifier = Modifier.height(8.dp))
+            SectionHeader(stringResource(R.string.category), Icons.Default.Translate)
             
             Surface(
                 onClick = onPackClick,
@@ -346,9 +350,7 @@ private fun LocalizationCard(
                         else -> selectedPack
                     }
                     
-                    Crossfade(targetState = localizedPack, label = "PackCrossfade") { text ->
-                        Text(text, style = Typography.bodyLarge, fontWeight = FontWeight.Bold, color = Color.White)
-                    }
+                    Text(localizedPack, style = Typography.bodyLarge, fontWeight = FontWeight.Bold, color = Color.White)
                     
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = GameSecondary)
                 }
@@ -374,7 +376,7 @@ private fun TeamManagementCard(
         Column {
             SectionHeader(stringResource(R.string.teams_header), Icons.Default.Group)
             
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 teamNames.forEachIndexed { index, name ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -427,52 +429,9 @@ private fun TeamManagementCard(
 }
 
 @Composable
-private fun PreferencesCard(
-    isSoundEnabled: Boolean,
-    isVibrationEnabled: Boolean,
-    onSoundToggle: (Boolean) -> Unit,
-    onVibrationToggle: (Boolean) -> Unit
-) {
-    SetupCard {
-        Column {
-            SectionHeader(stringResource(R.string.preferences_header), Icons.Default.Settings)
-            
-            PreferenceRow(stringResource(R.string.sound_effects), isSoundEnabled, onSoundToggle)
-            PreferenceRow(stringResource(R.string.haptic_feedback), isVibrationEnabled, onVibrationToggle)
-        }
-    }
-}
-
-@Composable
-private fun PreferenceRow(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().height(56.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label, style = Typography.bodyLarge, color = Color.White)
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = GameSecondary,
-                uncheckedThumbColor = Color.Gray,
-                uncheckedTrackColor = GlassWhite
-            )
-        )
-    }
-}
-
-@Composable
 fun SetupCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        color = GlassWhite,
-        border = BorderStroke(1.dp, GlassWhiteBorder)
-    ) {
-        Box(modifier = Modifier.padding(20.dp)) {
+    GlassCard(modifier = modifier) {
+        Box(modifier = Modifier.padding(GameSpacing.cardPadding)) {
             content()
         }
     }

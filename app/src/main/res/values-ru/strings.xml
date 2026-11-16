@@ -3,6 +3,10 @@
     <string name="setup_title">Настройка игры</string>
     <string name="round_time">Время раунда: %1$d сек</string>
     <string name="target_score">Очки для победы: %1$d</string>
+    <string name="round_time_label">Длительность раунда</string>
+    <string name="target_score_label">Целевой счет</string>
+    <string name="round_time_value">%1$d сек</string>
+    <string name="target_score_value">%1$d</string>
     <string name="language">Язык</string>
     <string name="category">Категория</string>
     <string name="add_team">Добавить команду</string>
@@ -13,6 +17,7 @@
     <string name="game_finished">Игра окончена!</string>
     <string name="winner_title">🎉 У НАС ЕСТЬ ПОБЕДИТЕЛЬ! 🎉</string>
     <string name="back_to_menu">В меню</string>
+    <string name="new_game">Новая игра</string>
     <string name="ready_title">Следующая команда:</string>
     <string name="ready_button">Я готов!</string>
     <string name="points_count">%1$d очков</string>
@@ -37,6 +42,11 @@
     <string name="sound_effects">Звуковые эффекты</string>
     <string name="haptic_feedback">Вибрация</string>
     <string name="select_category_title">Выберите категорию</string>
+    <string name="categories_load_error">Не удалось загрузить категории.</string>
+    <string name="packs_empty">Для этого языка нет доступных категорий.</string>
+    <string name="retry">Повторить</string>
+    <string name="pack_description_fallback">Коллекция слов: %1$s</string>
+    <string name="no_words_for_category">В этой категории пока нет слов. Выберите другую категорию.</string>
 
     <!-- Difficulty Levels -->
     <string name="difficulty_easy">Легкий</string>
@@ -61,6 +71,8 @@
     <string name="who_got_point">Кто угадал слово?</string>
     <string name="no_one_correct">Никто не угадал</string>
     <string name="score_label">Счет: %1$d</string>
+    <string name="turn_score_label">Очки за ход: %1$d</string>
+    <string name="team_score_description">%1$s, %2$d очков</string>
 
     <!-- Accessibility -->
     <string name="content_desc_back">Назад</string>
@@ -68,4 +80,27 @@
     <string name="content_desc_exit">Выход</string>
     <string name="content_desc_correct_icon">Правильно</string>
     <string name="content_desc_wrong_icon">Неправильно</string>
+    <string name="content_desc_pause">Пауза</string>
+    <string name="content_desc_decrement">Уменьшить значение</string>
+    <string name="content_desc_increment">Увеличить значение</string>
+
+    <!-- Home Screen -->
+    <string name="menu_play">ИГРАТЬ</string>
+    <string name="menu_rules">ПРАВИЛА</string>
+    <string name="menu_settings">НАСТРОЙКИ</string>
+
+    <!-- Rules Screen -->
+    <string name="rules_title">Правила игры</string>
+    <string name="rules_section_goal">Цель игры</string>
+    <string name="rules_desc_goal">Команды ходят по очереди и набирают очки за правильные слова. Цель — достичь заданного счета.</string>
+    <string name="rules_section_scoring">Подсчет очков</string>
+    <string name="rules_desc_scoring">За правильное слово команда получает 1 очко к счету текущего хода. Пропуск слова отнимает 1 очко.</string>
+    <string name="rules_section_final_word">Последнее слово</string>
+    <string name="rules_desc_final_word">Когда время истекает, выберите команду, которая получит 1 очко за последнее слово, или укажите, что никто не угадал.</string>
+    <string name="rules_section_winning">Победа</string>
+    <string name="rules_desc_winning">После хода каждой команды игра заканчивается, если кто-то достиг целевого счета. Побеждает команда или команды с наибольшим счетом среди достигших цели.</string>
+    <string name="exit_confirmation_title">Выйти из игры?</string>
+    <string name="exit_confirmation_message">Текущая игровая сессия будет сброшена.</string>
+    <string name="exit_confirmation_confirm">Выйти</string>
+    <string name="exit_confirmation_cancel">Продолжить игру</string>
 </resources>

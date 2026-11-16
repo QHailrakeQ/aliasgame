@@ -3,6 +3,10 @@
     <string name="setup_title">Налаштування гри</string>
     <string name="round_time">Час раунду: %1$d сек</string>
     <string name="target_score">Цільовий рахунок: %1$d</string>
+    <string name="round_time_label">Тривалість раунду</string>
+    <string name="target_score_label">Цільовий рахунок</string>
+    <string name="round_time_value">%1$d сек</string>
+    <string name="target_score_value">%1$d</string>
     <string name="language">Мова</string>
     <string name="category">Категорія</string>
     <string name="add_team">Додати команду</string>
@@ -13,6 +17,7 @@
     <string name="game_finished">Гру закінчено!</string>
     <string name="winner_title">🎉 МАЄМО ПЕРЕМОЖЦЯ! 🎉</string>
     <string name="back_to_menu">В меню</string>
+    <string name="new_game">Нова гра</string>
     <string name="ready_title">Наступна команда:</string>
     <string name="ready_button">Я готовий!</string>
     <string name="points_count">%1$d балів</string>
@@ -36,7 +41,12 @@
     <string name="preferences_header">Налаштування</string>
     <string name="sound_effects">Звукові ефекти</string>
     <string name="haptic_feedback">Вібрація</string>
-    <string name="select_category_title">Оберіть категорія</string>
+    <string name="select_category_title">Оберіть категорію</string>
+    <string name="categories_load_error">Не вдалося завантажити категорії.</string>
+    <string name="packs_empty">Для цієї мови немає доступних категорій.</string>
+    <string name="retry">Спробувати ще раз</string>
+    <string name="pack_description_fallback">Колекція слів: %1$s</string>
+    <string name="no_words_for_category">У цій категорії поки немає слів. Оберіть іншу категорію.</string>
 
     <!-- Difficulty Levels -->
     <string name="difficulty_easy">Легкий</string>
@@ -61,6 +71,8 @@
     <string name="who_got_point">Хто вгадав слово?</string>
     <string name="no_one_correct">Ніхто не вгадав</string>
     <string name="score_label">Рахунок: %1$d</string>
+    <string name="turn_score_label">Рахунок ходу: %1$d</string>
+    <string name="team_score_description">%1$s, %2$d балів</string>
 
     <!-- Accessibility -->
     <string name="content_desc_back">Назад</string>
@@ -69,4 +81,26 @@
     <string name="content_desc_correct_icon">Правильно</string>
     <string name="content_desc_wrong_icon">Неправильно</string>
     <string name="content_desc_pause">Пауза</string>
+    <string name="content_desc_decrement">Зменшити значення</string>
+    <string name="content_desc_increment">Збільшити значення</string>
+
+    <!-- Home Screen -->
+    <string name="menu_play">ГРАТИ</string>
+    <string name="menu_rules">ПРАВИЛА</string>
+    <string name="menu_settings">НАЛАШТУВАННЯ</string>
+
+    <!-- Rules Screen -->
+    <string name="rules_title">Правила гри</string>
+    <string name="rules_section_goal">Мета</string>
+    <string name="rules_desc_goal">Команди ходять по черзі та набирають очки за правильні слова; мета — досягти цільового рахунку.</string>
+    <string name="rules_section_scoring">Рахунок</string>
+    <string name="rules_desc_scoring">Правильне слово додає 1 бал до рахунку поточного ходу. Пропуск слова віднімає 1 бал.</string>
+    <string name="rules_section_final_word">Останнє слово</string>
+    <string name="rules_desc_final_word">Коли час вичерпується, оберіть команду, яка отримує 1 бал за останнє слово, або вкажіть, що ніхто не вгадав.</string>
+    <string name="rules_section_winning">Перемога</string>
+    <string name="rules_desc_winning">Після ходу кожної команди гра завершується, якщо хтось досяг цільового рахунку. Перемагає команда або команди з найбільшим рахунком серед тих, хто досяг цілі.</string>
+    <string name="exit_confirmation_title">Вийти з гри?</string>
+    <string name="exit_confirmation_message">Поточну ігрову сесію буде скасовано.</string>
+    <string name="exit_confirmation_confirm">Вийти</string>
+    <string name="exit_confirmation_cancel">Продовжити гру</string>
 </resources>

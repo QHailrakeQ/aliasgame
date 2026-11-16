@@ -3,6 +3,10 @@
     <string name="setup_title">Game Setup</string>
     <string name="round_time">Round Time: %1$d sec</string>
     <string name="target_score">Target Score: %1$d</string>
+    <string name="round_time_label">Round duration</string>
+    <string name="target_score_label">Target score</string>
+    <string name="round_time_value">%1$d sec</string>
+    <string name="target_score_value">%1$d</string>
     <string name="language">Language</string>
     <string name="category">Category</string>
     <string name="add_team">Add Team</string>
@@ -13,6 +17,7 @@
     <string name="game_finished">Game is finished!</string>
     <string name="winner_title">🎉 WE HAVE A WINNER! 🎉</string>
     <string name="back_to_menu">Back to Menu</string>
+    <string name="new_game">Start New Game</string>
     <string name="ready_title">Next Team:</string>
     <string name="ready_button">I\'m ready!</string>
     <string name="points_count">%1$d points</string>
@@ -37,6 +42,11 @@
     <string name="sound_effects">Sound Effects</string>
     <string name="haptic_feedback">Haptic Feedback</string>
     <string name="select_category_title">Select Category</string>
+    <string name="categories_load_error">Could not load categories.</string>
+    <string name="packs_empty">No categories are available for this language.</string>
+    <string name="retry">Retry</string>
+    <string name="pack_description_fallback">Word collection: %1$s</string>
+    <string name="no_words_for_category">This category has no words yet. Choose another category.</string>
 
     <!-- Difficulty Levels -->
     <string name="difficulty_easy">Easy</string>
@@ -61,6 +71,8 @@
     <string name="who_got_point">Who got the point?</string>
     <string name="no_one_correct">No one is correct</string>
     <string name="score_label">Score: %1$d</string>
+    <string name="turn_score_label">Turn score: %1$d</string>
+    <string name="team_score_description">%1$s, %2$d points</string>
 
     <!-- Accessibility -->
     <string name="content_desc_back">Back</string>
@@ -69,4 +81,26 @@
     <string name="content_desc_correct_icon">Correct</string>
     <string name="content_desc_wrong_icon">Wrong</string>
     <string name="content_desc_pause">Pause</string>
+    <string name="content_desc_decrement">Decrease value</string>
+    <string name="content_desc_increment">Increase value</string>
+
+    <!-- Home Screen -->
+    <string name="menu_play">PLAY</string>
+    <string name="menu_rules">RULES</string>
+    <string name="menu_settings">SETTINGS</string>
+
+    <!-- Rules Screen -->
+    <string name="rules_title">Game Rules</string>
+    <string name="rules_section_goal">Objective</string>
+    <string name="rules_desc_goal">Take turns and build points with correct answers; reaching the target score is the goal.</string>
+    <string name="rules_section_scoring">Scoring</string>
+    <string name="rules_desc_scoring">A correct word adds 1 point to the current turn score. Skipping a word subtracts 1 point.</string>
+    <string name="rules_section_final_word">Final Word</string>
+    <string name="rules_desc_final_word">When the timer reaches zero, choose which team, if any, earns 1 point for the last word.</string>
+    <string name="rules_section_winning">Winning</string>
+    <string name="rules_desc_winning">After every team has taken a turn, the game ends if a team has reached the target. The highest-scoring team or teams that reached it win.</string>
+    <string name="exit_confirmation_title">Exit game?</string>
+    <string name="exit_confirmation_message">Your current game session will be discarded.</string>
+    <string name="exit_confirmation_confirm">Exit</string>
+    <string name="exit_confirmation_cancel">Keep playing</string>
 </resources>
