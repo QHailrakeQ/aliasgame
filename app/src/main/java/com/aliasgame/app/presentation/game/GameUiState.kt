@@ -34,4 +34,5 @@ sealed interface GameUiEffect {
     data object PlaySkipSound : GameUiEffect
     data object PlayTimerEndSound : GameUiEffect
     data object NavigateBack : GameUiEffect
+    data object NavigateToSetup : GameUiEffect
 }

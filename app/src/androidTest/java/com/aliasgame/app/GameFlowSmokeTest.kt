@@ -3,6 +3,7 @@ package com.aliasgame.app
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
+import android.view.KeyEvent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
@@ -14,8 +15,7 @@ import java.io.File
 
 /**
  * UI Smoke test for AliasGame.
- * Covers the main flow: Setup -> Category Selection -> Return to Setup -> Start Game.
- * This test assumes NAV-01 and GAME-02 are implemented.
+ * Updated in Phase 4 to cover Home, Rules, and Game Setup.
  */
 @RunWith(AndroidJUnit4::class)
 class GameFlowSmokeTest {
@@ -41,10 +41,52 @@ class GameFlowSmokeTest {
     }
 
     @Test
-    fun testSetupToGameFlow() {
+    fun testHomeToRulesFlow() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+        val rulesButton = context.getString(R.string.menu_rules)
+        val rulesTitle = context.getString(R.string.rules_title).uppercase()
+        val goalSection = context.getString(R.string.rules_section_goal).uppercase()
+        val backDesc = context.getString(R.string.content_desc_back)
+        val appName = context.getString(R.string.app_name).uppercase()
+
+        // 1. From Home, navigate to Rules
+        composeTestRule.onNodeWithText(rulesButton).performClick()
+
+        // 2. Verify Rules screen content
+        composeTestRule.onNodeWithText(rulesTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(goalSection).assertIsDisplayed()
+
+        // 3. Go back to Home
+        composeTestRule.onNodeWithContentDescription(backDesc).performClick()
+        composeTestRule.onNodeWithText(appName).assertIsDisplayed()
+    }
+
+    @Test
+    fun testHomeToSettingsAndBack() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val settingsButton = context.getString(R.string.menu_settings)
+        val languageTitle = context.getString(R.string.language)
+        val soundSetting = context.getString(R.string.sound_effects)
+        val vibrationSetting = context.getString(R.string.haptic_feedback)
+        val backDesc = context.getString(R.string.content_desc_back)
+        val appName = context.getString(R.string.app_name).uppercase()
+
+        composeTestRule.onNodeWithText(settingsButton).performClick()
+        composeTestRule.onNodeWithText(languageTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(soundSetting).assertIsDisplayed()
+        composeTestRule.onNodeWithText(vibrationSetting).assertIsDisplayed()
+
+        composeTestRule.onNodeWithContentDescription(backDesc).performClick()
+        composeTestRule.onNodeWithText(appName).assertIsDisplayed()
+    }
+
+    @Test
+    fun testHomeToGameFlow() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         // Resource strings for identifying UI elements
+        val playButton = context.getString(R.string.menu_play)
         val setupTitle = context.getString(R.string.setup_title).uppercase()
         val categoryTitle = context.getString(R.string.select_category_title)
         val easyPack = context.getString(R.string.difficulty_easy)
@@ -52,31 +94,71 @@ class GameFlowSmokeTest {
         val startGame = context.getString(R.string.start_game).uppercase()
         val readyButton = context.getString(R.string.ready_button).uppercase()
 
-        // 1. Verify we are on the Setup Screen
+        // 1. Verify we are on the Home Screen and click Play
+        composeTestRule.onNodeWithText(playButton).assertIsDisplayed().performClick()
+
+        // 2. Verify we are on the Setup Screen
         composeTestRule.onNodeWithText(setupTitle).assertIsDisplayed()
 
-        // 2. Open Category Selection
+        // 3. Open Category Selection
         // The default pack is "Easy", so clicking it should open the selection screen
         composeTestRule.onNodeWithText(easyPack).performClick()
 
-        // 3. Verify Selection Screen and pick "Medium"
+        // 4. Verify Selection Screen and pick "Medium"
         composeTestRule.onNodeWithText(categoryTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(mediumPack).performClick()
 
-        // 4. Verify return to Setup Screen with updated selection
-        // NAV-01 ensures this is immediate due to shared ViewModel
+        // 5. Verify return to Setup Screen with updated selection
         composeTestRule.onNodeWithText(setupTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(mediumPack).assertIsDisplayed()
 
-        // 5. Start Game
-        // Default team names (Team 1, Team 2) should be present, so button is enabled
+        // 6. Start Game
         composeTestRule.onNodeWithText(startGame).performClick()
 
-        // 6. Verify Game Screen / Ready Overlay
-        // We wait for the "I'm ready!" button to appear on the Game screen
+        // 7. Verify Game Screen / Ready Overlay
         composeTestRule.waitUntil(timeoutMillis = 5000) {
             composeTestRule.onAllNodesWithText(readyButton).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(readyButton).assertIsDisplayed()
+    }
+
+    @Test
+    fun testExitButtonAndSystemBackRequireConfirmation() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val exitDescription = context.getString(R.string.content_desc_exit)
+        val exitTitle = context.getString(R.string.exit_confirmation_title)
+        val cancelExit = context.getString(R.string.exit_confirmation_cancel)
+        val confirmExit = context.getString(R.string.exit_confirmation_confirm)
+        val playButton = context.getString(R.string.menu_play)
+        val startGame = context.getString(R.string.start_game).uppercase()
+        val readyButton = context.getString(R.string.ready_button).uppercase()
+        val homeTitle = context.getString(R.string.app_name).uppercase()
+
+        composeTestRule.onNodeWithText(playButton).performClick()
+        composeTestRule.onNodeWithText(startGame).performClick()
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithText(readyButton).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithText(readyButton).performClick()
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithContentDescription(exitDescription)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.onNodeWithContentDescription(exitDescription).performClick()
+        composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(cancelExit).performClick()
+        composeTestRule.onNodeWithContentDescription(exitDescription).assertIsDisplayed()
+
+        InstrumentationRegistry.getInstrumentation()
+            .sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(cancelExit).performClick()
+
+        InstrumentationRegistry.getInstrumentation()
+            .sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(confirmExit).performClick()
+        composeTestRule.onNodeWithText(homeTitle).assertIsDisplayed()
     }
 }

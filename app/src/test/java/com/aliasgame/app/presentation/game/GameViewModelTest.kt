@@ -9,9 +9,11 @@ import com.aliasgame.app.domain.repository.GameSessionSnapshot
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.*
@@ -92,7 +94,7 @@ class GameViewModelTest {
         advanceUntilIdle()
 
         assertNull(viewModel.uiState.value.currentWord)
-        
+
         viewModel.onStartTimer()
         runCurrent()
         advanceTimeBy(2000)
@@ -124,12 +126,12 @@ class GameViewModelTest {
         runCurrent()
         advanceTimeBy(500)
         runCurrent()
-        
+
         // Call resume multiple times while running
         viewModel.resumeGame()
         viewModel.resumeGame()
         runCurrent()
-        
+
         advanceTimeBy(1000)
         runCurrent()
         
@@ -146,25 +148,57 @@ class GameViewModelTest {
         viewModel.onStartTimer()
         runCurrent()
         assertEquals(defaultSettings.roundTime, viewModel.uiState.value.timeRemaining)
-        
+
         // Wait for 5 ticks
         advanceTimeBy(5000)
         runCurrent()
         val remaining = viewModel.uiState.value.timeRemaining
         assertEquals(defaultSettings.roundTime - 5, remaining)
-        
+
         viewModel.pauseGame()
         runCurrent()
         assertFalse(viewModel.uiState.value.isTimerRunning)
-        
+
         // Resume from where we left off
         viewModel.resumeGame()
         runCurrent()
         assertEquals(remaining, viewModel.uiState.value.timeRemaining)
-        
+
         advanceTimeBy(2000)
         runCurrent()
         assertEquals(remaining - 2, viewModel.uiState.value.timeRemaining)
+    }
+
+    @Test
+    fun `onExitGame clears saved session before requesting navigation`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        sessionRepository.operations.clear()
+
+        val effect = async { viewModel.uiEffect.first() }
+        runCurrent()
+        viewModel.onExitGame()
+        advanceUntilIdle()
+
+        assertEquals(GameUiEffect.NavigateBack, effect.await())
+        assertNull(sessionRepository.snapshotFlow.value)
+        assertEquals(listOf("clear"), sessionRepository.operations)
+    }
+
+    @Test
+    fun `onStartNewGame clears saved session before requesting setup navigation`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        sessionRepository.operations.clear()
+
+        val effect = async { viewModel.uiEffect.first() }
+        runCurrent()
+        viewModel.onStartNewGame()
+        advanceUntilIdle()
+
+        assertEquals(GameUiEffect.NavigateToSetup, effect.await())
+        assertNull(sessionRepository.snapshotFlow.value)
+        assertEquals(listOf("clear"), sessionRepository.operations)
     }
 
     // Fakes
@@ -194,8 +228,15 @@ class GameViewModelTest {
 
     class FakeGameSessionRepository : GameSessionRepository {
         val snapshotFlow = MutableStateFlow<GameSessionSnapshot?>(null)
+        val operations = mutableListOf<String>()
         override val sessionSnapshot = snapshotFlow
-        override suspend fun saveSession(snapshot: GameSessionSnapshot) { snapshotFlow.value = snapshot }
-        override suspend fun clearSession() { snapshotFlow.value = null }
+        override suspend fun saveSession(snapshot: GameSessionSnapshot) {
+            operations += "save"
+            snapshotFlow.value = snapshot
+        }
+        override suspend fun clearSession() {
+            operations += "clear"
+            snapshotFlow.value = null
+        }
     }
 }

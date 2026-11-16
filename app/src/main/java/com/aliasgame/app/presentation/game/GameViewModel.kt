@@ -8,6 +8,7 @@ import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +39,8 @@ class GameViewModel @Inject constructor(
     val uiEffect = _uiEffect.receiveAsFlow()
 
     private var timerJob: Job? = null
+    private var sessionSaveJob: Job? = null
+    private var isExiting = false
 
     init {
         viewModelScope.launch {
@@ -122,7 +125,13 @@ class GameViewModel @Inject constructor(
     }
 
     private fun saveSession() {
-        viewModelScope.launch {
+        if (isExiting) return
+
+        val previousSave = sessionSaveJob
+        sessionSaveJob = viewModelScope.launch {
+            previousSave?.cancelAndJoin()
+            if (isExiting) return@launch
+
             val state = _uiState.value
             val lang = settingsRepository.selectedLanguage.first()
             val pack = settingsRepository.selectedPack.first()
@@ -213,9 +222,22 @@ class GameViewModel @Inject constructor(
     }
 
     fun onExitGame() {
+        clearSessionAndNavigate(GameUiEffect.NavigateBack)
+    }
+
+    fun onStartNewGame() {
+        clearSessionAndNavigate(GameUiEffect.NavigateToSetup)
+    }
+
+    private fun clearSessionAndNavigate(effect: GameUiEffect) {
+        if (isExiting) return
+        isExiting = true
+        timerJob?.cancel()
+
         viewModelScope.launch {
+            sessionSaveJob?.cancelAndJoin()
             sessionRepository.clearSession()
-            _uiEffect.send(GameUiEffect.NavigateBack)
+            _uiEffect.send(effect)
         }
     }
 }
