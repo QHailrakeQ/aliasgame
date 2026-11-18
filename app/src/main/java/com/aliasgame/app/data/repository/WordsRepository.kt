@@ -2,6 +2,7 @@ package com.aliasgame.app.data.repository
 
 import android.content.Context
 import com.aliasgame.app.di.IoDispatcher
+import com.aliasgame.app.domain.model.AppLanguages
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,10 +37,8 @@ internal object WordPackParser {
     fun parse(document: String): List<Word> =
         json.decodeFromString<List<WordDto>>(document).map { it.toDomain() }
 
-    fun fileNameFor(language: String): String {
-        val langCode = if (language.uppercase() == "UA") "uk" else language.lowercase()
-        return "words_${langCode}.json"
-    }
+    fun fileNameFor(language: String): String =
+        "words_${AppLanguages.toLanguageTag(language)}.json"
 }
 
 class WordsRepositoryImpl @Inject constructor(
@@ -67,7 +66,5 @@ class WordsRepositoryImpl @Inject constructor(
     override suspend fun getPacks(language: String): List<String> =
         loadAll(language).map { it.packId }.distinct()
 
-    override suspend fun getLanguages(): List<String> {
-        return listOf("EN", "UA", "RU", "DE")
-    }
+    override suspend fun getLanguages(): List<String> = AppLanguages.supported
 }
