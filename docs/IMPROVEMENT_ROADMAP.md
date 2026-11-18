@@ -68,7 +68,7 @@ Status values: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`, `NEEDS DECISION`, `WON'
 
 ### P0 — Critical bugs / reliability (mandatory)
 
-#### P0-1 · CI is permanently red: lint crashes — `NEEDS DECISION`
+#### P0-1 · CI is permanently red: lint crashes — `DONE`
 - **Problem (Confirmed):** `lintDebug` crashes with `IncompatibleClassChangeError` in `NonNullableMutableLiveDataDetector`. The catalog declares lifecycle `2.8.6` and navigation `2.8.3`, but `androidx.hilt:hilt-navigation-compose:1.3.0` silently upgrades them to lifecycle **2.9.1** / navigation **2.9.0**. The lint checks shipped in lifecycle 2.9.x are compiled against a newer Lint/Kotlin Analysis API than the one in AGP **8.7.2**.
 - **Evidence:** `gradle/libs.versions.toml` (`agp = "8.7.2"`, `hiltNavigationCompose = "1.3.0"`); `./gradlew :app:dependencies` shows `lifecycle-runtime-ktx:2.8.6 -> 2.9.1`; GitHub Actions runs fail at *Run Lint*, later steps skipped.
 - **Options:**
@@ -171,7 +171,7 @@ Planned branch: `feature/portfolio-quality-improvements` (not created yet — aw
 
 | Date | Decision | Status |
 |---|---|---|
-| 2026-11-18 | P0-1 fix strategy (A upgrade AGP / B pin hilt-navigation-compose 1.2.0) | Pending owner |
+| 2026-11-18 | P0-1: option A chosen by owner. Experimentally, AGP 8.9.3 (+ Gradle 8.11.1, its minimum) is enough to run lifecycle 2.9 lint checks; no jump to AGP 8.10+ or 9.x needed. Catalog now declares the versions that were already being resolved (lifecycle 2.9.1, navigation 2.9.0) — resolved dependency graph verified identical. | Done |
 
 ---
 
@@ -179,7 +179,7 @@ Planned branch: `feature/portfolio-quality-improvements` (not created yet — aw
 
 | Task | Commit | Tests | Notes |
 |---|---|---|---|
-| — | — | — | Nothing implemented yet |
+| P0-1 Fix lint crash (AGP 8.7.2 → 8.9.3, Gradle 8.9 → 8.11.1, catalog aligned) | recorded in next roadmap update | `lintDebug` passed (0 errors, 60 warnings), `testDebugUnitTest` passed (36/36), `assembleDebug` passed, `assembleDebugAndroidTest` passed; `connectedDebugAndroidTest` not executed (no emulator) | Lint warnings are pre-existing and tracked: GradleDependency 39, UnusedResources 11, PluralsCandidate 5 (P2-3), AndroidGradlePluginVersion 3, RedundantLabel 1, OldTargetApi 1 (P1-6) |
 
 ## 6. Remaining technical debt
 
