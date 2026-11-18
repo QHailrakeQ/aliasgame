@@ -376,6 +376,35 @@ class GameViewModelTest {
         assertEquals(GamePhase.PAUSED, sessionRepository.snapshotFlow.value?.phase)
     }
 
+    // --- App lifecycle -------------------------------------------------------------------
+
+    @Test
+    fun `going to the background pauses a running countdown`() = runTest {
+        startNewGame()
+        viewModel.onStartTimer()
+        runCurrent()
+        advanceTimeBy(3000)
+        runCurrent()
+
+        viewModel.onAppBackgrounded()
+        advanceTimeBy(10_000)
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.isPaused)
+        assertEquals(defaultSettings.roundTime - 3, state.timeRemaining)
+    }
+
+    @Test
+    fun `going to the background outside a running countdown changes nothing`() = runTest {
+        startNewGame()
+
+        viewModel.onAppBackgrounded()
+        runCurrent()
+
+        assertTrue(viewModel.uiState.value.isReadyToStart)
+    }
+
     // --- Leaving the game ----------------------------------------------------------------
 
     @Test

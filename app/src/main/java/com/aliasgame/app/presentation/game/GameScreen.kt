@@ -1,5 +1,8 @@
 package com.aliasgame.app.presentation.game
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.media.MediaPlayer
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
@@ -52,6 +55,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
 import com.aliasgame.app.domain.model.RoundResult
@@ -95,6 +100,13 @@ fun GameScreen(
 
     BackHandler(enabled = !showExitConfirmation) {
         requestExit()
+    }
+
+    // Pause the countdown when the game leaves the screen, but not for a configuration change
+    // (e.g. rotation), where the activity is only recreated and play continues.
+    val activity = remember(context) { context.findActivity() }
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        if (activity?.isChangingConfigurations != true) viewModel.onAppBackgrounded()
     }
 
     val entryProgress = remember(state.isEntranceAnimationPlayed) {
@@ -298,6 +310,12 @@ private fun GameItemContainer(
     ) {
         content()
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 /** Full-screen overlays drawn in this composable (the last-word dialog is its own window). */

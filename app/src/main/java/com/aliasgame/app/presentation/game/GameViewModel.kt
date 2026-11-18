@@ -99,6 +99,13 @@ class GameViewModel @Inject constructor(
 
     fun resumeGame() = perform({ resume() }) { startTicking() }
 
+    /**
+     * The game screen left the foreground (home button, incoming call, screen off). A running
+     * countdown is paused so the team does not lose time while nobody is playing; the players
+     * resume it explicitly. Has no effect in any other phase.
+     */
+    fun onAppBackgrounded() = pauseGame()
+
     fun onFinalWordProcessed(winnerTeamId: String?) = perform({ decideLastWord(winnerTeamId) })
 
     fun toggleWordResult(index: Int) = perform({ toggleResult(index) })
