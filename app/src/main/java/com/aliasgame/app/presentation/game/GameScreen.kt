@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -140,7 +141,10 @@ fun GameScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                // While an overlay covers the game, hide the controls underneath from
+                // accessibility services as well, not only from touch.
+                .then(if (state.hasBlockingOverlay()) Modifier.clearAndSetSemantics {} else Modifier),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             GameItemContainer(progress = entryProgress.value, index = 0) {
@@ -295,8 +299,25 @@ private fun GameItemContainer(
     }
 }
 
-private fun GameUiState.isReadyToStart() = 
+private fun GameUiState.isReadyToStart() =
     !isRoundOver && !isPaused && !isGameFinished && timeRemaining == 0L && currentTeam != null && currentWord != null
+
+/** Full-screen overlays drawn in this composable (the last-word dialog is its own window). */
+private fun GameUiState.hasBlockingOverlay() =
+    isPaused || isRoundOver || isGameFinished || isReadyToStart()
+
+/**
+ * Consumes every pointer event that reaches the overlay, so controls drawn underneath
+ * cannot be tapped through it. Children of the overlay still receive events first.
+ * A Box with only a background does not take part in hit testing in Compose.
+ */
+private fun Modifier.blockUnderlyingTouches(): Modifier = pointerInput(Unit) {
+    awaitPointerEventScope {
+        while (true) {
+            awaitPointerEvent().changes.forEach { it.consume() }
+        }
+    }
+}
 
 @Composable
 private fun GameHUD(
@@ -678,7 +699,10 @@ fun FinalWordDialog(
 
 @Composable
 private fun PauseOverlay(onContinue: () -> Unit) {
-    Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.72f)), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier.fillMaxSize().blockUnderlyingTouches().background(Color.Black.copy(alpha = 0.72f)),
+        contentAlignment = Alignment.Center
+    ) {
         Surface(
             modifier = Modifier.padding(GameSpacing.cardPadding),
             shape = RoundedCornerShape(GameShapeSize.card),
@@ -712,7 +736,7 @@ private fun PauseOverlay(onContinue: () -> Unit) {
 @Composable
 private fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, onToggleResult: (Int) -> Unit, onNextRound: () -> Unit) {
     Box(
-        Modifier.fillMaxSize().background(BgStart.copy(alpha = 0.95f)).padding(16.dp),
+        Modifier.fillMaxSize().blockUnderlyingTouches().background(BgStart.copy(alpha = 0.95f)).padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(
@@ -815,7 +839,10 @@ private fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, o
 
 @Composable
 private fun ReadyOverlay(teamName: String, onStart: () -> Unit) {
-    Box(Modifier.fillMaxSize().background(BgStart.copy(alpha = 0.9f)), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier.fillMaxSize().blockUnderlyingTouches().background(BgStart.copy(alpha = 0.9f)),
+        contentAlignment = Alignment.Center
+    ) {
         Surface(
             modifier = Modifier.padding(GameSpacing.cardPadding),
             shape = RoundedCornerShape(GameShapeSize.card),
@@ -852,6 +879,7 @@ private fun VictoryOverlay(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .blockUnderlyingTouches()
             .background(
                 Brush.verticalGradient(
                     colorStops = arrayOf(
