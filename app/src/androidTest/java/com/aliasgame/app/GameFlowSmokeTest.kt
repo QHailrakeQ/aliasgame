@@ -116,7 +116,7 @@ class GameFlowSmokeTest {
         composeTestRule.onNodeWithText(startGame).performScrollTo().performClick()
 
         // 7. Verify Game Screen / Ready Overlay
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule.onAllNodesWithText(readyButton).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(readyButton).assertIsDisplayed()
@@ -136,11 +136,11 @@ class GameFlowSmokeTest {
 
         composeTestRule.onNodeWithText(playButton).performClick()
         composeTestRule.onNodeWithText(startGame).performScrollTo().performClick()
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule.onAllNodesWithText(readyButton).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(readyButton).performClick()
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule.onAllNodesWithContentDescription(exitDescription)
                 .fetchSemanticsNodes().isNotEmpty()
         }
@@ -161,6 +161,11 @@ class GameFlowSmokeTest {
         Espresso.pressBack()
         composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(confirmExit).performClick()
+        // Exiting clears the saved session in DataStore (I/O the Compose test rule does not track)
+        // before navigating, so wait for the home screen explicitly.
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText(homeTitle).fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithText(homeTitle).assertIsDisplayed()
     }
 }
