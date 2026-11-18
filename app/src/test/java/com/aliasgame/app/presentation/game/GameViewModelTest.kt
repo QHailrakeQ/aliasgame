@@ -324,6 +324,81 @@ class GameViewModelTest {
         assertEquals(true, sessionRepository.snapshotFlow.value?.isTurnInProgress)
     }
 
+    @Test
+    fun `processing the final word twice advances the turn only once`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        playUntilLastWord()
+
+        viewModel.onFinalWordProcessed(winnerTeamId = "1")
+        viewModel.onFinalWordProcessed(winnerTeamId = "1")
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertEquals("2", state.currentTeam?.id)
+        assertEquals(1, state.roundResults.size)
+        assertEquals(1, state.allTeams.first { it.id == "1" }.score)
+    }
+
+    @Test
+    fun `final word decision is ignored outside last-word mode`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onFinalWordProcessed(winnerTeamId = "1")
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertEquals("1", state.currentTeam?.id)
+        assertFalse(state.isRoundOver)
+        assertTrue(state.allTeams.all { it.score == 0 })
+    }
+
+    @Test
+    fun `starting the next round twice draws only one new word`() = runTest {
+        engine = GameEngine(List(5) { Word("Word $it", "easy") }, testTeams, defaultSettings)
+        createViewModel()
+        advanceUntilIdle()
+        playUntilLastWord()
+        viewModel.onFinalWordProcessed(winnerTeamId = null)
+        runCurrent()
+
+        viewModel.startNextRound()
+        runCurrent()
+        val wordAfterFirstCall = viewModel.uiState.value.currentWord
+        viewModel.startNextRound()
+        runCurrent()
+
+        assertEquals(wordAfterFirstCall, viewModel.uiState.value.currentWord)
+    }
+
+    @Test
+    fun `round results cannot be toggled while a turn is being played`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        viewModel.onStartTimer()
+        runCurrent()
+        viewModel.onWordSwiped(isCorrect = true)
+        viewModel.onWordSwiped(isCorrect = true)
+        runCurrent()
+
+        viewModel.toggleWordResult(0)
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.roundResults.all { it.isCorrect })
+        assertTrue(state.allTeams.all { it.score == 0 })
+    }
+
+    /** Starts the current team's turn and lets the countdown expire. */
+    private fun TestScope.playUntilLastWord() {
+        viewModel.onStartTimer()
+        runCurrent()
+        advanceTimeBy(defaultSettings.roundTime * 1000 + 1)
+        runCurrent()
+        assertTrue(viewModel.uiState.value.isLastWordMode)
+    }
+
     private fun snapshot(
         timeRemaining: Long,
         isRoundOver: Boolean,

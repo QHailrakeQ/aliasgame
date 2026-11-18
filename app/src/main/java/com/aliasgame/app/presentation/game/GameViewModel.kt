@@ -195,6 +195,8 @@ class GameViewModel @Inject constructor(
     }
 
     fun onFinalWordProcessed(winnerTeamId: String?) {
+        // Guarded so a double tap in the last-word dialog cannot roll the turn twice.
+        if (!_uiState.value.isLastWordMode) return
         engine.addFinalWordResult(isCorrect = winnerTeamId != null)
         winnerTeamId?.let { engine.addPointToTeam(it) }
         
@@ -204,13 +206,17 @@ class GameViewModel @Inject constructor(
     }
 
     fun toggleWordResult(index: Int) {
-        if (index == _uiState.value.roundResults.size - 1) return
-        
+        val state = _uiState.value
+        // Results are reviewable only on the round-results screen; the final word is not toggleable.
+        if (!state.isRoundOver || state.isGameFinished || index == state.roundResults.size - 1) return
+
         engine.toggleWordResult(index)
         syncState()
     }
 
     fun startNextRound() {
+        val state = _uiState.value
+        if (!state.isRoundOver || state.isGameFinished) return
         engine.prepareForNextRound()
         val nextWord = engine.getNextWord()
         _uiState.update { 
