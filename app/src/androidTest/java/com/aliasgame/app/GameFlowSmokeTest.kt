@@ -3,7 +3,6 @@ package com.aliasgame.app
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
@@ -150,15 +149,11 @@ class GameFlowSmokeTest {
         composeTestRule.onNodeWithText(cancelExit).performClick()
         composeTestRule.onNodeWithContentDescription(exitDescription).assertIsDisplayed()
 
-        // Espresso waits for the app window to regain focus after the dialog closes, so the
-        // key event cannot be lost to a dismissed dialog window.
-        Espresso.pressBack()
+        pressSystemBack()
         composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(cancelExit).performClick()
 
-        // Espresso waits for the app window to regain focus after the dialog closes, so the
-        // key event cannot be lost to a dismissed dialog window.
-        Espresso.pressBack()
+        pressSystemBack()
         composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(confirmExit).performClick()
         // Exiting clears the saved session in DataStore (I/O the Compose test rule does not track)
@@ -167,5 +162,20 @@ class GameFlowSmokeTest {
             composeTestRule.onAllNodesWithText(homeTitle).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(homeTitle).assertIsDisplayed()
+    }
+
+    /**
+     * Sends Back through the activity's OnBackPressedDispatcher, which is what the game's
+     * BackHandler listens to. Unlike injecting a key event, this does not depend on the app
+     * window having input focus, which slow CI emulators often lose to system
+     * "not responding" dialogs.
+     *
+     * Waits for pending recompositions first: the game's BackHandler is only enabled again
+     * after closing the exit dialog has been recomposed.
+     */
+    private fun pressSystemBack() {
+        composeTestRule.waitForIdle()
+        activityScenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+        composeTestRule.waitForIdle()
     }
 }
