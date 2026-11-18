@@ -84,14 +84,16 @@ fun GameScreen(
         }
     }
 
-    val soundPlayer = rememberGameSoundPlayer()
+    // Null until the player has been created in the background; the effect collector below
+    // starts once, so it reads the latest value through rememberUpdatedState.
+    val soundPlayer by rememberUpdatedState(rememberGameSoundPlayer())
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                GameUiEffect.PlayCorrectSound -> if (soundEnabled) soundPlayer.play(GameSound.CORRECT)
-                GameUiEffect.PlaySkipSound -> if (soundEnabled) soundPlayer.play(GameSound.SKIP)
-                GameUiEffect.PlayTimerEndSound -> if (soundEnabled) soundPlayer.play(GameSound.TIMER_END)
+                GameUiEffect.PlayCorrectSound -> if (soundEnabled) soundPlayer?.play(GameSound.CORRECT)
+                GameUiEffect.PlaySkipSound -> if (soundEnabled) soundPlayer?.play(GameSound.SKIP)
+                GameUiEffect.PlayTimerEndSound -> if (soundEnabled) soundPlayer?.play(GameSound.TIMER_END)
                 GameUiEffect.NavigateBack -> onExit()
                 GameUiEffect.NavigateToSetup -> onNewGame()
             }

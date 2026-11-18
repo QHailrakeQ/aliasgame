@@ -5,10 +5,17 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.SoundPool
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.aliasgame.app.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.withContext
 
 enum class GameSound { CORRECT, SKIP, TIMER_END }
 
@@ -66,13 +73,30 @@ class GameSoundPlayer(context: Context) {
     }
 }
 
-/** A [GameSoundPlayer] tied to the composition: created once and released when it leaves. */
+/**
+ * A [GameSoundPlayer] tied to the composition, or `null` while it is still being created.
+ *
+ * Creating the player opens the audio files and prepares the [MediaPlayer] synchronously,
+ * which takes from hundreds of milliseconds to seconds on slower devices. Doing that on the
+ * main thread froze the game screen right after it opened (buttons ignored every touch), so
+ * the player is created on a background thread; sounds requested before it is ready are skipped.
+ * It is released when it leaves the composition.
+ */
 @Composable
-fun rememberGameSoundPlayer(): GameSoundPlayer {
+fun rememberGameSoundPlayer(): GameSoundPlayer? {
     val context = LocalContext.current.applicationContext
-    val player = remember(context) { GameSoundPlayer(context) }
-    DisposableEffect(player) {
-        onDispose { player.release() }
+    var player by remember(context) { mutableStateOf<GameSoundPlayer?>(null) }
+    LaunchedEffect(context) {
+        // NonCancellable: if the screen leaves while the player is being created, the finished
+        // player is still returned here and released below instead of leaking its resources.
+        val created = withContext(Dispatchers.IO + NonCancellable) { GameSoundPlayer(context) }
+        try {
+            player = created
+            awaitCancellation()
+        } finally {
+            player = null
+            created.release()
+        }
     }
     return player
 }
