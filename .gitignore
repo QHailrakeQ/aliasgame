@@ -19,3 +19,6 @@ local.properties
 
 # Per-developer IDE state
 /.idea/deploymentTargetSelector.xml
+
+# Internal audit notes (kept locally, not published)
+/docs/IMPROVEMENT_ROADMAP.md
