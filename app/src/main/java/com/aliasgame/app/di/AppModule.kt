@@ -15,6 +15,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -24,9 +25,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideWordsRepository(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
     ): WordsRepository {
-        return WordsRepositoryImpl(context)
+        return WordsRepositoryImpl(context, ioDispatcher)
     }
 
     @Provides
