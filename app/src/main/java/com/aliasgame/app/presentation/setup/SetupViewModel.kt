@@ -3,6 +3,7 @@ package com.aliasgame.app.presentation.setup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
+import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
@@ -28,7 +29,6 @@ import kotlin.math.roundToLong
  */
 @HiltViewModel
 class SetupViewModel @Inject constructor(
-    private val engine: GameEngine,
     private val repository: WordsRepository,
     private val settingsRepository: SettingsRepository,
     private val sessionRepository: GameSessionRepository,
@@ -182,7 +182,6 @@ class SetupViewModel @Inject constructor(
     fun startGame() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            sessionRepository.clearSession()
 
             getWordsUseCase(
                 language = _uiState.value.selectedLanguage,
@@ -194,13 +193,16 @@ class SetupViewModel @Inject constructor(
                     return@onSuccess
                 }
 
-                engine.setupGame(
-                    _uiState.value.teamNames,
-                    engine.settings.copy(
-                        roundTime = _uiState.value.roundTime,
-                        targetScore = _uiState.value.targetScore
-                    ),
-                    words
+                val state = _uiState.value
+                // The game screen loads its engine from this session, exactly as it does after
+                // process death, so starting and restoring a game share one code path.
+                sessionRepository.saveSession(
+                    GameEngine.newSession(
+                        teamNames = state.teamNames,
+                        settings = GameSettings(roundTime = state.roundTime, targetScore = state.targetScore),
+                        language = state.selectedLanguage,
+                        packId = state.selectedPack
+                    )
                 )
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.send(SetupUiEffect.NavigateToGame)

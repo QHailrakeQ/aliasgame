@@ -183,7 +183,8 @@ fun GameScreen(
                             onSwipeUp = { viewModel.onWordSwiped(true) },
                             onSwipeDown = { viewModel.onWordSwiped(false) }
                         )
-                    } else {
+                    } else if (state.phase != null) {
+                        // Only after loading: a loaded game without a word ran out of words.
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -236,7 +237,7 @@ fun GameScreen(
             )
         }
 
-        if (state.isReadyToStart()) {
+        if (state.isReadyToStart) {
             ReadyOverlay(
                 teamName = state.currentTeam?.name ?: "",
                 onStart = viewModel::onStartTimer
@@ -299,12 +300,9 @@ private fun GameItemContainer(
     }
 }
 
-private fun GameUiState.isReadyToStart() =
-    !isRoundOver && !isPaused && !isGameFinished && timeRemaining == 0L && currentTeam != null && currentWord != null
-
 /** Full-screen overlays drawn in this composable (the last-word dialog is its own window). */
 private fun GameUiState.hasBlockingOverlay() =
-    isPaused || isRoundOver || isGameFinished || isReadyToStart()
+    isPaused || isRoundOver || isReadyToStart
 
 /**
  * Consumes every pointer event that reaches the overlay, so controls drawn underneath

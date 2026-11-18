@@ -4,9 +4,6 @@ import android.content.Context
 import com.aliasgame.app.data.repository.GameSessionRepositoryImpl
 import com.aliasgame.app.data.repository.SettingsRepositoryImpl
 import com.aliasgame.app.data.repository.WordsRepositoryImpl
-import com.aliasgame.app.domain.engine.GameEngine
-import com.aliasgame.app.domain.model.GameSettings
-import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
@@ -33,17 +30,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGameSettings(): GameSettings {
-        return GameSettings(
-            roundTime = 60,
-            targetScore = 50,
-            pointsPerCorrectAnswer = 1,
-            pointsPerSkip = -1
-        )
-    }
-
-    @Provides
-    @Singleton
     fun provideSettingsRepository(
         @ApplicationContext context: Context
     ): SettingsRepository {
@@ -56,18 +42,5 @@ object AppModule {
         @ApplicationContext context: Context
     ): GameSessionRepository {
         return GameSessionRepositoryImpl(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGameEngine(
-        settings: GameSettings
-    ): GameEngine {
-        // Initialize engine with default/empty state to avoid main thread blocking
-        return GameEngine(
-            allWords = emptyList(),
-            initialTeams = listOf(Team("1", "Team 1"), Team("2", "Team 2")),
-            settings = settings
-        )
     }
 }

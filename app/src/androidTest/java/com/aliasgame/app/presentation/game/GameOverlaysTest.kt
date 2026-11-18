@@ -15,7 +15,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.aliasgame.app.R
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GameSettings
-import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.GameSessionSnapshot
@@ -44,17 +43,15 @@ class GameOverlaysTest {
 
     @Before
     fun setUp() {
-        val engine = GameEngine(
-            allWords = List(10) { Word("Word $it", "Easy") },
-            initialTeams = listOf(Team("1", "Team A"), Team("2", "Team B")),
-            settings = GameSettings(roundTime = 60, targetScore = 50)
-        )
-        viewModel = GameViewModel(
-            engine,
-            FakeSettingsRepository(),
-            FakeWordsRepository(),
-            FakeGameSessionRepository()
-        )
+        val sessionRepository = FakeGameSessionRepository().apply {
+            sessionSnapshot.value = GameEngine.newSession(
+                teamNames = listOf("Team A", "Team B"),
+                settings = GameSettings(roundTime = 60, targetScore = 50),
+                language = "EN",
+                packId = "Easy"
+            )
+        }
+        viewModel = GameViewModel(FakeSettingsRepository(), FakeWordsRepository(), sessionRepository)
         composeTestRule.setContent {
             AliasGameTheme {
                 GameScreen(viewModel = viewModel, onExit = {}, onNewGame = {})
@@ -105,7 +102,7 @@ class GameOverlaysTest {
     }
 
     private class FakeWordsRepository : WordsRepository {
-        override suspend fun getWords(language: String, packId: String) = emptyList<Word>()
+        override suspend fun getWords(language: String, packId: String) = List(10) { Word("Word $it", "Easy") }
         override suspend fun getLanguages() = listOf("EN")
         override suspend fun getPacks(language: String) = listOf("Easy")
     }

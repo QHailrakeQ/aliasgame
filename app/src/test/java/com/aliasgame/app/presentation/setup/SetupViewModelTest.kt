@@ -1,7 +1,6 @@
 package com.aliasgame.app.presentation.setup
 
-import com.aliasgame.app.domain.engine.GameEngine
-import com.aliasgame.app.domain.model.GameSettings
+import com.aliasgame.app.domain.model.GamePhase
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
@@ -31,7 +30,6 @@ class SetupViewModelTest {
     private lateinit var settingsRepository: FakeSettingsRepository
     private lateinit var wordsRepository: FakeWordsRepository
     private lateinit var sessionRepository: FakeGameSessionRepository
-    private lateinit var engine: GameEngine
 
     @Before
     fun setup() {
@@ -40,14 +38,12 @@ class SetupViewModelTest {
         settingsRepository = FakeSettingsRepository()
         wordsRepository = FakeWordsRepository()
         sessionRepository = FakeGameSessionRepository()
-        engine = GameEngine(emptyList(), emptyList(), GameSettings(60, 50))
         
         val getWordsUseCase = GetWordsUseCase(wordsRepository)
         val getPacksUseCase = GetPacksUseCase(wordsRepository)
         val saveSettingsUseCase = SaveSettingsUseCase(settingsRepository)
 
         viewModel = SetupViewModel(
-            engine,
             wordsRepository,
             settingsRepository,
             sessionRepository,
@@ -106,7 +102,7 @@ class SetupViewModelTest {
         val getPacksUseCase = GetPacksUseCase(wordsRepository)
         val saveSettingsUseCase = SaveSettingsUseCase(settingsRepository)
         viewModel = SetupViewModel(
-            engine, wordsRepository, settingsRepository, sessionRepository,
+            wordsRepository, settingsRepository, sessionRepository,
             getWordsUseCase, getPacksUseCase, saveSettingsUseCase
         )
         
@@ -138,6 +134,26 @@ class SetupViewModelTest {
         assertEquals(false, viewModel.uiState.value.isLoading)
     }
 
+    @Test
+    fun `starting a game saves a fresh session with the chosen setup and navigates`() = runTest {
+        wordsRepository.words = listOf(Word("Cat", "Easy"))
+        viewModel.onRoundTimeChanged(30L)
+        viewModel.onTargetScoreChanged(20)
+        runCurrent()
+        val effect = async { viewModel.uiEffect.first() }
+
+        viewModel.startGame()
+        advanceUntilIdle()
+
+        assertEquals(SetupUiEffect.NavigateToGame, effect.await())
+        val session = sessionRepository.saved!!
+        assertEquals(listOf("T1", "T2"), session.teams.map { it.name })
+        assertEquals(30L, session.settings.roundTime)
+        assertEquals(20, session.settings.targetScore)
+        assertEquals("EN" to "Easy", session.language to session.packId)
+        assertEquals(GamePhase.READY_TO_START, session.phase)
+    }
+
     // Fakes
     private class FakeSettingsRepository : SettingsRepository {
         var savedPack: String? = null
@@ -165,15 +181,19 @@ class SetupViewModelTest {
         override suspend fun saveVibrationEnabled(enabled: Boolean) {}
     }
 
-    private class FakeWordsRepository : WordsRepository {
-        override suspend fun getWords(language: String, packId: String): List<Word> = emptyList()
+    class FakeWordsRepository : WordsRepository {
+        var words: List<Word> = emptyList()
+        override suspend fun getWords(language: String, packId: String): List<Word> = words
         override suspend fun getLanguages(): List<String> = listOf("EN", "UA")
         override suspend fun getPacks(language: String): List<String> = listOf("Easy", "Medium", "Hard")
     }
 
-    private class FakeGameSessionRepository : GameSessionRepository {
+    class FakeGameSessionRepository : GameSessionRepository {
+        var saved: GameSessionSnapshot? = null
         override val sessionSnapshot = flowOf<GameSessionSnapshot?>(null)
-        override suspend fun saveSession(snapshot: GameSessionSnapshot) {}
+        override suspend fun saveSession(snapshot: GameSessionSnapshot) {
+            saved = snapshot
+        }
         override suspend fun clearSession() {}
     }
 }
