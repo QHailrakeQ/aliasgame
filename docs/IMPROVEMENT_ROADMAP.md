@@ -118,7 +118,7 @@ Status values: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`, `NEEDS DECISION`, `WON'
 | P1-6 | `targetSdk = 34` | Google Play requires recent target API levels for updates (35+ since Aug 2025; current requirement must be verified). Raising to 35 enforces edge-to-edge → UI insets must be handled. `app/build.gradle.kts` | Raise `targetSdk`, handle insets, replace deprecated `window.statusBarColor` | Medium | M | P0-1 | Visual check on API 35 emulator, smoke test |
 | P1-7 | Critical-path test gaps | No VM tests for swipe→round→final word→victory; no data-layer tests (word JSON parsing, session snapshot codec); no UI test for overlays | Add focused tests alongside each fix; add JVM test that validates all `assets/words_*.json` | Low | M | — | CI |
 | P1-8 | README is factually outdated | README says 6 engine tests, no UI tests, CI does not run instrumented tests — all false. `README.md` *Testing*, *Continuous Integration* | Sync README; add CI badge once green | Low | S | P0-1 | Review |
-| P1-9 | Generated / personal files tracked in Git | `.kotlin/errors/errors-1789128623845.log` tracked; `.kotlin/` not ignored; `.idea/deploymentTargetSelector.xml` (per-developer) tracked | Untrack (`git rm --cached`), extend `.gitignore` | Low | S | — | `git status` clean after build |
+| P1-9 | Generated / personal files tracked in Git | **DONE** — `.kotlin/errors/errors-1789128623845.log` tracked; `.kotlin/` not ignored; `.idea/deploymentTargetSelector.xml` (per-developer) tracked | Untrack (`git rm --cached`), extend `.gitignore` | Low | S | — | `git status` clean after build |
 
 ### P2 — Meaningful engineering improvements
 
@@ -186,7 +186,8 @@ Planned branch: `feature/portfolio-quality-improvements` (not created yet — aw
 | Task | Commit | Tests | Notes |
 |---|---|---|---|
 | P0-1 Fix lint crash (AGP 8.7.2 → 8.9.3, Gradle 8.9 → 8.11.1, catalog aligned) | `4fb611c` | `lintDebug` passed (0 errors, 60 warnings), `testDebugUnitTest` passed (36/36), `assembleDebug` passed, `assembleDebugAndroidTest` passed; `connectedDebugAndroidTest` not executed (no emulator) | Lint warnings are pre-existing and tracked: GradleDependency 39, UnusedResources 11, PluralsCandidate 5 (P2-3), AndroidGradlePluginVersion 3, RedundantLabel 1, OldTargetApi 1 (P1-6) |
-| P0-2, P0-3, P0-4 Phase guards + correct session restore | recorded in next roadmap update | 8 new `GameViewModelTest` cases written first and confirmed failing (7 failed, 1 legacy-behaviour guard passed), then all passed; `testDebugUnitTest` passed (44/44) | CI for `4fb611c`: Lint, Unit Tests, Build passed on GitHub for the first time |
+| P0-2, P0-3, P0-4 Phase guards + correct session restore | `a5a2b41` | 8 new `GameViewModelTest` cases written first and confirmed failing (7 failed, 1 legacy-behaviour guard passed), then all passed; `testDebugUnitTest` passed (44/44) | CI for `4fb611c`: Lint, Unit Tests, Build passed on GitHub for the first time |
+| P1-9 Untrack `.kotlin/errors/*.log` and `.idea/deploymentTargetSelector.xml`, ignore `.kotlin/` | recorded in next roadmap update | No code change; `git status` verified (local files kept on disk) | `.idea/markdown.xml` (untracked, owner-local) left untouched |
 
 ## 6. Remaining technical debt
 

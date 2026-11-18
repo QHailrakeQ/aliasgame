@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Kotlin compiler daemon session data and crash logs
+.kotlin/
+
+# Per-developer IDE state
+/.idea/deploymentTargetSelector.xml
