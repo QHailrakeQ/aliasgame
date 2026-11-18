@@ -26,5 +26,10 @@ data class GameSessionSnapshot(
     val language: String,
     val packId: String,
     val timeRemaining: Long,
-    val isRoundOver: Boolean
+    val isRoundOver: Boolean,
+    /**
+     * True once the current team has started its timer (running, paused or in last-word mode).
+     * Distinguishes the "ready" screen from last-word mode, which both have no time remaining.
+     */
+    val isTurnInProgress: Boolean = false
 )

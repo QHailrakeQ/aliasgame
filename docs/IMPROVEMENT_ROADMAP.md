@@ -80,26 +80,31 @@ Status values: `TODO`, `IN PROGRESS`, `DONE`, `BLOCKED`, `NEEDS DECISION`, `WON'
 - **Risk:** Medium (build tooling). **Complexity:** S (B) / M (A). **Depends on:** —
 - **Verification:** `lintDebug`, `testDebugUnitTest`, `assembleDebug` locally; green GitHub Actions run.
 
-#### P0-2 · Pause button is clickable through the Ready overlay → the team loses its whole turn — `TODO`
+#### P0-2 · Pause button is clickable through the Ready overlay → the team loses its whole turn — `DONE` (logic); overlay touch blocking → P0-5
 - **Problem (High confidence):** `ReadyOverlay` is a `Box` with only a `background` — it does not consume pointer events, so the Pause button underneath remains clickable. `pauseGame()` has no guard, sets `isPaused = true` → Ready overlay disappears, Pause overlay appears. `resumeGame()` then sets `isTimerRunning = true` with `timeRemaining == 0` → `startTimer()` immediately sends `PlayTimerEndSound` and the state becomes `isLastWordMode` → the team goes straight to the last-word dialog without playing.
 - **Evidence:** `GameScreen.kt:235-240, 298-299, 487-500, 817-843`; `GameViewModel.kt:155-166, 209-222`; `GameEngine.kt:151`.
 - **Solution:** (1) ViewModel guards: `pauseGame` only while the timer is running; `resumeGame` only resumes a timer that has time left. (2) Overlays consume touches (e.g. a shared `Modifier` that intercepts pointer input) so that hidden controls are not interactive.
 - **Risk:** Low. **Complexity:** S. **Depends on:** —
 - **Verification:** failing-first `GameViewModelTest` cases (pause on Ready is a no-op; resume with 0s does not enter last-word mode); Compose UI test that the Pause button is not clickable behind the Ready overlay.
 
-#### P0-3 · Answer buttons / swipe remain active while paused — `TODO`
+#### P0-3 · Answer buttons / swipe remain active while paused — `DONE` (logic); overlay touch blocking → P0-5
 - **Problem (High confidence):** `PauseOverlay` also does not consume touches outside its central card, and `onWordSwiped` only checks `timeRemaining > 0`. Tapping *Skip* / *Got it* (bottom of the screen) while paused changes the score and advances words with the timer stopped.
 - **Evidence:** `GameScreen.kt:200-207, 213-215, 680-710`; `GameViewModel.kt:168-177`.
 - **Solution:** `onWordSwiped` requires an actively running timer and not paused; overlay touch blocking from P0-2.
 - **Risk:** Low. **Complexity:** S. **Depends on:** shares the overlay fix with P0-2.
 - **Verification:** VM test "swipe while paused does not change score"; UI test.
 
-#### P0-4 · Session restore outside an active timer loses the turn — `TODO`
+#### P0-4 · Session restore outside an active timer loses the turn — `DONE`
 - **Problem (High confidence):** `restoreSession` always restores `isPaused = true`. If the process died on the **Ready** screen (`timeRemaining == 0`), the user sees the Pause overlay; *Resume* jumps into last-word mode (same mechanism as P0-2). If it died on **Round results**, the engine's `isPaused` is never cleared by `startNextRound()`, so the next team also lands on the Pause overlay → *Resume* → last-word mode.
 - **Evidence:** `GameEngine.kt:212-223`; `GameViewModel.kt:60-73, 195-222`; `GameScreen.kt:213-240`. Existing test `init with saved session restores word and stays paused` only covers mid-timer restore.
 - **Solution:** restore as paused only when a turn was actually in progress (`0 < timeRemaining < roundTime` / timer had started); otherwise restore to Ready or Round-results; clear pause state on `startNextRound`.
 - **Risk:** Medium (session restore). **Complexity:** S–M. **Depends on:** P0-2 guards.
 - **Verification:** VM tests for restore in Ready, Running, Last-word, Round-over phases.
+
+#### P0-5 · Overlays do not consume touches — `NEEDS DECISION`
+- **Problem:** `ReadyOverlay` and the dimmed area of `PauseOverlay` let taps reach controls underneath. After P0-2/P0-3 this can no longer corrupt game state (the ViewModel rejects out-of-phase actions), but buttons still give haptic feedback and the exit (X) button stays reachable through the Ready overlay.
+- **Open question:** blocking all touches also removes the (accidental) ability to tap X on the Ready screen — system Back still works. Owner to decide whether X should remain reachable.
+- **Risk:** Low. **Complexity:** S.
 
 ### P1 — Important quality / maintainability
 
@@ -172,6 +177,7 @@ Planned branch: `feature/portfolio-quality-improvements` (not created yet — aw
 | Date | Decision | Status |
 |---|---|---|
 | 2026-11-18 | P0-1: option A chosen by owner. Experimentally, AGP 8.9.3 (+ Gradle 8.11.1, its minimum) is enough to run lifecycle 2.9 lint checks; no jump to AGP 8.10+ or 9.x needed. Catalog now declares the versions that were already being resolved (lifecycle 2.9.1, navigation 2.9.0) — resolved dependency graph verified identical. | Done |
+| 2026-11-18 | P0-2..P0-4: fixed in the ViewModel with phase guards (`isWaitingForTurnStart`, `isCountdownActive`) rather than only in the UI, so game rules hold regardless of which control is tapped. Snapshot gained `isTurnInProgress` (default `false`, so older saved sessions still decode; a legacy snapshot with time left is treated as an interrupted turn). Explicit `GamePhase` model (P1-4) deferred — guards are the smallest reliable fix. | Done |
 
 ---
 
@@ -179,7 +185,8 @@ Planned branch: `feature/portfolio-quality-improvements` (not created yet — aw
 
 | Task | Commit | Tests | Notes |
 |---|---|---|---|
-| P0-1 Fix lint crash (AGP 8.7.2 → 8.9.3, Gradle 8.9 → 8.11.1, catalog aligned) | recorded in next roadmap update | `lintDebug` passed (0 errors, 60 warnings), `testDebugUnitTest` passed (36/36), `assembleDebug` passed, `assembleDebugAndroidTest` passed; `connectedDebugAndroidTest` not executed (no emulator) | Lint warnings are pre-existing and tracked: GradleDependency 39, UnusedResources 11, PluralsCandidate 5 (P2-3), AndroidGradlePluginVersion 3, RedundantLabel 1, OldTargetApi 1 (P1-6) |
+| P0-1 Fix lint crash (AGP 8.7.2 → 8.9.3, Gradle 8.9 → 8.11.1, catalog aligned) | `4fb611c` | `lintDebug` passed (0 errors, 60 warnings), `testDebugUnitTest` passed (36/36), `assembleDebug` passed, `assembleDebugAndroidTest` passed; `connectedDebugAndroidTest` not executed (no emulator) | Lint warnings are pre-existing and tracked: GradleDependency 39, UnusedResources 11, PluralsCandidate 5 (P2-3), AndroidGradlePluginVersion 3, RedundantLabel 1, OldTargetApi 1 (P1-6) |
+| P0-2, P0-3, P0-4 Phase guards + correct session restore | recorded in next roadmap update | 8 new `GameViewModelTest` cases written first and confirmed failing (7 failed, 1 legacy-behaviour guard passed), then all passed; `testDebugUnitTest` passed (44/44) | CI for `4fb611c`: Lint, Unit Tests, Build passed on GitHub for the first time |
 
 ## 6. Remaining technical debt
 

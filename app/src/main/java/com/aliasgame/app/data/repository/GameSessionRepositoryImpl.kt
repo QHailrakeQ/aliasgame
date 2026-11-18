@@ -49,7 +49,9 @@ private data class SessionSnapshotDto(
     val language: String,
     val packId: String,
     val timeRemaining: Long,
-    val isRoundOver: Boolean
+    val isRoundOver: Boolean,
+    // Default keeps snapshots saved by older app versions decodable.
+    val isTurnInProgress: Boolean = false
 )
 
 private fun Word.toDto() = SessionWordDto(text, packId)
@@ -75,7 +77,8 @@ private fun GameSessionSnapshot.toDto() = SessionSnapshotDto(
     language = language,
     packId = packId,
     timeRemaining = timeRemaining,
-    isRoundOver = isRoundOver
+    isRoundOver = isRoundOver,
+    isTurnInProgress = isTurnInProgress
 )
 
 private fun SessionSnapshotDto.toDomain() = GameSessionSnapshot(
@@ -89,7 +92,8 @@ private fun SessionSnapshotDto.toDomain() = GameSessionSnapshot(
     language = language,
     packId = packId,
     timeRemaining = timeRemaining,
-    isRoundOver = isRoundOver
+    isRoundOver = isRoundOver,
+    isTurnInProgress = isTurnInProgress
 )
 
 @Singleton

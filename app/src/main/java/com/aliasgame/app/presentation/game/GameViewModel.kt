@@ -62,12 +62,18 @@ class GameViewModel @Inject constructor(
                 try {
                     val words = wordsRepository.getWords(snapshot.language, snapshot.packId)
                     engine.restoreSession(snapshot, words)
-                    _uiState.update { 
+                    // Snapshots from older versions lack isTurnInProgress; time left means a turn was running.
+                    val turnInProgress = !snapshot.isRoundOver &&
+                        (snapshot.isTurnInProgress || snapshot.timeRemaining > 0)
+                    // An interrupted countdown resumes paused; last-word mode (no time left) resumes as is.
+                    val restoreAsPaused = turnInProgress && snapshot.timeRemaining > 0
+                    if (restoreAsPaused) engine.pause()
+                    _uiState.update {
                         it.copy(
                             currentWord = snapshot.currentWord,
                             timeRemaining = snapshot.timeRemaining,
                             isRoundOver = snapshot.isRoundOver,
-                            isPaused = true // Always restore in paused state for safety
+                            isTimerRunning = turnInProgress && !restoreAsPaused
                         )
                     }
                     syncState()
@@ -140,14 +146,26 @@ class GameViewModel @Inject constructor(
                 timeRemaining = state.timeRemaining,
                 isRoundOver = state.isRoundOver,
                 language = lang,
-                packId = pack
+                packId = pack,
+                isTurnInProgress = !state.isRoundOver && (state.isTimerRunning || state.isPaused)
             )
             sessionRepository.saveSession(snapshot)
         }
     }
 
+    // Phase checks: every user action is validated against the current phase, so a stray tap
+    // (e.g. on a control visible behind an overlay) cannot move the game into an invalid state.
+
+    /** The team is on the "ready" screen and has not started its countdown yet. */
+    private fun GameUiState.isWaitingForTurnStart() =
+        currentWord != null && !isRoundOver && !isPaused && !isTimerRunning && timeRemaining == 0L
+
+    /** The countdown is actively running and words can be answered. */
+    private fun GameUiState.isCountdownActive() =
+        isTimerRunning && !isPaused && !isRoundOver && timeRemaining > 0
+
     fun onStartTimer() {
-        if (timerJob?.isActive == true || _uiState.value.currentWord == null) return
+        if (timerJob?.isActive == true || !_uiState.value.isWaitingForTurnStart()) return
         _uiState.update { it.copy(timeRemaining = engine.settings.roundTime, isTimerRunning = true) }
         startTimer()
     }
@@ -166,7 +184,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun onWordSwiped(isCorrect: Boolean) {
-        if (_uiState.value.timeRemaining <= 0) return
+        if (!_uiState.value.isCountdownActive()) return
 
         viewModelScope.launch {
             _uiEffect.send(if (isCorrect) GameUiEffect.PlayCorrectSound else GameUiEffect.PlaySkipSound)
@@ -207,6 +225,7 @@ class GameViewModel @Inject constructor(
     }
 
     fun pauseGame() {
+        if (!_uiState.value.isCountdownActive()) return
         timerJob?.cancel()
         _uiState.update { it.copy(isTimerRunning = false) }
         engine.pause()
@@ -214,7 +233,10 @@ class GameViewModel @Inject constructor(
     }
 
     fun resumeGame() {
-        if (_uiState.value.currentWord == null) return
+        val state = _uiState.value
+        // Only an interrupted countdown can be resumed; resuming with no time left would
+        // jump straight into last-word mode and cost the team its turn.
+        if (!state.isPaused || state.currentWord == null || state.timeRemaining <= 0) return
         _uiState.update { it.copy(isTimerRunning = true) }
         engine.resume()
         startTimer()

@@ -189,7 +189,8 @@ class GameEngine(
         timeRemaining: Long,
         isRoundOver: Boolean,
         language: String,
-        packId: String
+        packId: String,
+        isTurnInProgress: Boolean
     ): GameSessionSnapshot {
         return GameSessionSnapshot(
             teams = teams.toList(),
@@ -202,12 +203,15 @@ class GameEngine(
             language = language,
             packId = packId,
             timeRemaining = timeRemaining,
-            isRoundOver = isRoundOver
+            isRoundOver = isRoundOver,
+            isTurnInProgress = isTurnInProgress
         )
     }
 
     /**
      * Restores engine state from a saved snapshot.
+     * The engine is restored unpaused; the caller decides whether the restored phase
+     * (an interrupted running turn) must be paused.
      */
     fun restoreSession(snapshot: GameSessionSnapshot, allWords: List<Word>) {
         this.allWords = allWords
@@ -219,6 +223,6 @@ class GameEngine(
         this.usedWords = snapshot.usedWords.toMutableList()
         this.currentScore = snapshot.currentScore
         this.settings = snapshot.settings
-        this.isPaused = true // Always restore in paused state
+        this.isPaused = false
     }
 }

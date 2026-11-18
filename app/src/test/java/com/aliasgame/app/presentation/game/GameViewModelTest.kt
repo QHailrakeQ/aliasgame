@@ -201,6 +201,155 @@ class GameViewModelTest {
         assertEquals(listOf("clear"), sessionRepository.operations)
     }
 
+    @Test
+    fun `pauseGame on the ready screen is ignored and does not skip the turn`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+
+        viewModel.pauseGame()
+        viewModel.resumeGame()
+        runCurrent()
+        advanceTimeBy(2000)
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isPaused)
+        assertFalse(state.isTimerRunning)
+        assertFalse(state.isLastWordMode)
+        assertEquals(0L, state.timeRemaining)
+    }
+
+    @Test
+    fun `answers are ignored while the game is paused`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        viewModel.onStartTimer()
+        runCurrent()
+        viewModel.pauseGame()
+        runCurrent()
+        val wordBefore = viewModel.uiState.value.currentWord
+
+        viewModel.onWordSwiped(isCorrect = true)
+        viewModel.onWordSwiped(isCorrect = false)
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertEquals(0, state.score)
+        assertEquals(wordBefore, state.currentWord)
+        assertTrue(state.roundResults.isEmpty())
+    }
+
+    @Test
+    fun `onStartTimer while paused does not reset the remaining time`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        viewModel.onStartTimer()
+        runCurrent()
+        advanceTimeBy(5000)
+        runCurrent()
+        viewModel.pauseGame()
+        runCurrent()
+
+        viewModel.onStartTimer()
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.isPaused)
+        assertEquals(defaultSettings.roundTime - 5, state.timeRemaining)
+    }
+
+    @Test
+    fun `restoring a session on the ready screen shows the ready state`() = runTest {
+        restoreFrom(snapshot(timeRemaining = 0, isRoundOver = false, isTurnInProgress = false))
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isPaused)
+        assertFalse(state.isTimerRunning)
+        assertFalse(state.isLastWordMode)
+        assertEquals(0L, state.timeRemaining)
+    }
+
+    @Test
+    fun `restoring a session in last-word mode shows the last-word decision`() = runTest {
+        restoreFrom(snapshot(timeRemaining = 0, isRoundOver = false, isTurnInProgress = true))
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isPaused)
+        assertTrue(state.isLastWordMode)
+    }
+
+    @Test
+    fun `restoring a session on round results allows the next team to start normally`() = runTest {
+        restoreFrom(snapshot(timeRemaining = 0, isRoundOver = true, isTurnInProgress = false))
+        assertFalse(viewModel.uiState.value.isPaused)
+        assertTrue(viewModel.uiState.value.isRoundOver)
+
+        viewModel.startNextRound()
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isRoundOver)
+        assertFalse(state.isPaused)
+        assertFalse(state.isLastWordMode)
+        assertEquals(0L, state.timeRemaining)
+    }
+
+    @Test
+    fun `restoring a legacy mid-turn session without the turn flag resumes the timer`() = runTest {
+        restoreFrom(snapshot(timeRemaining = 30, isRoundOver = false, isTurnInProgress = false))
+        assertTrue(viewModel.uiState.value.isPaused)
+
+        viewModel.resumeGame()
+        runCurrent()
+        advanceTimeBy(1000)
+        runCurrent()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isPaused)
+        assertTrue(state.isTimerRunning)
+        assertEquals(29L, state.timeRemaining)
+    }
+
+    @Test
+    fun `saved session records whether the turn is in progress`() = runTest {
+        createViewModel()
+        advanceUntilIdle()
+        assertEquals(false, sessionRepository.snapshotFlow.value?.isTurnInProgress)
+
+        viewModel.onStartTimer()
+        runCurrent()
+        viewModel.pauseGame()
+        advanceUntilIdle()
+
+        assertEquals(true, sessionRepository.snapshotFlow.value?.isTurnInProgress)
+    }
+
+    private fun snapshot(
+        timeRemaining: Long,
+        isRoundOver: Boolean,
+        isTurnInProgress: Boolean
+    ) = GameSessionSnapshot(
+        teams = testTeams,
+        currentRoundResults = emptyList(),
+        currentWord = testWord,
+        currentTeamIndex = 0,
+        usedWords = listOf(testWord),
+        currentScore = 0,
+        settings = defaultSettings,
+        language = "EN",
+        packId = "easy",
+        timeRemaining = timeRemaining,
+        isRoundOver = isRoundOver,
+        isTurnInProgress = isTurnInProgress
+    )
+
+    private fun TestScope.restoreFrom(snapshot: GameSessionSnapshot) {
+        sessionRepository.snapshotFlow.value = snapshot
+        wordsRepository.wordsResult = listOf(testWord)
+        createViewModel()
+        advanceUntilIdle()
+    }
+
     // Fakes
     class FakeSettingsRepository : SettingsRepository {
         override val selectedLanguage = flowOf("EN")
