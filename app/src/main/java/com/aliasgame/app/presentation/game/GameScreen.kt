@@ -3,7 +3,6 @@ package com.aliasgame.app.presentation.game
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.media.MediaPlayer
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -85,24 +84,14 @@ fun GameScreen(
         }
     }
 
-    val correctPlayer = remember { try { MediaPlayer.create(context, R.raw.correct_sound) } catch (e: Exception) { null } }
-    val skipPlayer = remember { try { MediaPlayer.create(context, R.raw.skip_sound) } catch (e: Exception) { null } }
-    val timerEndPlayer = remember { try { MediaPlayer.create(context, R.raw.last_word_sound) } catch (e: Exception) { null } }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            correctPlayer?.release()
-            skipPlayer?.release()
-            timerEndPlayer?.release()
-        }
-    }
+    val soundPlayer = rememberGameSoundPlayer()
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                GameUiEffect.PlayCorrectSound -> if (soundEnabled) correctPlayer?.start()
-                GameUiEffect.PlaySkipSound -> if (soundEnabled) skipPlayer?.start()
-                GameUiEffect.PlayTimerEndSound -> if (soundEnabled) timerEndPlayer?.start()
+                GameUiEffect.PlayCorrectSound -> if (soundEnabled) soundPlayer.play(GameSound.CORRECT)
+                GameUiEffect.PlaySkipSound -> if (soundEnabled) soundPlayer.play(GameSound.SKIP)
+                GameUiEffect.PlayTimerEndSound -> if (soundEnabled) soundPlayer.play(GameSound.TIMER_END)
                 GameUiEffect.NavigateBack -> onExit()
                 GameUiEffect.NavigateToSetup -> onNewGame()
             }
