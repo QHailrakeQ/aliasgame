@@ -53,12 +53,14 @@
     <string name="difficulty_medium">Medium</string>
     <string name="difficulty_hard">Hard</string>
     <string name="difficulty_insane">Insane</string>
+    <string name="difficulty_mixed">Mixed</string>
 
     <!-- Category Descriptions -->
     <string name="desc_easy">Simple everyday words. Great for kids and beginners.</string>
     <string name="desc_medium">General knowledge words for balanced gameplay.</string>
     <string name="desc_hard">Complex terms and abstract concepts for experts.</string>
     <string name="desc_insane">Scientific terms, rare words, and brain-teasers.</string>
+    <string name="desc_mixed">Words from every category, from easy to insane.</string>
 
     <!-- Gameplay Interface -->
     <string name="no_more_words">No more words available</string>
@@ -103,4 +105,8 @@
     <string name="exit_confirmation_message">Your current game session will be discarded.</string>
     <string name="exit_confirmation_confirm">Exit</string>
     <string name="exit_confirmation_cancel">Keep playing</string>
+    <plurals name="pack_word_count">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
 </resources>

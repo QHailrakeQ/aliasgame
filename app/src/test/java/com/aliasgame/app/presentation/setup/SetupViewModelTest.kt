@@ -2,6 +2,7 @@ package com.aliasgame.app.presentation.setup
 
 import com.aliasgame.app.domain.model.GamePhase
 import com.aliasgame.app.domain.model.Word
+import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import com.aliasgame.app.domain.repository.GameSessionRepository
@@ -185,7 +186,8 @@ class SetupViewModelTest {
         var words: List<Word> = emptyList()
         override suspend fun getWords(language: String, packId: String): List<Word> = words
         override suspend fun getLanguages(): List<String> = listOf("EN", "UA")
-        override suspend fun getPacks(language: String): List<String> = listOf("Easy", "Medium", "Hard")
+        override suspend fun getPacks(language: String): List<WordPack> =
+            listOf(WordPack("Easy", 10), WordPack("Medium", 10), WordPack("Hard", 10))
     }
 
     class FakeGameSessionRepository : GameSessionRepository {

@@ -3,6 +3,7 @@ package com.aliasgame.app.presentation.game
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.Word
+import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.GameSessionSnapshot
 import com.aliasgame.app.domain.repository.SettingsRepository
@@ -46,7 +47,7 @@ private class SilentSettingsRepository : SettingsRepository {
 private class TenWordsRepository : WordsRepository {
     override suspend fun getWords(language: String, packId: String) = List(10) { Word("Word $it", "Easy") }
     override suspend fun getLanguages() = listOf("EN")
-    override suspend fun getPacks(language: String) = listOf("Easy")
+    override suspend fun getPacks(language: String) = listOf(WordPack("Easy", 1))
 }
 
 private class InMemoryGameSessionRepository : GameSessionRepository {

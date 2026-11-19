@@ -155,8 +155,8 @@ class SetupViewModel @Inject constructor(
             getPacksUseCase(language)
                 .onSuccess { availablePacks ->
                     _uiState.update { state ->
-                        val nextPack = if (state.selectedPack !in availablePacks) {
-                            availablePacks.firstOrNull() ?: "Easy"
+                        val nextPack = if (availablePacks.none { it.id == state.selectedPack }) {
+                            availablePacks.firstOrNull()?.id ?: "Easy"
                         } else state.selectedPack
                         state.copy(
                             packs = availablePacks,

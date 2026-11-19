@@ -4,6 +4,7 @@ import android.content.Context
 import com.aliasgame.app.di.IoDispatcher
 import com.aliasgame.app.domain.model.AppLanguages
 import com.aliasgame.app.domain.model.Word
+import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,6 +42,23 @@ internal object WordPackParser {
         "words_${AppLanguages.toLanguageTag(language)}.json"
 }
 
+/**
+ * Builds the playable packs from all words of a language, including the virtual
+ * [WordPack.MIXED_ID] pack. Free of Android dependencies so it can be unit-tested on the JVM.
+ */
+internal object WordPackCatalog {
+
+    /** Regular packs in the order they first appear, then the mixed pack if there are several. */
+    fun packsOf(words: List<Word>): List<WordPack> {
+        val regular = words.groupingBy { it.packId }.eachCount()
+            .map { (id, count) -> WordPack(id, count) }
+        return if (regular.size > 1) regular + WordPack(WordPack.MIXED_ID, words.size) else regular
+    }
+
+    fun wordsOf(words: List<Word>, packId: String): List<Word> =
+        if (packId == WordPack.MIXED_ID) words else words.filter { it.packId == packId }
+}
+
 class WordsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
@@ -61,10 +79,10 @@ class WordsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getWords(language: String, packId: String): List<Word> =
-        loadAll(language).filter { it.packId == packId }
+        WordPackCatalog.wordsOf(loadAll(language), packId)
 
-    override suspend fun getPacks(language: String): List<String> =
-        loadAll(language).map { it.packId }.distinct()
+    override suspend fun getPacks(language: String): List<WordPack> =
+        WordPackCatalog.packsOf(loadAll(language))
 
     override suspend fun getLanguages(): List<String> = AppLanguages.supported
 }

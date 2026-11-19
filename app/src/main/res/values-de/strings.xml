@@ -53,12 +53,14 @@
     <string name="difficulty_medium">Mittel</string>
     <string name="difficulty_hard">Schwer</string>
     <string name="difficulty_insane">Wahnsinn</string>
+    <string name="difficulty_mixed">Gemischt</string>
 
     <!-- Descriptions -->
     <string name="desc_easy">Einfache Alltagswörter. Ideal für Kinder und Anfänger.</string>
     <string name="desc_medium">Allgemeinwissen für ausgewogenes Gameplay.</string>
     <string name="desc_hard">Komplexe Begriffe und abstrakte Konzepte.</string>
     <string name="desc_insane">Wissenschaftliche Begriffe und knifflige Rätsel.</string>
+    <string name="desc_mixed">Wörter aus allen Kategorien, von leicht bis Wahnsinn.</string>
 
     <!-- Game Screen -->
     <string name="no_more_words">Keine Wörter mehr verfügbar</string>
@@ -103,4 +105,8 @@
     <string name="exit_confirmation_message">Die aktuelle Spielsitzung wird verworfen.</string>
     <string name="exit_confirmation_confirm">Verlassen</string>
     <string name="exit_confirmation_cancel">Weiterspielen</string>
+    <plurals name="pack_word_count">
+        <item quantity="one">%d Wort</item>
+        <item quantity="other">%d Wörter</item>
+    </plurals>
 </resources>

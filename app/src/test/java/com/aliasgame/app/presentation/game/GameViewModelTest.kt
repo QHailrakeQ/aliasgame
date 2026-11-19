@@ -4,6 +4,7 @@ import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GamePhase
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.Word
+import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.GameSessionSnapshot
 import com.aliasgame.app.domain.repository.SettingsRepository
@@ -463,7 +464,7 @@ class GameViewModelTest {
             return wordsResult
         }
         override suspend fun getLanguages() = listOf("EN")
-        override suspend fun getPacks(language: String) = listOf("easy")
+        override suspend fun getPacks(language: String) = listOf(WordPack("easy", 1))
     }
 
     class FakeGameSessionRepository : GameSessionRepository {

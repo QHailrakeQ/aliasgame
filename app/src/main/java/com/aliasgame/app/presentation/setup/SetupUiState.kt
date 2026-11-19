@@ -1,5 +1,7 @@
 package com.aliasgame.app.presentation.setup
 
+import com.aliasgame.app.domain.model.WordPack
+
 /**
  * Represent the UI state for the Game Setup screen.
  * Global settings (language, sound, vibration) are now managed in SettingsViewModel.
@@ -7,7 +9,7 @@ package com.aliasgame.app.presentation.setup
  */
 data class SetupUiState(
     val selectedLanguage: String = "EN",
-    val packs: List<String> = emptyList(),
+    val packs: List<WordPack> = emptyList(),
     val isLoadingPacks: Boolean = false,
     val hasPacksLoadError: Boolean = false,
     val selectedPack: String = "Easy",

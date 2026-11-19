@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
+import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.ui.components.PartyBackground
 import com.aliasgame.app.ui.components.PartyScreenHeader
 import com.aliasgame.app.ui.theme.*
@@ -94,10 +95,10 @@ fun PackSelectionScreen(
                     ) {
                         items(state.packs) { pack ->
                             PackItem(
-                                name = pack,
-                                isSelected = pack == state.selectedPack,
+                                pack = pack,
+                                isSelected = pack.id == state.selectedPack,
                                 onClick = {
-                                    viewModel.onPackSelected(pack)
+                                    viewModel.onPackSelected(pack.id)
                                     onBack()
                                 }
                             )
@@ -111,25 +112,12 @@ fun PackSelectionScreen(
 
 @Composable
 private fun PackItem(
-    name: String,
+    pack: WordPack,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val displayName = when (name.lowercase()) {
-        "easy" -> stringResource(R.string.difficulty_easy)
-        "medium" -> stringResource(R.string.difficulty_medium)
-        "hard" -> stringResource(R.string.difficulty_hard)
-        "insane" -> stringResource(R.string.difficulty_insane)
-        else -> name
-    }
-
-    val description = when (name.lowercase()) {
-        "easy" -> stringResource(R.string.desc_easy)
-        "medium" -> stringResource(R.string.desc_medium)
-        "hard" -> stringResource(R.string.desc_hard)
-        "insane" -> stringResource(R.string.desc_insane)
-        else -> stringResource(R.string.pack_description_fallback, name)
-    }
+    val displayName = packDisplayName(pack.id)
+    val description = packDescription(pack.id)
 
     Surface(
         onClick = onClick,
@@ -167,6 +155,12 @@ private fun PackItem(
                     style = Typography.bodyLarge.copy(fontSize = 14.sp),
                     color = Color.White.copy(alpha = 0.76f),
                     lineHeight = 20.sp
+                )
+                Text(
+                    text = packWordCount(pack.wordCount),
+                    style = Typography.labelMedium,
+                    color = GameSecondary,
+                    fontWeight = FontWeight.Bold
                 )
             }
 

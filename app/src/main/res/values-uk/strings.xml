@@ -53,12 +53,14 @@
     <string name="difficulty_medium">Середній</string>
     <string name="difficulty_hard">Складний</string>
     <string name="difficulty_insane">Божевільний</string>
+    <string name="difficulty_mixed">Змішаний</string>
 
     <!-- Category Descriptions -->
     <string name="desc_easy">Прості повсякденні слова. Чудово підходить для дітей та новачків.</string>
     <string name="desc_medium">Загальні слова для збалансованого ігрового процесу.</string>
     <string name="desc_hard">Складні терміни та абстрактні поняття для експертів.</string>
     <string name="desc_insane">Наукові терміни, рідкісні слова та головоломки.</string>
+    <string name="desc_mixed">Слова з усіх категорій — від легких до божевільних.</string>
 
     <!-- Game Screen Strings -->
     <string name="no_more_words">Більше немає слів</string>
@@ -103,4 +105,10 @@
     <string name="exit_confirmation_message">Поточну ігрову сесію буде скасовано.</string>
     <string name="exit_confirmation_confirm">Вийти</string>
     <string name="exit_confirmation_cancel">Продовжити гру</string>
+    <plurals name="pack_word_count">
+        <item quantity="one">%d слово</item>
+        <item quantity="few">%d слова</item>
+        <item quantity="many">%d слів</item>
+        <item quantity="other">%d слова</item>
+    </plurals>
 </resources>

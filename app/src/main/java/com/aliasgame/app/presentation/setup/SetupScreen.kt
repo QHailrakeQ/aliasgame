@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -113,6 +113,8 @@ fun SetupScreen(
                 SetupItemContainer(progress = entryProgress.value, index = 1) {
                     PackSelectionCard(
                         selectedPack = state.selectedPack,
+                        selectedPackWordCount = state.packs
+                            .firstOrNull { it.id == state.selectedPack }?.wordCount,
                         onPackClick = onSelectPack
                     )
                 }
@@ -324,11 +326,13 @@ private fun StepperButton(
 @Composable
 private fun PackSelectionCard(
     selectedPack: String,
+    /** `null` while the packs are still loading. */
+    selectedPackWordCount: Int?,
     onPackClick: () -> Unit
 ) {
     SetupCard {
         Column {
-            SectionHeader(stringResource(R.string.category), Icons.Default.Translate)
+            SectionHeader(stringResource(R.string.category), Icons.Default.Category)
             
             Surface(
                 onClick = onPackClick,
@@ -342,16 +346,22 @@ private fun PackSelectionCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val localizedPack = when (selectedPack.lowercase()) {
-                        "easy" -> stringResource(R.string.difficulty_easy)
-                        "medium" -> stringResource(R.string.difficulty_medium)
-                        "hard" -> stringResource(R.string.difficulty_hard)
-                        "insane" -> stringResource(R.string.difficulty_insane)
-                        else -> selectedPack
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            packDisplayName(selectedPack),
+                            style = Typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        if (selectedPackWordCount != null) {
+                            Text(
+                                packWordCount(selectedPackWordCount),
+                                style = Typography.bodySmall,
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
+                        }
                     }
-                    
-                    Text(localizedPack, style = Typography.bodyLarge, fontWeight = FontWeight.Bold, color = Color.White)
-                    
+
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = GameSecondary)
                 }
             }
