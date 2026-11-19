@@ -57,6 +57,22 @@ class GameOverlaysTest {
     }
 
     @Test
+    fun readyButtonWorksWhenTheFingerMovesSlightlyDuringTheTap() {
+        // A real finger always moves a little between down and up. The overlay must not consume
+        // those move events, otherwise the button below the finger cancels its click.
+        composeTestRule.onNodeWithText(context.getString(R.string.ready_button).uppercase())
+            .performTouchInput {
+                down(center)
+                moveBy(Offset(2.dp.toPx(), 2.dp.toPx()))
+                moveBy(Offset(-1.dp.toPx(), 1.dp.toPx()))
+                up()
+            }
+
+        composeTestRule.onNodeWithContentDescription(context.getString(R.string.content_desc_pause))
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun gameControlsAreHiddenFromAccessibilityOnlyWhileAnOverlayIsShown() {
         val pause = context.getString(R.string.content_desc_pause)
         composeTestRule.onNodeWithContentDescription(pause).assertDoesNotExist()

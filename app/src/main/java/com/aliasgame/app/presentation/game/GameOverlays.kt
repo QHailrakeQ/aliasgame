@@ -38,14 +38,19 @@ import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.ui.theme.*
 
 /**
- * Consumes every pointer event that reaches the overlay, so controls drawn underneath
- * cannot be tapped through it. Children of the overlay still receive events first.
- * A Box with only a background does not take part in hit testing in Compose.
+ * Makes the overlay a touch target so that controls drawn underneath cannot be tapped
+ * through it. A Box with only a background does not take part in hit testing in Compose;
+ * with a pointer input handler it does, and Compose then delivers the touch to the overlay
+ * and its children only, never to the siblings below it.
+ *
+ * The events are deliberately observed, not consumed: a button cancels its click when a
+ * parent consumes the small moves a real finger makes during a tap, which made the overlay's
+ * own buttons ignore taps on devices.
  */
 internal fun Modifier.blockUnderlyingTouches(): Modifier = pointerInput(Unit) {
     awaitPointerEventScope {
         while (true) {
-            awaitPointerEvent().changes.forEach { it.consume() }
+            awaitPointerEvent()
         }
     }
 }
