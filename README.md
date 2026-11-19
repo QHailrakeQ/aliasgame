@@ -4,6 +4,7 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
 ![Min SDK](https://img.shields.io/badge/minSdk-24-3DDC84?logo=android&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Alias Game is an Android party game inspired by the word-guessing game Alias: one player explains a word, their team guesses it before the timer runs out. It is built with **Kotlin** and **Jetpack Compose**, follows Clean Architecture, and is covered by unit, UI and CI checks.
 
@@ -139,3 +140,7 @@ The GitHub Actions workflow runs on pushes to `main`, `master` and `feature/*`, 
 - [ ] Localized error messages and plural forms for scores.
 - [ ] Save the session on meaningful events instead of every countdown tick.
 - [ ] Complete the Russian *Insane* word pack.
+
+## License
+
+Released under the [MIT License](LICENSE).
