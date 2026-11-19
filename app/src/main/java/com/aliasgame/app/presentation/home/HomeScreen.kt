@@ -23,6 +23,7 @@ import com.aliasgame.app.ui.theme.*
 fun HomeScreen(
     onPlayClick: () -> Unit,
     onRulesClick: () -> Unit,
+    onStatisticsClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
     BoxWithConstraints {
@@ -74,6 +75,13 @@ fun HomeScreen(
             MenuButton(
                 text = stringResource(R.string.menu_rules),
                 onClick = onRulesClick
+            )
+
+            Spacer(modifier = Modifier.height(GameSpacing.controlGap))
+
+            MenuButton(
+                text = stringResource(R.string.menu_statistics),
+                onClick = onStatisticsClick
             )
 
             Spacer(modifier = Modifier.height(GameSpacing.controlGap))

@@ -111,4 +111,14 @@
         <item quantity="many">%d слов</item>
         <item quantity="other">%d слова</item>
     </plurals>
+    <string name="menu_statistics">СТАТИСТИКА</string>
+    <string name="stats_title">Статистика</string>
+    <string name="stats_hardest_words">Самые сложные слова</string>
+    <string name="stats_hardest_words_hint">Слова, которые ваши команды пропускали чаще всего.</string>
+    <string name="stats_skipped_of_shown">пропущено %1$d из %2$d</string>
+    <string name="stats_empty">Пропущенных слов пока нет. Сыграйте несколько раундов — и самые трудные появятся здесь.</string>
+    <string name="stats_reset">Сбросить статистику</string>
+    <string name="stats_reset_title">Сбросить статистику?</string>
+    <string name="stats_reset_message">Счётчики всех слов на всех языках будут удалены.</string>
+    <string name="stats_reset_confirm">Сбросить</string>
 </resources>

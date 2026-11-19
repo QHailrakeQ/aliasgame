@@ -22,7 +22,7 @@ class GameEngine private constructor(
     private val allWords: List<Word>,
     teams: List<Team>,
     private val settings: GameSettings,
-    private val language: String,
+    val language: String,
     private val packId: String
 ) {
     private val teams = teams.toMutableList()

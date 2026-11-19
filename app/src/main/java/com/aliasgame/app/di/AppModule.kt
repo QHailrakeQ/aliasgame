@@ -3,9 +3,11 @@ package com.aliasgame.app.di
 import android.content.Context
 import com.aliasgame.app.data.repository.GameSessionRepositoryImpl
 import com.aliasgame.app.data.repository.SettingsRepositoryImpl
+import com.aliasgame.app.data.repository.WordStatsRepositoryImpl
 import com.aliasgame.app.data.repository.WordsRepositoryImpl
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
+import com.aliasgame.app.domain.repository.WordStatsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.Module
 import dagger.Provides
@@ -42,5 +44,13 @@ object AppModule {
         @ApplicationContext context: Context
     ): GameSessionRepository {
         return GameSessionRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWordStatsRepository(
+        @ApplicationContext context: Context
+    ): WordStatsRepository {
+        return WordStatsRepositoryImpl(context)
     }
 }

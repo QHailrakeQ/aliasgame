@@ -3,11 +3,13 @@ package com.aliasgame.app.presentation.game
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GamePhase
 import com.aliasgame.app.domain.model.GameSettings
+import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.GameSessionSnapshot
 import com.aliasgame.app.domain.repository.SettingsRepository
+import com.aliasgame.app.domain.repository.WordStatsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,6 +30,7 @@ class GameViewModelTest {
     private lateinit var settingsRepository: FakeSettingsRepository
     private lateinit var wordsRepository: FakeWordsRepository
     private lateinit var sessionRepository: FakeGameSessionRepository
+    private lateinit var wordStatsRepository: FakeWordStatsRepository
     private lateinit var viewModel: GameViewModel
 
     private val defaultSettings = GameSettings(roundTime = 60, targetScore = 50)
@@ -39,6 +42,7 @@ class GameViewModelTest {
         settingsRepository = FakeSettingsRepository()
         wordsRepository = FakeWordsRepository()
         sessionRepository = FakeGameSessionRepository()
+        wordStatsRepository = FakeWordStatsRepository()
     }
 
     @After
@@ -64,7 +68,7 @@ class GameViewModelTest {
     }
 
     private fun createViewModel() {
-        viewModel = GameViewModel(settingsRepository, wordsRepository, sessionRepository)
+        viewModel = GameViewModel(settingsRepository, wordsRepository, sessionRepository, wordStatsRepository)
     }
 
     private fun snapshot(phase: GamePhase, timeRemaining: Long) =
@@ -315,6 +319,70 @@ class GameViewModelTest {
         assertTrue(state.allTeams.all { it.score == 0 })
     }
 
+    // --- Word statistics -----------------------------------------------------------------
+
+    /** Plays one turn: guess, skip, then the last word nobody got. Ends on the review screen. */
+    private fun TestScope.playTurnToReview() {
+        viewModel.onStartTimer()
+        runCurrent()
+        viewModel.onWordSwiped(isCorrect = true)
+        viewModel.onWordSwiped(isCorrect = false)
+        runCurrent()
+        advanceTimeBy(defaultSettings.roundTime * 1000 + 1)
+        runCurrent()
+        viewModel.onFinalWordProcessed(winnerTeamId = null)
+        runCurrent()
+        assertTrue(viewModel.uiState.value.isRoundOver)
+    }
+
+    @Test
+    fun `the reviewed turn is recorded once with corrections when the next round starts`() = runTest {
+        startNewGame(words = List(10) { Word("Word $it", "easy") })
+        playTurnToReview()
+        val reviewed = viewModel.uiState.value.roundResults
+        viewModel.toggleWordResult(1) // the skipped word was guessed after all
+        runCurrent()
+
+        viewModel.startNextRound()
+        advanceUntilIdle()
+        viewModel.startNextRound() // ignored: no longer on the review screen
+        advanceUntilIdle()
+
+        assertEquals(1, wordStatsRepository.recordedTurns.size)
+        val (language, results) = wordStatsRepository.recordedTurns.single()
+        assertEquals("EN", language)
+        assertEquals(reviewed.map { it.word }, results.map { it.word })
+        assertEquals(listOf(true, true, false), results.map { it.isCorrect })
+    }
+
+    @Test
+    fun `leaving the game from the review screen records the turn before navigating`() = runTest {
+        startNewGame(words = List(10) { Word("Word $it", "easy") })
+        playTurnToReview()
+
+        // Sound effects of the turn are still queued in the effect channel ahead of navigation.
+        val navigation = async { viewModel.uiEffect.first { it == GameUiEffect.NavigateBack } }
+        viewModel.onExitGame()
+        advanceUntilIdle()
+
+        navigation.await()
+        assertEquals(1, wordStatsRepository.recordedTurns.size)
+    }
+
+    @Test
+    fun `leaving the game during a turn records nothing`() = runTest {
+        startNewGame(words = List(10) { Word("Word $it", "easy") })
+        viewModel.onStartTimer()
+        runCurrent()
+        viewModel.onWordSwiped(isCorrect = false)
+        runCurrent()
+
+        viewModel.onExitGame()
+        advanceUntilIdle()
+
+        assertTrue(wordStatsRepository.recordedTurns.isEmpty())
+    }
+
     // --- Restoring sessions --------------------------------------------------------------
 
     @Test
@@ -465,6 +533,15 @@ class GameViewModelTest {
         }
         override suspend fun getLanguages() = listOf("EN")
         override suspend fun getPacks(language: String) = listOf(WordPack("easy", 1))
+    }
+
+    class FakeWordStatsRepository : WordStatsRepository {
+        val recordedTurns = mutableListOf<Pair<String, List<RoundResult>>>()
+        override val stats = MutableStateFlow(emptyList<com.aliasgame.app.domain.model.WordStat>())
+        override suspend fun recordTurn(language: String, results: List<RoundResult>) {
+            recordedTurns += language to results
+        }
+        override suspend fun clear() {}
     }
 
     class FakeGameSessionRepository : GameSessionRepository {

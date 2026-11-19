@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
 import com.aliasgame.app.domain.model.GamePhase
+import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
+import com.aliasgame.app.domain.repository.WordStatsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -34,7 +36,8 @@ import javax.inject.Inject
 class GameViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val wordsRepository: WordsRepository,
-    private val sessionRepository: GameSessionRepository
+    private val sessionRepository: GameSessionRepository,
+    private val wordStatsRepository: WordStatsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameUiState())
@@ -110,7 +113,15 @@ class GameViewModel @Inject constructor(
 
     fun toggleWordResult(index: Int) = perform({ toggleResult(index) })
 
-    fun startNextRound() = perform({ nextRound() })
+    fun startNextRound() {
+        // Taken before nextRound() clears the reviewed results.
+        val reviewedTurn = reviewedTurnOrNull()
+        perform({ nextRound() }) {
+            reviewedTurn?.let { (language, results) ->
+                viewModelScope.launch { wordStatsRepository.recordTurn(language, results) }
+            }
+        }
+    }
 
     fun onExitGame() {
         clearSessionAndNavigate(GameUiEffect.NavigateBack)
@@ -175,12 +186,27 @@ class GameViewModel @Inject constructor(
         }
     }
 
+    /**
+     * The language and final results of the turn on the review screen, or `null` outside of it.
+     * A turn is recorded exactly once: when the review is left, after any corrections.
+     */
+    private fun reviewedTurnOrNull(): Pair<String, List<RoundResult>>? {
+        val currentEngine = engine ?: return null
+        val state = currentEngine.state
+        if (state.phase != GamePhase.ROUND_REVIEW && state.phase != GamePhase.FINISHED) return null
+        return state.roundResults.takeIf { it.isNotEmpty() }?.let { currentEngine.language to it }
+    }
+
     private fun clearSessionAndNavigate(effect: GameUiEffect) {
         if (isExiting) return
         isExiting = true
         timerJob?.cancel()
+        // Leaving from the results or victory screen still counts the turn that was reviewed.
+        val reviewedTurn = reviewedTurnOrNull()
 
         viewModelScope.launch {
+            // Recorded before navigating: the ViewModel scope ends when the screen is left.
+            reviewedTurn?.let { (language, results) -> wordStatsRepository.recordTurn(language, results) }
             sessionSaveJob?.cancelAndJoin()
             sessionRepository.clearSession()
             _uiEffect.send(effect)

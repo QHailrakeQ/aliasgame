@@ -1,12 +1,14 @@
 package com.aliasgame.app.presentation.game
 
 import com.aliasgame.app.domain.engine.GameEngine
+import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.model.GameSettings
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.GameSessionSnapshot
 import com.aliasgame.app.domain.repository.SettingsRepository
+import com.aliasgame.app.domain.repository.WordStatsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -24,7 +26,9 @@ fun newGameViewModelForTest(): GameViewModel {
             packId = "Easy"
         )
     }
-    return GameViewModel(SilentSettingsRepository(), TenWordsRepository(), sessionRepository)
+    return GameViewModel(
+        SilentSettingsRepository(), TenWordsRepository(), sessionRepository, NoOpWordStatsRepository()
+    )
 }
 
 private class SilentSettingsRepository : SettingsRepository {
@@ -58,4 +62,10 @@ private class InMemoryGameSessionRepository : GameSessionRepository {
     override suspend fun clearSession() {
         sessionSnapshot.value = null
     }
+}
+
+private class NoOpWordStatsRepository : WordStatsRepository {
+    override val stats = flowOf(emptyList<com.aliasgame.app.domain.model.WordStat>())
+    override suspend fun recordTurn(language: String, results: List<RoundResult>) {}
+    override suspend fun clear() {}
 }

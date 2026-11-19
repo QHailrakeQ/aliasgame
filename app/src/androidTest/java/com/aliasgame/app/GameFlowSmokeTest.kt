@@ -81,6 +81,26 @@ class GameFlowSmokeTest {
     }
 
     @Test
+    fun testHomeToStatisticsAndBack() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val statisticsButton = context.getString(R.string.menu_statistics)
+        val hardestWords = context.getString(R.string.stats_hardest_words)
+        val emptyStatistics = context.getString(R.string.stats_empty)
+        val backDesc = context.getString(R.string.content_desc_back)
+        val appName = context.getString(R.string.app_name).uppercase()
+
+        composeTestRule.onNodeWithText(statisticsButton).performScrollTo().performClick()
+        composeTestRule.onNodeWithText(hardestWords).assertIsDisplayed()
+        // DataStore is cleared before each test, so nothing has been skipped yet.
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText(emptyStatistics).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.onNodeWithContentDescription(backDesc).performClick()
+        composeTestRule.onNodeWithText(appName).assertIsDisplayed()
+    }
+
+    @Test
     fun testHomeToGameFlow() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 

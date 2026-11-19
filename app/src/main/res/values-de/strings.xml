@@ -109,4 +109,14 @@
         <item quantity="one">%d Wort</item>
         <item quantity="other">%d Wörter</item>
     </plurals>
+    <string name="menu_statistics">STATISTIK</string>
+    <string name="stats_title">Statistik</string>
+    <string name="stats_hardest_words">Schwierigste Wörter</string>
+    <string name="stats_hardest_words_hint">Die Wörter, die eure Teams am häufigsten übersprungen haben.</string>
+    <string name="stats_skipped_of_shown">%1$d von %2$d übersprungen</string>
+    <string name="stats_empty">Noch keine übersprungenen Wörter. Spielt ein paar Runden, dann erscheinen die schwierigsten hier.</string>
+    <string name="stats_reset">Statistik zurücksetzen</string>
+    <string name="stats_reset_title">Statistik zurücksetzen?</string>
+    <string name="stats_reset_message">Die Zähler aller Wörter in allen Sprachen werden gelöscht.</string>
+    <string name="stats_reset_confirm">Zurücksetzen</string>
 </resources>
