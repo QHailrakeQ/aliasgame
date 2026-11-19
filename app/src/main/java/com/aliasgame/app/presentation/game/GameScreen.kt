@@ -117,6 +117,7 @@ fun GameScreen(
                     teams = state.allTeams,
                     score = state.score,
                     timeRemaining = state.timeRemaining,
+                    roundTime = state.maxTime,
                     onExitClick = requestExit
                 )
             }

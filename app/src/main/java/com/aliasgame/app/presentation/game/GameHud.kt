@@ -16,8 +16,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -35,8 +38,10 @@ internal fun GameHUD(
     teams: List<Team>,
     score: Int,
     timeRemaining: Long,
+    roundTime: Long,
     onExitClick: () -> Unit
 ) {
+    val isUrgent = timeRemaining < URGENT_SECONDS
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +89,6 @@ internal fun GameHUD(
                     )
                 }
 
-                val isUrgent = timeRemaining < 10
                 val timerBorderColor by animateColorAsState(
                     targetValue = if (isUrgent) GameAccent else Color.White.copy(alpha = 0.2f),
                     label = "TimerBorder"
@@ -167,6 +171,50 @@ internal fun GameHUD(
                     }
                 }
             }
+
+            TimerProgressBar(
+                timeRemaining = timeRemaining,
+                roundTime = roundTime,
+                isUrgent = isUrgent
+            )
         }
     }
 }
+
+/**
+ * A thin bar showing the share of the turn that is left, readable from the corner of the eye
+ * while explaining a word. It glides down over each second instead of jumping once per tick,
+ * and refills instantly when a new turn starts.
+ */
+@Composable
+private fun TimerProgressBar(timeRemaining: Long, roundTime: Long, isUrgent: Boolean) {
+    val target = if (roundTime > 0) (timeRemaining.toFloat() / roundTime).coerceIn(0f, 1f) else 0f
+    val progress = remember { Animatable(target) }
+    LaunchedEffect(target) {
+        if (target >= progress.value) {
+            progress.snapTo(target)
+        } else {
+            progress.animateTo(target, tween(durationMillis = 1000, easing = LinearEasing))
+        }
+    }
+    val color by animateColorAsState(
+        targetValue = if (isUrgent) GameAccent else GameSecondary,
+        label = "TimerBarColor"
+    )
+    LinearProgressIndicator(
+        progress = { progress.value },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(6.dp)
+            .clip(RoundedCornerShape(3.dp))
+            // The remaining seconds are already announced by the timer text.
+            .clearAndSetSemantics {},
+        color = color,
+        trackColor = Color.White.copy(alpha = 0.12f),
+        strokeCap = StrokeCap.Round,
+        drawStopIndicator = {}
+    )
+}
+
+/** Below this many seconds the timer is highlighted as running out. */
+private const val URGENT_SECONDS = 10
