@@ -3,7 +3,9 @@ package com.aliasgame.app.data.repository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import androidx.core.os.LocaleListCompat
 import androidx.datastore.preferences.preferencesDataStore
+import com.aliasgame.app.domain.model.AppLanguages
 import com.aliasgame.app.domain.repository.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -56,7 +58,16 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override val selectedLanguage: Flow<String> = context.settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
-        .map { it[Keys.LANGUAGE] ?: "EN" }
+        .map { it[Keys.LANGUAGE] ?: deviceLanguage() }
+
+    /**
+     * Until the player picks a language, follow the device: Android shows the interface in the
+     * first supported language of this list, so the words have to come from the same one.
+     */
+    private fun deviceLanguage(): String {
+        val locales = LocaleListCompat.getAdjustedDefault()
+        return AppLanguages.fromDeviceLanguages(List(locales.size()) { locales[it]!!.toLanguageTag() })
+    }
 
     override val roundTime: Flow<Long> = context.settingsDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
