@@ -123,8 +123,13 @@ class GameFlowSmokeTest {
         // The default pack is "Easy", so clicking it should open the selection screen
         composeTestRule.onNodeWithText(easyPack).performClick()
 
-        // 4. Verify Selection Screen and pick "Medium"
+        // 4. Verify Selection Screen and pick "Medium". The categories come from parsing the
+        // word-pack asset on an IO thread, which the Compose test rule does not track, so wait
+        // for the list explicitly (slow CI emulators need a few seconds for the large packs).
         composeTestRule.onNodeWithText(categoryTitle).assertIsDisplayed()
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText(mediumPack).fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithText(mediumPack).performClick()
 
         // 5. Verify return to Setup Screen with updated selection
