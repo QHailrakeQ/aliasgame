@@ -3,10 +3,14 @@ package com.aliasgame.app.presentation.game
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
+import com.aliasgame.app.domain.model.GamePhase
+import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
+import com.aliasgame.app.domain.repository.WordStatsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
@@ -21,15 +25,19 @@ import javax.inject.Inject
 
 /**
  * ViewModel for the Game screen.
- * Manages the active game session, timer, and unified UI state.
- * Supports session restoration to survive process death.
+ *
+ * Owns the [GameEngine] for the session shown on screen. The engine is always loaded from
+ * the saved session: the setup screen saves a fresh session before navigating here, and the
+ * same path restores a game after process death. Game rules and phase transitions live in the
+ * engine; this class only drives the one-second countdown, persists the session and turns
+ * engine state into UI state.
  */
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    private val engine: GameEngine,
     private val settingsRepository: SettingsRepository,
     private val wordsRepository: WordsRepository,
-    private val sessionRepository: GameSessionRepository
+    private val sessionRepository: GameSessionRepository,
+    private val wordStatsRepository: WordStatsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameUiState())
@@ -38,13 +46,14 @@ class GameViewModel @Inject constructor(
     private val _uiEffect = Channel<GameUiEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
+    /** `null` until the session has been loaded. */
+    private var engine: GameEngine? = null
     private var timerJob: Job? = null
     private var sessionSaveJob: Job? = null
     private var isExiting = false
 
     init {
         viewModelScope.launch {
-            // Observe persistent preferences
             launch {
                 settingsRepository.isSoundEnabled.collect { enabled ->
                     _uiState.update { it.copy(isSoundEnabled = enabled) }
@@ -55,170 +64,63 @@ class GameViewModel @Inject constructor(
                     _uiState.update { it.copy(isVibrationEnabled = enabled) }
                 }
             }
-            
-            // Restore session if exists (to survive process death)
-            val snapshot = sessionRepository.sessionSnapshot.first()
-            if (snapshot != null) {
-                try {
-                    val words = wordsRepository.getWords(snapshot.language, snapshot.packId)
-                    engine.restoreSession(snapshot, words)
-                    _uiState.update { 
-                        it.copy(
-                            currentWord = snapshot.currentWord,
-                            timeRemaining = snapshot.timeRemaining,
-                            isRoundOver = snapshot.isRoundOver,
-                            isPaused = true // Always restore in paused state for safety
-                        )
-                    }
-                    syncState()
-                } catch (e: Exception) {
-                    // Fallback to new game if restoration fails
-                    val firstWord = engine.getNextWord()
-                    syncState(currentWord = firstWord)
-                }
-            } else {
-                // Regular initialization
-                val firstWord = engine.getNextWord()
-                syncState(currentWord = firstWord)
-            }
+            loadSession()
         }
+    }
+
+    private suspend fun loadSession() {
+        val snapshot = sessionRepository.sessionSnapshot.first()
+        val loadedEngine = try {
+            snapshot?.let { GameEngine.restore(it, wordsRepository.getWords(it.language, it.packId)) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Missing word pack or an inconsistent snapshot: the game cannot be continued.
+            null
+        }
+        if (loadedEngine == null) {
+            clearSessionAndNavigate(GameUiEffect.NavigateBack)
+            return
+        }
+        engine = loadedEngine
+        publish()
     }
 
     fun onEntranceAnimationFinished() {
         _uiState.update { it.copy(isEntranceAnimationPlayed = true) }
     }
 
-    /**
-     * Synchronizes internal engine state with the observable UI state and persists the session.
-     */
-    private fun syncState(
-        currentWord: com.aliasgame.app.domain.model.Word? = _uiState.value.currentWord,
-        isRoundOver: Boolean = _uiState.value.isRoundOver,
-        winners: List<com.aliasgame.app.domain.model.Team> = _uiState.value.winners
-    ) {
-        val engineState = engine.getCurrentState(
-            timeRemaining = _uiState.value.timeRemaining,
-            currentWord = currentWord,
-            isRoundOver = isRoundOver,
-            winners = winners,
-            isTimerRunning = _uiState.value.isTimerRunning
-        )
-        
-        _uiState.update { 
-            it.copy(
-                currentTeam = engineState.currentTeam,
-                currentWord = engineState.currentWord,
-                score = engineState.score,
-                timeRemaining = engineState.timeRemaining,
-                isTimerRunning = engineState.isTimerRunning,
-                maxTime = engineState.maxTime,
-                isPaused = engineState.isPaused,
-                isLastWordMode = engineState.isLastWordMode,
-                isRoundOver = engineState.isRoundOver,
-                isGameFinished = engineState.isGameFinished,
-                winners = engineState.winners,
-                allTeams = engineState.allTeams,
-                roundResults = engineState.roundResults
-            )
-        }
-        saveSession()
-    }
+    fun onStartTimer() = perform({ startTurn() }) { startTicking() }
 
-    private fun saveSession() {
-        if (isExiting) return
-
-        val previousSave = sessionSaveJob
-        sessionSaveJob = viewModelScope.launch {
-            previousSave?.cancelAndJoin()
-            if (isExiting) return@launch
-
-            val state = _uiState.value
-            val lang = settingsRepository.selectedLanguage.first()
-            val pack = settingsRepository.selectedPack.first()
-            
-            val snapshot = engine.createSessionSnapshot(
-                timeRemaining = state.timeRemaining,
-                isRoundOver = state.isRoundOver,
-                language = lang,
-                packId = pack
-            )
-            sessionRepository.saveSession(snapshot)
-        }
-    }
-
-    fun onStartTimer() {
-        if (timerJob?.isActive == true || _uiState.value.currentWord == null) return
-        _uiState.update { it.copy(timeRemaining = engine.settings.roundTime, isTimerRunning = true) }
-        startTimer()
-    }
-
-    private fun startTimer() {
-        if (timerJob?.isActive == true || _uiState.value.currentWord == null) return
-        timerJob = viewModelScope.launch {
-            while (_uiState.value.timeRemaining > 0) {
-                delay(1000)
-                _uiState.update { it.copy(timeRemaining = it.timeRemaining - 1) }
-                syncState()
-            }
-            _uiEffect.send(GameUiEffect.PlayTimerEndSound)
-            syncState()
-        }
-    }
-
-    fun onWordSwiped(isCorrect: Boolean) {
-        if (_uiState.value.timeRemaining <= 0) return
-
+    fun onWordSwiped(isCorrect: Boolean) = perform({ answer(isCorrect) }) {
         viewModelScope.launch {
             _uiEffect.send(if (isCorrect) GameUiEffect.PlayCorrectSound else GameUiEffect.PlaySkipSound)
         }
-
-        val nextWord = if (isCorrect) engine.onCorrectAnswer() else engine.onSkipWord()
-        syncState(currentWord = nextWord)
     }
 
-    fun onFinalWordProcessed(winnerTeamId: String?) {
-        engine.addFinalWordResult(isCorrect = winnerTeamId != null)
-        winnerTeamId?.let { engine.addPointToTeam(it) }
-        
-        val roundWinners = engine.rollNextTeam()
-        _uiState.update { it.copy(isTimerRunning = false) }
-        syncState(isRoundOver = true, winners = roundWinners)
-    }
+    fun pauseGame() = perform({ pause() }) { timerJob?.cancel() }
 
-    fun toggleWordResult(index: Int) {
-        if (index == _uiState.value.roundResults.size - 1) return
-        
-        engine.toggleWordResult(index)
-        syncState()
-    }
+    fun resumeGame() = perform({ resume() }) { startTicking() }
+
+    /**
+     * The game screen left the foreground (home button, incoming call, screen off). A running
+     * countdown is paused so the team does not lose time while nobody is playing; the players
+     * resume it explicitly. Has no effect in any other phase.
+     */
+    fun onAppBackgrounded() = pauseGame()
+
+    fun onFinalWordProcessed(winnerTeamId: String?) = perform({ decideLastWord(winnerTeamId) })
+
+    fun toggleWordResult(index: Int) = perform({ toggleResult(index) })
 
     fun startNextRound() {
-        engine.prepareForNextRound()
-        val nextWord = engine.getNextWord()
-        _uiState.update { 
-            it.copy(
-                isRoundOver = false, 
-                winners = emptyList(), 
-                timeRemaining = 0L,
-                isTimerRunning = false
-            ) 
+        // Taken before nextRound() clears the reviewed results.
+        val reviewedTurn = reviewedTurnOrNull()
+        perform({ nextRound() }) {
+            reviewedTurn?.let { (language, results) ->
+                viewModelScope.launch { wordStatsRepository.recordTurn(language, results) }
+            }
         }
-        syncState(currentWord = nextWord)
-    }
-
-    fun pauseGame() {
-        timerJob?.cancel()
-        _uiState.update { it.copy(isTimerRunning = false) }
-        engine.pause()
-        syncState()
-    }
-
-    fun resumeGame() {
-        if (_uiState.value.currentWord == null) return
-        _uiState.update { it.copy(isTimerRunning = true) }
-        engine.resume()
-        startTimer()
-        syncState()
     }
 
     fun onExitGame() {
@@ -229,12 +131,82 @@ class GameViewModel @Inject constructor(
         clearSessionAndNavigate(GameUiEffect.NavigateToSetup)
     }
 
+    /**
+     * Runs an engine [command]; only when the engine accepts it (the command is valid in the
+     * current phase) is the UI updated, the session saved and [onAccepted] executed.
+     */
+    private inline fun perform(command: GameEngine.() -> Boolean, onAccepted: () -> Unit = {}) {
+        val currentEngine = engine ?: return
+        if (isExiting || !currentEngine.command()) return
+        publish()
+        onAccepted()
+    }
+
+    private fun startTicking() {
+        if (timerJob?.isActive == true) return
+        timerJob = viewModelScope.launch {
+            while (engine?.state?.phase == GamePhase.RUNNING) {
+                delay(1000)
+                val timeRanOut = engine?.tick() == true
+                publish()
+                if (timeRanOut) _uiEffect.send(GameUiEffect.PlayTimerEndSound)
+            }
+        }
+    }
+
+    /** Copies the engine state into the UI state and persists the session. */
+    private fun publish() {
+        val currentEngine = engine ?: return
+        val state = currentEngine.state
+        _uiState.update {
+            it.copy(
+                phase = state.phase,
+                currentTeam = state.currentTeam,
+                currentWord = state.currentWord,
+                score = state.turnScore,
+                timeRemaining = state.timeRemaining,
+                maxTime = state.roundTime,
+                winners = state.winners,
+                allTeams = state.teams,
+                roundResults = state.roundResults
+            )
+        }
+        saveSession(currentEngine)
+    }
+
+    private fun saveSession(currentEngine: GameEngine) {
+        if (isExiting) return
+        // Taken synchronously so the saved state matches what was just published.
+        val snapshot = currentEngine.snapshot()
+        val previousSave = sessionSaveJob
+        sessionSaveJob = viewModelScope.launch {
+            previousSave?.cancelAndJoin()
+            if (isExiting) return@launch
+            sessionRepository.saveSession(snapshot)
+        }
+    }
+
+    /**
+     * The language and final results of the turn on the review screen, or `null` outside of it.
+     * A turn is recorded exactly once: when the review is left, after any corrections.
+     */
+    private fun reviewedTurnOrNull(): Pair<String, List<RoundResult>>? {
+        val currentEngine = engine ?: return null
+        val state = currentEngine.state
+        if (state.phase != GamePhase.ROUND_REVIEW && state.phase != GamePhase.FINISHED) return null
+        return state.roundResults.takeIf { it.isNotEmpty() }?.let { currentEngine.language to it }
+    }
+
     private fun clearSessionAndNavigate(effect: GameUiEffect) {
         if (isExiting) return
         isExiting = true
         timerJob?.cancel()
+        // Leaving from the results or victory screen still counts the turn that was reviewed.
+        val reviewedTurn = reviewedTurnOrNull()
 
         viewModelScope.launch {
+            // Recorded before navigating: the ViewModel scope ends when the screen is left.
+            reviewedTurn?.let { (language, results) -> wordStatsRepository.recordTurn(language, results) }
             sessionSaveJob?.cancelAndJoin()
             sessionRepository.clearSession()
             _uiEffect.send(effect)

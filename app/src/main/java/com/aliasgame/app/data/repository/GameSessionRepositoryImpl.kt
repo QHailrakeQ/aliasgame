@@ -1,6 +1,7 @@
 package com.aliasgame.app.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -11,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -31,9 +33,9 @@ private data class SessionRoundResultDto(val word: SessionWordDto, val isCorrect
 
 @Serializable
 private data class SessionGameSettingsDto(
-    val roundTime: Long, 
-    val targetScore: Int, 
-    val pointsPerCorrectAnswer: Int, 
+    val roundTime: Long,
+    val targetScore: Int,
+    val pointsPerCorrectAnswer: Int,
     val pointsPerSkip: Int
 )
 
@@ -49,7 +51,11 @@ private data class SessionSnapshotDto(
     val language: String,
     val packId: String,
     val timeRemaining: Long,
-    val isRoundOver: Boolean
+    /** Name of the [GamePhase]; absent in snapshots written before the phase model existed. */
+    val phase: String? = null,
+    // Legacy fields, read only to migrate snapshots that have no `phase`.
+    val isRoundOver: Boolean = false,
+    val isTurnInProgress: Boolean = false
 )
 
 private fun Word.toDto() = SessionWordDto(text, packId)
@@ -75,7 +81,7 @@ private fun GameSessionSnapshot.toDto() = SessionSnapshotDto(
     language = language,
     packId = packId,
     timeRemaining = timeRemaining,
-    isRoundOver = isRoundOver
+    phase = phase.name
 )
 
 private fun SessionSnapshotDto.toDomain() = GameSessionSnapshot(
@@ -89,37 +95,65 @@ private fun SessionSnapshotDto.toDomain() = GameSessionSnapshot(
     language = language,
     packId = packId,
     timeRemaining = timeRemaining,
-    isRoundOver = isRoundOver
+    phase = phase?.let { name -> GamePhase.entries.firstOrNull { it.name == name } }
+        ?: legacyPhase()
 )
+
+/** Derives the phase for snapshots saved by app versions without an explicit phase. */
+private fun SessionSnapshotDto.legacyPhase(): GamePhase = when {
+    isRoundOver -> GamePhase.ROUND_REVIEW
+    timeRemaining > 0 -> GamePhase.PAUSED
+    isTurnInProgress -> GamePhase.LAST_WORD
+    else -> GamePhase.READY_TO_START
+}
+
+/** JSON encoding of session snapshots, kept free of Android so it can be unit-tested. */
+internal object SessionSnapshotCodec {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    fun encode(snapshot: GameSessionSnapshot): String = json.encodeToString(snapshot.toDto())
+
+    /** @throws SerializationException if [encoded] is not a valid snapshot. */
+    fun decode(encoded: String): GameSessionSnapshot =
+        json.decodeFromString<SessionSnapshotDto>(encoded).toDomain()
+}
 
 @Singleton
 class GameSessionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : GameSessionRepository {
 
-    private val json = Json { ignoreUnknownKeys = true }
-    private val SESSION_KEY = stringPreferencesKey("session_snapshot")
+    private val sessionKey = stringPreferencesKey("session_snapshot")
 
     override val sessionSnapshot: Flow<GameSessionSnapshot?> = context.sessionDataStore.data
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception
         }
         .map { preferences ->
-            preferences[SESSION_KEY]?.let { encoded ->
+            preferences[sessionKey]?.let { encoded ->
                 try {
-                    json.decodeFromString<SessionSnapshotDto>(encoded).toDomain()
-                } catch (e: Exception) {
+                    SessionSnapshotCodec.decode(encoded)
+                } catch (e: SerializationException) {
+                    // A corrupt snapshot cannot be resumed; report it as "no session".
+                    Log.w(TAG, "Discarding unreadable game session", e)
+                    null
+                } catch (e: IllegalArgumentException) {
+                    Log.w(TAG, "Discarding unreadable game session", e)
                     null
                 }
             }
         }
 
     override suspend fun saveSession(snapshot: GameSessionSnapshot) {
-        val encoded = json.encodeToString(snapshot.toDto())
-        context.sessionDataStore.edit { it[SESSION_KEY] = encoded }
+        val encoded = SessionSnapshotCodec.encode(snapshot)
+        context.sessionDataStore.edit { it[sessionKey] = encoded }
     }
 
     override suspend fun clearSession() {
-        context.sessionDataStore.edit { it.remove(SESSION_KEY) }
+        context.sessionDataStore.edit { it.remove(sessionKey) }
+    }
+
+    private companion object {
+        const val TAG = "GameSessionRepository"
     }
 }

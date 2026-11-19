@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Kotlin compiler daemon session data and crash logs
+.kotlin/
+
+# Per-developer IDE state
+/.idea/deploymentTargetSelector.xml
+
+# Internal audit notes (kept locally, not published)
+/docs/IMPROVEMENT_ROADMAP.md

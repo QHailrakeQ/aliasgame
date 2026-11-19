@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.aliasgame.app.presentation.home.HomeScreen
 import com.aliasgame.app.presentation.rules.RulesScreen
 import com.aliasgame.app.presentation.settings.SettingsScreen
+import com.aliasgame.app.presentation.statistics.StatisticsScreen
 import com.aliasgame.app.presentation.setup.PackSelectionScreen
 import com.aliasgame.app.presentation.setup.SetupScreen
 import com.aliasgame.app.presentation.setup.SetupViewModel
@@ -64,11 +65,17 @@ class MainActivity : AppCompatActivity() {
                             HomeScreen(
                                 onPlayClick = { navController.navigate("setup") },
                                 onRulesClick = { navController.navigate("rules") },
+                                onStatisticsClick = { navController.navigate("statistics") },
                                 onSettingsClick = { navController.navigate("settings") }
                             )
                         }
                         composable("rules") {
                             RulesScreen(
+                                onBack = { navController.popBackStack() }
+                            )
+                        }
+                        composable("statistics") {
+                            StatisticsScreen(
                                 onBack = { navController.popBackStack() }
                             )
                         }

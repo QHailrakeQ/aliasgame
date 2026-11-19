@@ -4,7 +4,9 @@ import com.aliasgame.app.domain.model.*
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository for persisting the active game session to survive process death.
+ * Repository for the active game session. A new game is started by saving a fresh
+ * snapshot, and the game screen always loads its state from here, so starting a game
+ * and restoring one after process death follow the same path.
  */
 interface GameSessionRepository {
     val sessionSnapshot: Flow<GameSessionSnapshot?>
@@ -26,5 +28,5 @@ data class GameSessionSnapshot(
     val language: String,
     val packId: String,
     val timeRemaining: Long,
-    val isRoundOver: Boolean
+    val phase: GamePhase
 )

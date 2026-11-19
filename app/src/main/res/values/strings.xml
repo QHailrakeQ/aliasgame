@@ -25,16 +25,6 @@
     <string name="winners_share">The winners are:</string>
 
     <!-- Predefined Team Names -->
-    <string name="funny_name_1">Hungry Rhinos</string>
-    <string name="funny_name_2">Crazy Squirrels</string>
-    <string name="funny_name_3">Iron Ducks</string>
-    <string name="funny_name_4">Cosmic Dumplings</string>
-    <string name="funny_name_5">Fast Snails</string>
-    <string name="funny_name_6">Flying Pigs</string>
-    <string name="funny_name_7">Wise Owls</string>
-    <string name="funny_name_8">Happy Bandits</string>
-    <string name="funny_name_9">Sleepy Pandas</string>
-    <string name="funny_name_10">Dancing Crocodiles</string>
 
     <!-- Categories and Configuration -->
     <string name="teams_header">Teams</string>
@@ -53,12 +43,14 @@
     <string name="difficulty_medium">Medium</string>
     <string name="difficulty_hard">Hard</string>
     <string name="difficulty_insane">Insane</string>
+    <string name="difficulty_mixed">Mixed</string>
 
     <!-- Category Descriptions -->
     <string name="desc_easy">Simple everyday words. Great for kids and beginners.</string>
     <string name="desc_medium">General knowledge words for balanced gameplay.</string>
     <string name="desc_hard">Complex terms and abstract concepts for experts.</string>
     <string name="desc_insane">Scientific terms, rare words, and brain-teasers.</string>
+    <string name="desc_mixed">Words from every category, from easy to insane.</string>
 
     <!-- Gameplay Interface -->
     <string name="no_more_words">No more words available</string>
@@ -103,4 +95,75 @@
     <string name="exit_confirmation_message">Your current game session will be discarded.</string>
     <string name="exit_confirmation_confirm">Exit</string>
     <string name="exit_confirmation_cancel">Keep playing</string>
+    <plurals name="pack_word_count">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+    <string name="menu_statistics">STATISTICS</string>
+    <string name="stats_title">Statistics</string>
+    <string name="stats_hardest_words">Hardest words</string>
+    <string name="stats_hardest_words_hint">The words your teams skipped most often.</string>
+    <string name="stats_skipped_of_shown">skipped %1$d of %2$d</string>
+    <string name="stats_empty">No skipped words yet. Play a few rounds and the toughest ones will show up here.</string>
+    <string name="stats_reset">Reset statistics</string>
+    <string name="stats_reset_title">Reset statistics?</string>
+    <string name="stats_reset_message">The counters of all words in every language will be deleted.</string>
+    <string name="stats_reset_confirm">Reset</string>
+    <string-array name="funny_team_names">
+        <item>Hungry Rhinos</item>
+        <item>Crazy Squirrels</item>
+        <item>Iron Ducks</item>
+        <item>Cosmic Dumplings</item>
+        <item>Fast Snails</item>
+        <item>Flying Pigs</item>
+        <item>Wise Owls</item>
+        <item>Happy Bandits</item>
+        <item>Sleepy Pandas</item>
+        <item>Dancing Crocodiles</item>
+        <item>Angry Avocados</item>
+        <item>Turbo Turtles</item>
+        <item>Ninja Potatoes</item>
+        <item>Grumpy Unicorns</item>
+        <item>Disco Llamas</item>
+        <item>Spicy Meatballs</item>
+        <item>Lazy Lions</item>
+        <item>Caffeinated Koalas</item>
+        <item>Rebel Pancakes</item>
+        <item>Sneaky Penguins</item>
+        <item>Mighty Muffins</item>
+        <item>Brave Broccoli</item>
+        <item>Galactic Gerbils</item>
+        <item>Flamingos in Socks</item>
+        <item>Wild Waffles</item>
+        <item>Moody Moose</item>
+        <item>Laser Hamsters</item>
+        <item>Pirate Pickles</item>
+        <item>Jolly Jellyfish</item>
+        <item>Thunder Chickens</item>
+        <item>Fluffy Destroyers</item>
+        <item>Royal Raccoons</item>
+        <item>Electric Eels</item>
+        <item>Clumsy Giraffes</item>
+        <item>Midnight Nachos</item>
+        <item>Rocket Sloths</item>
+        <item>Polite Vikings</item>
+        <item>Zombie Bananas</item>
+        <item>Sassy Seagulls</item>
+        <item>Bouncy Hedgehogs</item>
+        <item>Shy Sharks</item>
+        <item>Noisy Neighbours</item>
+        <item>Cheesy Wizards</item>
+        <item>Velvet Gorillas</item>
+        <item>Hyper Hippos</item>
+        <item>Bubble Bears</item>
+        <item>Crunchy Tacos</item>
+        <item>Secret Socks</item>
+        <item>Purring Kittens</item>
+        <item>Grandma\'s Cookies</item>
+    </string-array>
+    <string name="content_desc_clear_team_name">Clear name</string>
+    <string name="content_desc_reroll_team_name">Random name</string>
+    <string name="content_desc_remove_team">Remove team</string>
+    <string name="team_name_error_blank">Enter a team name</string>
+    <string name="team_name_error_duplicate">Another team already has this name</string>
 </resources>

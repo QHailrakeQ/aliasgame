@@ -12,11 +12,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Casino
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
+import com.aliasgame.app.domain.model.TeamNameError
+import com.aliasgame.app.domain.model.TeamNames
 import com.aliasgame.app.ui.components.GlassCard
 import com.aliasgame.app.ui.components.PartyBackground
 import com.aliasgame.app.ui.components.PartyScreenHeader
@@ -52,6 +57,13 @@ fun SetupScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Read here rather than in the ViewModel: the activity's resources follow the app language
+    // chosen in the settings, so team names come in the same language as the words.
+    val teamNamePool = stringArrayResource(R.array.funny_team_names).toList()
+    LaunchedEffect(teamNamePool) {
+        viewModel.onTeamNamePoolChanged(teamNamePool)
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     val noWordsMessage = stringResource(R.string.no_words_for_category)
 
@@ -113,6 +125,8 @@ fun SetupScreen(
                 SetupItemContainer(progress = entryProgress.value, index = 1) {
                     PackSelectionCard(
                         selectedPack = state.selectedPack,
+                        selectedPackWordCount = state.packs
+                            .firstOrNull { it.id == state.selectedPack }?.wordCount,
                         onPackClick = onSelectPack
                     )
                 }
@@ -121,7 +135,12 @@ fun SetupScreen(
                 SetupItemContainer(progress = entryProgress.value, index = 2) {
                     TeamManagementCard(
                         teamNames = state.teamNames,
-                        onTeamNamesChange = viewModel::onTeamNamesChanged
+                        errors = state.teamNameErrors,
+                        onNameChange = viewModel::onTeamNameChanged,
+                        onNameClear = viewModel::onTeamNameCleared,
+                        onNameReroll = viewModel::onTeamNameRerolled,
+                        onTeamRemove = viewModel::onTeamRemoved,
+                        onTeamAdd = viewModel::onTeamAdded
                     )
                 }
 
@@ -139,7 +158,7 @@ fun SetupScreen(
                             contentColor = Color.White
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
-                        enabled = !state.isLoading && state.teamNames.all { it.isNotBlank() }
+                        enabled = state.canStartGame
                     ) {
                         if (state.isLoading) {
                             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(28.dp))
@@ -324,11 +343,13 @@ private fun StepperButton(
 @Composable
 private fun PackSelectionCard(
     selectedPack: String,
+    /** `null` while the packs are still loading. */
+    selectedPackWordCount: Int?,
     onPackClick: () -> Unit
 ) {
     SetupCard {
         Column {
-            SectionHeader(stringResource(R.string.category), Icons.Default.Translate)
+            SectionHeader(stringResource(R.string.category), Icons.Default.Category)
             
             Surface(
                 onClick = onPackClick,
@@ -342,16 +363,22 @@ private fun PackSelectionCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val localizedPack = when (selectedPack.lowercase()) {
-                        "easy" -> stringResource(R.string.difficulty_easy)
-                        "medium" -> stringResource(R.string.difficulty_medium)
-                        "hard" -> stringResource(R.string.difficulty_hard)
-                        "insane" -> stringResource(R.string.difficulty_insane)
-                        else -> selectedPack
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            packDisplayName(selectedPack),
+                            style = Typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        if (selectedPackWordCount != null) {
+                            Text(
+                                packWordCount(selectedPackWordCount),
+                                style = Typography.bodySmall,
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
+                        }
                     }
-                    
-                    Text(localizedPack, style = Typography.bodyLarge, fontWeight = FontWeight.Bold, color = Color.White)
-                    
+
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = GameSecondary)
                 }
             }
@@ -362,63 +389,33 @@ private fun PackSelectionCard(
 @Composable
 private fun TeamManagementCard(
     teamNames: List<String>,
-    onTeamNamesChange: (List<String>) -> Unit
+    errors: List<TeamNameError?>,
+    onNameChange: (index: Int, name: String) -> Unit,
+    onNameClear: (index: Int) -> Unit,
+    onNameReroll: (index: Int) -> Unit,
+    onTeamRemove: (index: Int) -> Unit,
+    onTeamAdd: () -> Unit
 ) {
-    val funnyNames = listOf(
-        stringResource(R.string.funny_name_1), stringResource(R.string.funny_name_2),
-        stringResource(R.string.funny_name_3), stringResource(R.string.funny_name_4),
-        stringResource(R.string.funny_name_5), stringResource(R.string.funny_name_6),
-        stringResource(R.string.funny_name_7), stringResource(R.string.funny_name_8),
-        stringResource(R.string.funny_name_9), stringResource(R.string.funny_name_10)
-    )
-
     SetupCard {
         Column {
             SectionHeader(stringResource(R.string.teams_header), Icons.Default.Group)
-            
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 teamNames.forEachIndexed { index, name ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        TextField(
-                            value = name,
-                            onValueChange = { newName ->
-                                val newList = teamNames.toMutableList().apply { set(index, newName) }
-                                onTeamNamesChange(newList)
-                            },
-                            placeholder = { Text(stringResource(R.string.team_name_hint, index + 1), color = Color.White.copy(alpha = 0.4f)) },
-                            modifier = Modifier.weight(1f).clip(RoundedCornerShape(12.dp)),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = GlassWhiteBorder,
-                                unfocusedContainerColor = GlassWhite,
-                                focusedIndicatorColor = GameSecondary,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
-                            ),
-                            singleLine = true
-                        )
-                        if (teamNames.size > 2) {
-                            IconButton(
-                                onClick = {
-                                    val newList = teamNames.toMutableList().apply { removeAt(index) }
-                                    onTeamNamesChange(newList)
-                                },
-                                modifier = Modifier.background(Color.Red.copy(alpha = 0.1f), CircleShape)
-                            ) {
-                                Icon(Icons.Default.Delete, null, tint = Color(0xFFFF5252))
-                            }
-                        }
-                    }
+                    TeamNameRow(
+                        index = index,
+                        name = name,
+                        error = errors.getOrNull(index),
+                        canRemove = teamNames.size > TeamNames.MIN_TEAMS,
+                        onNameChange = { onNameChange(index, it) },
+                        onClear = { onNameClear(index) },
+                        onReroll = { onNameReroll(index) },
+                        onRemove = { onTeamRemove(index) }
+                    )
                 }
 
                 TextButton(
-                    onClick = {
-                        val nextName = funnyNames.filter { it !in teamNames }.randomOrNull() ?: "Team ${teamNames.size + 1}"
-                        onTeamNamesChange(teamNames + nextName)
-                    },
+                    onClick = onTeamAdd,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text("+ " + stringResource(R.string.add_team).uppercase(), color = GameSecondary, fontWeight = FontWeight.Bold)
@@ -427,6 +424,103 @@ private fun TeamManagementCard(
         }
     }
 }
+
+@Composable
+private fun TeamNameRow(
+    index: Int,
+    name: String,
+    error: TeamNameError?,
+    canRemove: Boolean,
+    onNameChange: (String) -> Unit,
+    onClear: () -> Unit,
+    onReroll: () -> Unit,
+    onRemove: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TextField(
+            value = name,
+            onValueChange = onNameChange,
+            placeholder = {
+                Text(stringResource(R.string.team_name_hint, index + 1), color = Color.White.copy(alpha = 0.4f))
+            },
+            trailingIcon = if (name.isNotEmpty()) {
+                {
+                    IconButton(onClick = onClear) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.content_desc_clear_team_name),
+                            tint = Color.White.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            } else {
+                null
+            },
+            isError = error != null,
+            supportingText = error?.let {
+                {
+                    Text(
+                        stringResource(
+                            when (it) {
+                                TeamNameError.BLANK -> R.string.team_name_error_blank
+                                TeamNameError.DUPLICATE -> R.string.team_name_error_duplicate
+                            }
+                        )
+                    )
+                }
+            },
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = GlassWhiteBorder,
+                unfocusedContainerColor = GlassWhite,
+                errorContainerColor = GlassWhite,
+                focusedIndicatorColor = GameSecondary,
+                unfocusedIndicatorColor = Color.Transparent,
+                errorIndicatorColor = TeamNameErrorColor,
+                errorSupportingTextColor = TeamNameErrorColor,
+                errorTrailingIconColor = Color.White.copy(alpha = 0.7f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                errorTextColor = Color.White,
+                cursorColor = GameSecondary,
+                errorCursorColor = GameSecondary
+            ),
+            singleLine = true
+        )
+        IconButton(
+            onClick = onReroll,
+            modifier = Modifier
+                .padding(top = 4.dp)
+                .background(GameSecondary.copy(alpha = 0.15f), CircleShape)
+        ) {
+            Icon(
+                Icons.Default.Casino,
+                contentDescription = stringResource(R.string.content_desc_reroll_team_name),
+                tint = GameSecondary
+            )
+        }
+        if (canRemove) {
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .background(Color.Red.copy(alpha = 0.1f), CircleShape)
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.content_desc_remove_team),
+                    tint = TeamNameErrorColor
+                )
+            }
+        }
+    }
+}
+
+private val TeamNameErrorColor = Color(0xFFFF5252)
 
 @Composable
 fun SetupCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {

@@ -1,9 +1,6566 @@
 [
-  {"text": "Кіт", "packId": "Easy"}, {"text": "Собака", "packId": "Easy"}, {"text": "Яблуко", "packId": "Easy"}, {"text": "Сонце", "packId": "Easy"}, {"text": "Книга", "packId": "Easy"}, {"text": "Банан", "packId": "Easy"}, {"text": "Дерево", "packId": "Easy"}, {"text": "Машина", "packId": "Easy"}, {"text": "Стіл", "packId": "Easy"}, {"text": "Молоко", "packId": "Easy"}, {"text": "Хліб", "packId": "Easy"}, {"text": "Вода", "packId": "Easy"}, {"text": "М'яч", "packId": "Easy"}, {"text": "Риба", "packId": "Easy"}, {"text": "Квітка", "packId": "Easy"}, {"text": "Вікно", "packId": "Easy"}, {"text": "Ручка", "packId": "Easy"}, {"text": "Чашка", "packId": "Easy"}, {"text": "Капелюх", "packId": "Easy"}, {"text": "Черевики", "packId": "Easy"}, {"text": "Ложка", "packId": "Easy"}, {"text": "Виделка", "packId": "Easy"}, {"text": "Мило", "packId": "Easy"}, {"text": "Дзеркало", "packId": "Easy"}, {"text": "Лампа", "packId": "Easy"}, {"text": "Годинник", "packId": "Easy"}, {"text": "Подушка", "packId": "Easy"}, {"text": "Кавун", "packId": "Easy"}, {"text": "Велосипед", "packId": "Easy"}, {"text": "Парасолька", "packId": "Easy"}, {"text": "Кролик", "packId": "Easy"}, {"text": "Корова", "packId": "Easy"}, {"text": "Птах", "packId": "Easy"}, {"text": "Морозиво", "packId": "Easy"}, {"text": "Тарілка", "packId": "Easy"}, {"text": "Чай", "packId": "Easy"}, {"text": "Олівець", "packId": "Easy"}, {"text": "Телефон", "packId": "Easy"}, {"text": "Сумка", "packId": "Easy"}, {"text": "Стілець", "packId": "Easy"}, {"text": "Шафа", "packId": "Easy"}, {"text": "Лимон", "packId": "Easy"}, {"text": "Сир", "packId": "Easy"}, {"text": "Картопля", "packId": "Easy"}, {"text": "Морква", "packId": "Easy"}, {"text": "Гриби", "packId": "Easy"}, {"text": "Цукерка", "packId": "Easy"}, {"text": "Корабель", "packId": "Easy"}, {"text": "Літак", "packId": "Easy"}, {"text": "Поїзд", "packId": "Easy"}, {"text": "Автобус", "packId": "Easy"}, {"text": "Міст", "packId": "Easy"}, {"text": "Річка", "packId": "Easy"}, {"text": "Гора", "packId": "Easy"}, {"text": "Ліс", "packId": "Easy"}, {"text": "Море", "packId": "Easy"}, {"text": "Пісок", "packId": "Easy"}, {"text": "Трава", "packId": "Easy"}, {"text": "Зірка", "packId": "Easy"}, {"text": "Місяць", "packId": "Easy"}, {"text": "Хмара", "packId": "Easy"}, {"text": "Сніг", "packId": "Easy"}, {"text": "Дощ", "packId": "Easy"}, {"text": "Вогонь", "packId": "Easy"}, {"text": "Камінь", "packId": "Easy"}, {"text": "Лист", "packId": "Easy"}, {"text": "Ключ", "packId": "Easy"}, {"text": "Гроші", "packId": "Easy"}, {"text": "Газета", "packId": "Easy"}, {"text": "Журнал", "packId": "Easy"}, {"text": "Радіо", "packId": "Easy"}, {"text": "Гітара", "packId": "Easy"}, {"text": "Лялька", "packId": "Easy"}, {"text": "Ведмідь", "packId": "Easy"}, {"text": "Слон", "packId": "Easy"}, {"text": "Миша", "packId": "Easy"}, {"text": "Килим", "packId": "Easy"}, {"text": "Двері", "packId": "Easy"}, {"text": "Сходи", "packId": "Easy"}, {"text": "Дах", "packId": "Easy"}, {"text": "Паркан", "packId": "Easy"}, {"text": "Сад", "packId": "Easy"}, {"text": "Ферма", "packId": "Easy"}, {"text": "Школа", "packId": "Easy"}, {"text": "Аптека", "packId": "Easy"}, {"text": "Магазин", "packId": "Easy"}, {"text": "Торт", "packId": "Easy"}, {"text": "Пиріг", "packId": "Easy"}, {"text": "Яйце", "packId": "Easy"}, {"text": "Сіль", "packId": "Easy"}, {"text": "Цукор", "packId": "Easy"}, {"text": "Масло", "packId": "Easy"}, {"text": "М'ясо", "packId": "Easy"}, {"text": "Суп", "packId": "Easy"}, {"text": "Каша", "packId": "Easy"}, {"text": "Виноград", "packId": "Easy"}, {"text": "Груша", "packId": "Easy"}, {"text": "Слива", "packId": "Easy"}, {"text": "Вишня", "packId": "Easy"}, {"text": "Полуниця", "packId": "Easy"},
-
-  {"text": "Горизонт", "packId": "Medium"}, {"text": "Лабіринт", "packId": "Medium"}, {"text": "Бінокль", "packId": "Medium"}, {"text": "Вулкан", "packId": "Medium"}, {"text": "Гітара", "packId": "Medium"}, {"text": "Календар", "packId": "Medium"}, {"text": "Парасолька", "packId": "Medium"}, {"text": "Рюкзак", "packId": "Medium"}, {"text": "Світлофор", "packId": "Medium"}, {"text": "Шоколад", "packId": "Medium"}, {"text": "Компас", "packId": "Medium"}, {"text": "Скрипка", "packId": "Medium"}, {"text": "Телескоп", "packId": "Medium"}, {"text": "Айсберг", "packId": "Medium"}, {"text": "Вертоліт", "packId": "Medium"}, {"text": "Динозавр", "packId": "Medium"}, {"text": "Екскаватор", "packId": "Medium"}, {"text": "Піраміда", "packId": "Medium"}, {"text": "Кенгуру", "packId": "Medium"}, {"text": "Жираф", "packId": "Medium"}, {"text": "Бібліотека", "packId": "Medium"}, {"text": "Мікроскоп", "packId": "Medium"}, {"text": "Акваріум", "packId": "Medium"}, {"text": "Парашут", "packId": "Medium"}, {"text": "Робот", "packId": "Medium"}, {"text": "Супутник", "packId": "Medium"}, {"text": "Океан", "packId": "Medium"}, {"text": "Пустеля", "packId": "Medium"}, {"text": "Джунглі", "packId": "Medium"}, {"text": "Печера", "packId": "Medium"}, {"text": "Блискавка", "packId": "Medium"}, {"text": "Веселка", "packId": "Medium"}, {"text": "Землетрус", "packId": "Medium"}, {"text": "Торнадо", "packId": "Medium"}, {"text": "Електрика", "packId": "Medium"}, {"text": "Батарейка", "packId": "Medium"}, {"text": "Інтернет", "packId": "Medium"}, {"text": "Пароль", "packId": "Medium"}, {"text": "Сервер", "packId": "Medium"}, {"text": "Космонавт", "packId": "Medium"}, {"text": "Планета", "packId": "Medium"}, {"text": "Галактика", "packId": "Medium"}, {"text": "Мікрофон", "packId": "Medium"}, {"text": "Камера", "packId": "Medium"}, {"text": "Проектор", "packId": "Medium"}, {"text": "Шахи", "packId": "Medium"}, {"text": "Доміно", "packId": "Medium"}, {"text": "Карнавал", "packId": "Medium"}, {"text": "Фестиваль", "packId": "Medium"}, {"text": "Музей", "packId": "Medium"}, {"text": "Театр", "packId": "Medium"}, {"text": "Цирк", "packId": "Medium"}, {"text": "Стадіон", "packId": "Medium"}, {"text": "Басейн", "packId": "Medium"}, {"text": "Спортзал", "packId": "Medium"}, {"text": "Аптека", "packId": "Medium"}, {"text": "Лікарня", "packId": "Medium"}, {"text": "Завод", "packId": "Medium"}, {"text": "Офіс", "packId": "Medium"}, {"text": "Готель", "packId": "Medium"}, {"text": "Ресторан", "packId": "Medium"}, {"text": "Кафе", "packId": "Medium"}, {"text": "Банк", "packId": "Medium"}, {"text": "Пошта", "packId": "Medium"}, {"text": "Поліція", "packId": "Medium"}, {"text": "Пожежники", "packId": "Medium"}, {"text": "Армія", "packId": "Medium"}, {"text": "Прапор", "packId": "Medium"}, {"text": "Герб", "packId": "Medium"}, {"text": "Гімн", "packId": "Medium"}, {"text": "Закон", "packId": "Medium"}, {"text": "Суд", "packId": "Medium"}, {"text": "В'язниця", "packId": "Medium"}, {"text": "Штраф", "packId": "Medium"}, {"text": "Податок", "packId": "Medium"}, {"text": "Бюджет", "packId": "Medium"}, {"text": "Економіка", "packId": "Medium"}, {"text": "Ринок", "packId": "Medium"}, {"text": "Акція", "packId": "Medium"}, {"text": "Реклама", "packId": "Medium"}, {"text": "Бренд", "packId": "Medium"}, {"text": "Логотип", "packId": "Medium"}, {"text": "Дизайн", "packId": "Medium"}, {"text": "Стиль", "packId": "Medium"}, {"text": "Мода", "packId": "Medium"}, {"text": "Краса", "packId": "Medium"}, {"text": "Талант", "packId": "Medium"}, {"text": "Успіх", "packId": "Medium"}, {"text": "Мрія", "packId": "Medium"}, {"text": "Надія", "packId": "Medium"}, {"text": "Любов", "packId": "Medium"}, {"text": "Дружба", "packId": "Medium"}, {"text": "Сім'я", "packId": "Medium"}, {"text": "Дитина", "packId": "Medium"}, {"text": "Батьки", "packId": "Medium"}, {"text": "Свято", "packId": "Medium"}, {"text": "Подарунок", "packId": "Medium"}, {"text": "Сюрприз", "packId": "Medium"}, {"text": "Сміх", "packId": "Medium"},
-
-  {"text": "Дистанція", "packId": "Hard"}, {"text": "Енциклопедія", "packId": "Hard"}, {"text": "Гравітація", "packId": "Hard"}, {"text": "Меланхолія", "packId": "Hard"}, {"text": "Парадокс", "packId": "Hard"}, {"text": "Синхронізація", "packId": "Hard"}, {"text": "Еволюція", "packId": "Hard"}, {"text": "Археологія", "packId": "Hard"}, {"text": "Стратегія", "packId": "Hard"}, {"text": "Філософія", "packId": "Hard"}, {"text": "Ностальгія", "packId": "Hard"}, {"text": "Ілюзія", "packId": "Hard"}, {"text": "Авангард", "packId": "Hard"}, {"text": "Гіпотеза", "packId": "Hard"}, {"text": "Алегорія", "packId": "Hard"}, {"text": "Інтуїція", "packId": "Hard"}, {"text": "Компроміс", "packId": "Hard"}, {"text": "Метафора", "packId": "Hard"}, {"text": "Перспектива", "packId": "Hard"}, {"text": "Резонанс", "packId": "Hard"}, {"text": "Харизма", "packId": "Hard"}, {"text": "Апатія", "packId": "Hard"}, {"text": "Скептицизм", "packId": "Hard"}, {"text": "Оптимізм", "packId": "Hard"}, {"text": "Деградація", "packId": "Hard"}, {"text": "Корупція", "packId": "Hard"}, {"text": "Бюрократія", "packId": "Hard"}, {"text": "Демократія", "packId": "Hard"}, {"text": "Монархія", "packId": "Hard"}, {"text": "Диктатура", "packId": "Hard"}, {"text": "Революція", "packId": "Hard"}, {"text": "Дипломатія", "packId": "Hard"}, {"text": "Конфлікт", "packId": "Hard"}, {"text": "Толерантність", "packId": "Hard"}, {"text": "Емпатія", "packId": "Hard"}, {"text": "Інтроверт", "packId": "Hard"}, {"text": "Екстраверт", "packId": "Hard"}, {"text": "Амбіції", "packId": "Hard"}, {"text": "Інтелект", "packId": "Hard"}, {"text": "Креативність", "packId": "Hard"}, {"text": "Логіка", "packId": "Hard"}, {"text": "Аналіз", "packId": "Hard"}, {"text": "Синтез", "packId": "Hard"}, {"text": "Абстракція", "packId": "Hard"}, {"text": "Конкретика", "packId": "Hard"}, {"text": "Об'єктивність", "packId": "Hard"}, {"text": "Суб'єктивність", "packId": "Hard"}, {"text": "Принцип", "packId": "Hard"}, {"text": "Мораль", "packId": "Hard"}, {"text": "Етика", "packId": "Hard"}, {"text": "Совість", "packId": "Hard"}, {"text": "Справедливість", "packId": "Hard"}, {"text": "Честь", "packId": "Hard"}, {"text": "Гідність", "packId": "Hard"}, {"text": "Свобода", "packId": "Hard"}, {"text": "Відповідальність", "packId": "Hard"}, {"text": "Обов'язок", "packId": "Hard"}, {"text": "Довіра", "packId": "Hard"}, {"text": "Повага", "packId": "Hard"}, {"text": "Авторитет", "packId": "Hard"}, {"text": "Репутація", "packId": "Hard"}, {"text": "Вплив", "packId": "Hard"}, {"text": "Влада", "packId": "Hard"}, {"text": "Ресурс", "packId": "Hard"}, {"text": "Потенціал", "packId": "Hard"}, {"text": "Енергія", "packId": "Hard"}, {"text": "Стимул", "packId": "Hard"}, {"text": "Мотивація", "packId": "Hard"}, {"text": "Мета", "packId": "Hard"}, {"text": "Результат", "packId": "Hard"}, {"text": "Процес", "packId": "Hard"}, {"text": "Ефект", "packId": "Hard"}, {"text": "Прогрес", "packId": "Hard"}, {"text": "Стагнація", "packId": "Hard"}, {"text": "Криза", "packId": "Hard"}, {"text": "Шанс", "packId": "Hard"}, {"text": "Ризик", "packId": "Hard"}, {"text": "Успіх", "packId": "Hard"}, {"text": "Поразка", "packId": "Hard"}, {"text": "Досвід", "packId": "Hard"}, {"text": "Знання", "packId": "Hard"}, {"text": "Мудрість", "packId": "Hard"}, {"text": "Таємниця", "packId": "Hard"}, {"text": "Істина", "packId": "Hard"}, {"text": "Реальність", "packId": "Hard"}, {"text": "Фантазія", "packId": "Hard"}, {"text": "Мрія", "packId": "Hard"}, {"text": "Сенс", "packId": "Hard"}, {"text": "Буття", "packId": "Hard"}, {"text": "Смерть", "packId": "Hard"}, {"text": "Життя", "packId": "Hard"}, {"text": "Час", "packId": "Hard"}, {"text": "Простір", "packId": "Hard"}, {"text": "Матерія", "packId": "Hard"}, {"text": "Дух", "packId": "Hard"}, {"text": "Всесвіт", "packId": "Hard"}, {"text": "Хаос", "packId": "Hard"},
-
-  {"text": "Ентропія", "packId": "Insane"}, {"text": "Сингулярність", "packId": "Insane"}, {"text": "Метафізика", "packId": "Insane"}, {"text": "Екзистенціалізм", "packId": "Insane"}, {"text": "Когнітивний дисонанс", "packId": "Insane"}, {"text": "Агностицизм", "packId": "Insane"}, {"text": "Сюрреалізм", "packId": "Insane"}, {"text": "Прокрастинація", "packId": "Insane"}, {"text": "Квантова заплутаність", "packId": "Insane"}, {"text": "Нігілізм", "packId": "Insane"}, {"text": "Атараксія", "packId": "Insane"}, {"text": "Герменевтика", "packId": "Insane"}, {"text": "Діалектика", "packId": "Insane"}, {"text": "Імманентність", "packId": "Insane"}, {"text": "Катарсис", "packId": "Insane"}, {"text": "Онтологія", "packId": "Insane"}, {"text": "Парадигма", "packId": "Insane"}, {"text": "Соліпсизм", "packId": "Insane"}, {"text": "Трансцендентність", "packId": "Insane"}, {"text": "Феноменологія", "packId": "Insane"}, {"text": "Езотерика", "packId": "Insane"}, {"text": "Дуалізм", "packId": "Insane"}, {"text": "Альтруїзм", "packId": "Insane"}, {"text": "Гедонізм", "packId": "Insane"}, {"text": "Утилітаризм", "packId": "Insane"}, {"text": "Прагматизм", "packId": "Insane"}, {"text": "Раціоналізм", "packId": "Insane"}, {"text": "Емпіризм", "packId": "Insane"}, {"text": "Антропоцентризм", "packId": "Insane"}, {"text": "Теоцентризм", "packId": "Insane"}, {"text": "Гуманізм", "packId": "Insane"}, {"text": "Лібералізм", "packId": "Insane"}, {"text": "Консерватизм", "packId": "Insane"}, {"text": "Соціалізм", "packId": "Insane"}, {"text": "Комунізм", "packId": "Insane"}, {"text": "Анархізм", "packId": "Insane"}, {"text": "Фашизм", "packId": "Insane"}, {"text": "Націоналізм", "packId": "Insane"}, {"text": "Пацифізм", "packId": "Insane"}, {"text": "Глобалізація", "packId": "Insane"}, {"text": "Урбанізація", "packId": "Insane"}, {"text": "Еволюція", "packId": "Insane"}, {"text": "Генетика", "packId": "Insane"}, {"text": "Кібернетика", "packId": "Insane"}, {"text": "Нанотехнології", "packId": "Insane"}, {"text": "Штучний інтелект", "packId": "Insane"}, {"text": "Нейронні мережі", "packId": "Insane"}, {"text": "Алгоритм", "packId": "Insane"}, {"text": "Криптовалюта", "packId": "Insane"}, {"text": "Блокчейн", "packId": "Insane"}, {"text": "Віртуальна реальність", "packId": "Insane"}, {"text": "Доповнена реальність", "packId": "Insane"}, {"text": "Голограма", "packId": "Insane"}, {"text": "Клонування", "packId": "Insane"}, {"text": "Мутація", "packId": "Insane"}, {"text": "Екосистема", "packId": "Insane"}, {"text": "Біосфера", "packId": "Insane"}, {"text": "Ноосфера", "packId": "Insane"}, {"text": "Панспермія", "packId": "Insane"}, {"text": "Великий вибух", "packId": "Insane"}, {"text": "Чорна діра", "packId": "Insane"}, {"text": "Пульсар", "packId": "Insane"}, {"text": "Квазар", "packId": "Insane"}, {"text": "Темна матерія", "packId": "Insane"}, {"text": "Темна енергія", "packId": "Insane"}, {"text": "Антиматерія", "packId": "Insane"}, {"text": "Протон", "packId": "Insane"}, {"text": "Нейтрон", "packId": "Insane"}, {"text": "Електрон", "packId": "Insane"}, {"text": "Кварк", "packId": "Insane"}, {"text": "Фотон", "packId": "Insane"}, {"text": "Бозон", "packId": "Insane"}, {"text": "Гравітон", "packId": "Insane"}, {"text": "Радіоактивність", "packId": "Insane"}, {"text": "Термодинаміка", "packId": "Insane"}, {"text": "Релятивність", "packId": "Insane"}, {"text": "Ентропія", "packId": "Insane"}, {"text": "Гідродинаміка", "packId": "Insane"}, {"text": "Аеродинаміка", "packId": "Insane"}, {"text": "Термоядерний синтез", "packId": "Insane"}, {"text": "Фотосинтез", "packId": "Insane"}, {"text": "Метаболізм", "packId": "Insane"}, {"text": "Гомеостаз", "packId": "Insane"}, {"text": "Осмос", "packId": "Insane"}, {"text": "Дифузія", "packId": "Insane"}, {"text": "Каталіз", "packId": "Insane"}, {"text": "Електроліз", "packId": "Insane"}, {"text": "Синтез", "packId": "Insane"}, {"text": "Аналіз", "packId": "Insane"}, {"text": "Індукція", "packId": "Insane"}, {"text": "Дедукція", "packId": "Insane"}, {"text": "Абдукція", "packId": "Insane"}, {"text": "Силогізм", "packId": "Insane"}, {"text": "Тавтологія", "packId": "Insane"}, {"text": "Оксюморон", "packId": "Insane"}, {"text": "Гіпербола", "packId": "Insane"}, {"text": "Літота", "packId": "Insane"}, {"text": "Метонімія", "packId": "Insane"}, {"text": "Синекдоха", "packId": "Insane"}
+  {
+    "text": "Кіт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Собака",
+    "packId": "Easy"
+  },
+  {
+    "text": "Яблуко",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сонце",
+    "packId": "Easy"
+  },
+  {
+    "text": "Книга",
+    "packId": "Easy"
+  },
+  {
+    "text": "Банан",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дерево",
+    "packId": "Easy"
+  },
+  {
+    "text": "Машина",
+    "packId": "Easy"
+  },
+  {
+    "text": "Стіл",
+    "packId": "Easy"
+  },
+  {
+    "text": "Молоко",
+    "packId": "Easy"
+  },
+  {
+    "text": "Хліб",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вода",
+    "packId": "Easy"
+  },
+  {
+    "text": "М'яч",
+    "packId": "Easy"
+  },
+  {
+    "text": "Риба",
+    "packId": "Easy"
+  },
+  {
+    "text": "Квітка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вікно",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ручка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Чашка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Капелюх",
+    "packId": "Easy"
+  },
+  {
+    "text": "Черевики",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ложка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Виделка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мило",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дзеркало",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лампа",
+    "packId": "Easy"
+  },
+  {
+    "text": "Годинник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Подушка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кавун",
+    "packId": "Easy"
+  },
+  {
+    "text": "Велосипед",
+    "packId": "Easy"
+  },
+  {
+    "text": "Парасолька",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кролик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Корова",
+    "packId": "Easy"
+  },
+  {
+    "text": "Птах",
+    "packId": "Easy"
+  },
+  {
+    "text": "Морозиво",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тарілка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Чай",
+    "packId": "Easy"
+  },
+  {
+    "text": "Олівець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Телефон",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сумка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Стілець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шафа",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лимон",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сир",
+    "packId": "Easy"
+  },
+  {
+    "text": "Картопля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Морква",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гриби",
+    "packId": "Easy"
+  },
+  {
+    "text": "Цукерка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Корабель",
+    "packId": "Easy"
+  },
+  {
+    "text": "Літак",
+    "packId": "Easy"
+  },
+  {
+    "text": "Поїзд",
+    "packId": "Easy"
+  },
+  {
+    "text": "Автобус",
+    "packId": "Easy"
+  },
+  {
+    "text": "Міст",
+    "packId": "Easy"
+  },
+  {
+    "text": "Річка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гора",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ліс",
+    "packId": "Easy"
+  },
+  {
+    "text": "Море",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пісок",
+    "packId": "Easy"
+  },
+  {
+    "text": "Трава",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зірка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Місяць",
+    "packId": "Easy"
+  },
+  {
+    "text": "Хмара",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сніг",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дощ",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вогонь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Камінь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лист",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ключ",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гроші",
+    "packId": "Easy"
+  },
+  {
+    "text": "Газета",
+    "packId": "Easy"
+  },
+  {
+    "text": "Журнал",
+    "packId": "Easy"
+  },
+  {
+    "text": "Радіо",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гітара",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лялька",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ведмідь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Слон",
+    "packId": "Easy"
+  },
+  {
+    "text": "Миша",
+    "packId": "Easy"
+  },
+  {
+    "text": "Килим",
+    "packId": "Easy"
+  },
+  {
+    "text": "Двері",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сходи",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дах",
+    "packId": "Easy"
+  },
+  {
+    "text": "Паркан",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сад",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ферма",
+    "packId": "Easy"
+  },
+  {
+    "text": "Школа",
+    "packId": "Easy"
+  },
+  {
+    "text": "Аптека",
+    "packId": "Easy"
+  },
+  {
+    "text": "Магазин",
+    "packId": "Easy"
+  },
+  {
+    "text": "Торт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пиріг",
+    "packId": "Easy"
+  },
+  {
+    "text": "Яйце",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сіль",
+    "packId": "Easy"
+  },
+  {
+    "text": "Цукор",
+    "packId": "Easy"
+  },
+  {
+    "text": "Масло",
+    "packId": "Easy"
+  },
+  {
+    "text": "М'ясо",
+    "packId": "Easy"
+  },
+  {
+    "text": "Суп",
+    "packId": "Easy"
+  },
+  {
+    "text": "Каша",
+    "packId": "Easy"
+  },
+  {
+    "text": "Виноград",
+    "packId": "Easy"
+  },
+  {
+    "text": "Груша",
+    "packId": "Easy"
+  },
+  {
+    "text": "Слива",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вишня",
+    "packId": "Easy"
+  },
+  {
+    "text": "Полуниця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Помідор",
+    "packId": "Easy"
+  },
+  {
+    "text": "Огірок",
+    "packId": "Easy"
+  },
+  {
+    "text": "Цибуля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Часник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Капуста",
+    "packId": "Easy"
+  },
+  {
+    "text": "Буряк",
+    "packId": "Easy"
+  },
+  {
+    "text": "Баклажан",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кабачок",
+    "packId": "Easy"
+  },
+  {
+    "text": "Перець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кукурудза",
+    "packId": "Easy"
+  },
+  {
+    "text": "Горох",
+    "packId": "Easy"
+  },
+  {
+    "text": "Квасоля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гарбуз",
+    "packId": "Easy"
+  },
+  {
+    "text": "Редиска",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шпинат",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кріп",
+    "packId": "Easy"
+  },
+  {
+    "text": "Петрушка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Апельсин",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мандарин",
+    "packId": "Easy"
+  },
+  {
+    "text": "Персик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Абрикос",
+    "packId": "Easy"
+  },
+  {
+    "text": "Диня",
+    "packId": "Easy"
+  },
+  {
+    "text": "Малина",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ожина",
+    "packId": "Easy"
+  },
+  {
+    "text": "Чорниця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Смородина",
+    "packId": "Easy"
+  },
+  {
+    "text": "Аґрус",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ківі",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ананас",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кокос",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гранат",
+    "packId": "Easy"
+  },
+  {
+    "text": "Інжир",
+    "packId": "Easy"
+  },
+  {
+    "text": "Хурма",
+    "packId": "Easy"
+  },
+  {
+    "text": "Горіх",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мед",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шоколадка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Печиво",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вафля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пончик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Млинець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вареник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пельмень",
+    "packId": "Easy"
+  },
+  {
+    "text": "Борщ",
+    "packId": "Easy"
+  },
+  {
+    "text": "Салат",
+    "packId": "Easy"
+  },
+  {
+    "text": "Котлета",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ковбаса",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сосиска",
+    "packId": "Easy"
+  },
+  {
+    "text": "Бутерброд",
+    "packId": "Easy"
+  },
+  {
+    "text": "Піца",
+    "packId": "Easy"
+  },
+  {
+    "text": "Бургер",
+    "packId": "Easy"
+  },
+  {
+    "text": "Макарони",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рис",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гречка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Борошно",
+    "packId": "Easy"
+  },
+  {
+    "text": "Олія",
+    "packId": "Easy"
+  },
+  {
+    "text": "Оцет",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сік",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кава",
+    "packId": "Easy"
+  },
+  {
+    "text": "Какао",
+    "packId": "Easy"
+  },
+  {
+    "text": "Компот",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лимонад",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кефір",
+    "packId": "Easy"
+  },
+  {
+    "text": "Йогурт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сметана",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сирник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зефір",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мармелад",
+    "packId": "Easy"
+  },
+  {
+    "text": "Льодяник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Карамель",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пряник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вовк",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лисиця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Заєць",
+    "packId": "Easy"
+  },
+  {
+    "text": "Білка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Їжак",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кабан",
+    "packId": "Easy"
+  },
+  {
+    "text": "Олень",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лось",
+    "packId": "Easy"
+  },
+  {
+    "text": "Бобер",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кріт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лев",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тигр",
+    "packId": "Easy"
+  },
+  {
+    "text": "Жирафа",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зебра",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мавпа",
+    "packId": "Easy"
+  },
+  {
+    "text": "Бегемот",
+    "packId": "Easy"
+  },
+  {
+    "text": "Носоріг",
+    "packId": "Easy"
+  },
+  {
+    "text": "Крокодил",
+    "packId": "Easy"
+  },
+  {
+    "text": "Черепаха",
+    "packId": "Easy"
+  },
+  {
+    "text": "Змія",
+    "packId": "Easy"
+  },
+  {
+    "text": "Жаба",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ящірка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кінь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Свиня",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вівця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Коза",
+    "packId": "Easy"
+  },
+  {
+    "text": "Курка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Півень",
+    "packId": "Easy"
+  },
+  {
+    "text": "Качка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гуска",
+    "packId": "Easy"
+  },
+  {
+    "text": "Індик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Голуб",
+    "packId": "Easy"
+  },
+  {
+    "text": "Горобець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ворона",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сорока",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сова",
+    "packId": "Easy"
+  },
+  {
+    "text": "Орел",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лелека",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лебідь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пінгвін",
+    "packId": "Easy"
+  },
+  {
+    "text": "Папуга",
+    "packId": "Easy"
+  },
+  {
+    "text": "Страус",
+    "packId": "Easy"
+  },
+  {
+    "text": "Фламінго",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дятел",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ластівка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Бджола",
+    "packId": "Easy"
+  },
+  {
+    "text": "Оса",
+    "packId": "Easy"
+  },
+  {
+    "text": "Метелик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Муха",
+    "packId": "Easy"
+  },
+  {
+    "text": "Комар",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мураха",
+    "packId": "Easy"
+  },
+  {
+    "text": "Жук",
+    "packId": "Easy"
+  },
+  {
+    "text": "Павук",
+    "packId": "Easy"
+  },
+  {
+    "text": "Бабка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Коник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Черв'як",
+    "packId": "Easy"
+  },
+  {
+    "text": "Равлик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Акула",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кит",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дельфін",
+    "packId": "Easy"
+  },
+  {
+    "text": "Восьминіг",
+    "packId": "Easy"
+  },
+  {
+    "text": "Краб",
+    "packId": "Easy"
+  },
+  {
+    "text": "Медуза",
+    "packId": "Easy"
+  },
+  {
+    "text": "Морж",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тюлень",
+    "packId": "Easy"
+  },
+  {
+    "text": "Куртка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пальто",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шуба",
+    "packId": "Easy"
+  },
+  {
+    "text": "Светр",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кофта",
+    "packId": "Easy"
+  },
+  {
+    "text": "Футболка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Майка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сорочка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сукня",
+    "packId": "Easy"
+  },
+  {
+    "text": "Спідниця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Штани",
+    "packId": "Easy"
+  },
+  {
+    "text": "Джинси",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шорти",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шкарпетки",
+    "packId": "Easy"
+  },
+  {
+    "text": "Колготки",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рукавиці",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шарф",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шапка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кепка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Краватка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ремінь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кросівки",
+    "packId": "Easy"
+  },
+  {
+    "text": "Чоботи",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сандалі",
+    "packId": "Easy"
+  },
+  {
+    "text": "Капці",
+    "packId": "Easy"
+  },
+  {
+    "text": "Підбори",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рюкзачок",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гаманець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Окуляри",
+    "packId": "Easy"
+  },
+  {
+    "text": "Каблучка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сережки",
+    "packId": "Easy"
+  },
+  {
+    "text": "Браслет",
+    "packId": "Easy"
+  },
+  {
+    "text": "Намисто",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ланцюжок",
+    "packId": "Easy"
+  },
+  {
+    "text": "Брошка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Застібка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ґудзик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кишеня",
+    "packId": "Easy"
+  },
+  {
+    "text": "Комір",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рукав",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ліжко",
+    "packId": "Easy"
+  },
+  {
+    "text": "Диван",
+    "packId": "Easy"
+  },
+  {
+    "text": "Крісло",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тумбочка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Комод",
+    "packId": "Easy"
+  },
+  {
+    "text": "Полиця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дзеркальце",
+    "packId": "Easy"
+  },
+  {
+    "text": "Штора",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ковдра",
+    "packId": "Easy"
+  },
+  {
+    "text": "Простирадло",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рушник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Халат",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зубна щітка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Паста",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гребінець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Фен",
+    "packId": "Easy"
+  },
+  {
+    "text": "Праска",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пилосос",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пральна машина",
+    "packId": "Easy"
+  },
+  {
+    "text": "Холодильник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Плита",
+    "packId": "Easy"
+  },
+  {
+    "text": "Духовка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мікрохвильовка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Чайник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Каструля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сковорода",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ніж",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ополоник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Друшляк",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тертка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дошка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Склянка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Келих",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пляшка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Банка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кришка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Серветка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Скатертина",
+    "packId": "Easy"
+  },
+  {
+    "text": "Відро",
+    "packId": "Easy"
+  },
+  {
+    "text": "Віник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Швабра",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ганчірка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Губка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Смітник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Свічка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сірники",
+    "packId": "Easy"
+  },
+  {
+    "text": "Запальничка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ліхтарик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Розетка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вимикач",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дріт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Цвях",
+    "packId": "Easy"
+  },
+  {
+    "text": "Молоток",
+    "packId": "Easy"
+  },
+  {
+    "text": "Викрутка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пилка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Сокира",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лопата",
+    "packId": "Easy"
+  },
+  {
+    "text": "Граблі",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лійка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Клей",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ножиці",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лінійка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гумка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зошит",
+    "packId": "Easy"
+  },
+  {
+    "text": "Небо",
+    "packId": "Easy"
+  },
+  {
+    "text": "Хмаринка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вітер",
+    "packId": "Easy"
+  },
+  {
+    "text": "Буря",
+    "packId": "Easy"
+  },
+  {
+    "text": "Грім",
+    "packId": "Easy"
+  },
+  {
+    "text": "Туман",
+    "packId": "Easy"
+  },
+  {
+    "text": "Роса",
+    "packId": "Easy"
+  },
+  {
+    "text": "Іній",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лід",
+    "packId": "Easy"
+  },
+  {
+    "text": "Крига",
+    "packId": "Easy"
+  },
+  {
+    "text": "Калюжа",
+    "packId": "Easy"
+  },
+  {
+    "text": "Струмок",
+    "packId": "Easy"
+  },
+  {
+    "text": "Озеро",
+    "packId": "Easy"
+  },
+  {
+    "text": "Болото",
+    "packId": "Easy"
+  },
+  {
+    "text": "Водоспад",
+    "packId": "Easy"
+  },
+  {
+    "text": "Острів",
+    "packId": "Easy"
+  },
+  {
+    "text": "Берег",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пляж",
+    "packId": "Easy"
+  },
+  {
+    "text": "Хвиля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Скеля",
+    "packId": "Easy"
+  },
+  {
+    "text": "Поле",
+    "packId": "Easy"
+  },
+  {
+    "text": "Луг",
+    "packId": "Easy"
+  },
+  {
+    "text": "Степ",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кущ",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гілка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Корінь",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кора",
+    "packId": "Easy"
+  },
+  {
+    "text": "Шишка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вулиця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Дорога",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тротуар",
+    "packId": "Easy"
+  },
+  {
+    "text": "Перехід",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зупинка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вокзал",
+    "packId": "Easy"
+  },
+  {
+    "text": "Аеропорт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Порт",
+    "packId": "Easy"
+  },
+  {
+    "text": "Церква",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кінотеатр",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зоопарк",
+    "packId": "Easy"
+  },
+  {
+    "text": "Парк",
+    "packId": "Easy"
+  },
+  {
+    "text": "Майданчик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гойдалка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Гірка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пісочниця",
+    "packId": "Easy"
+  },
+  {
+    "text": "Трамвай",
+    "packId": "Easy"
+  },
+  {
+    "text": "Тролейбус",
+    "packId": "Easy"
+  },
+  {
+    "text": "Метро",
+    "packId": "Easy"
+  },
+  {
+    "text": "Таксі",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вантажівка",
+    "packId": "Easy"
+  },
+  {
+    "text": "Трактор",
+    "packId": "Easy"
+  },
+  {
+    "text": "Мотоцикл",
+    "packId": "Easy"
+  },
+  {
+    "text": "Самокат",
+    "packId": "Easy"
+  },
+  {
+    "text": "Човен",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ракета",
+    "packId": "Easy"
+  },
+  {
+    "text": "Лікар",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вчитель",
+    "packId": "Easy"
+  },
+  {
+    "text": "Кухар",
+    "packId": "Easy"
+  },
+  {
+    "text": "Водій",
+    "packId": "Easy"
+  },
+  {
+    "text": "Поліцейський",
+    "packId": "Easy"
+  },
+  {
+    "text": "Пожежник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Будівельник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Продавець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Перукар",
+    "packId": "Easy"
+  },
+  {
+    "text": "Художник",
+    "packId": "Easy"
+  },
+  {
+    "text": "Голова",
+    "packId": "Easy"
+  },
+  {
+    "text": "Око",
+    "packId": "Easy"
+  },
+  {
+    "text": "Вухо",
+    "packId": "Easy"
+  },
+  {
+    "text": "Ніс",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рот",
+    "packId": "Easy"
+  },
+  {
+    "text": "Зуб",
+    "packId": "Easy"
+  },
+  {
+    "text": "Язик",
+    "packId": "Easy"
+  },
+  {
+    "text": "Рука",
+    "packId": "Easy"
+  },
+  {
+    "text": "Нога",
+    "packId": "Easy"
+  },
+  {
+    "text": "Палець",
+    "packId": "Easy"
+  },
+  {
+    "text": "Горизонт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лабіринт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бінокль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Вулкан",
+    "packId": "Medium"
+  },
+  {
+    "text": "Календар",
+    "packId": "Medium"
+  },
+  {
+    "text": "Рюкзак",
+    "packId": "Medium"
+  },
+  {
+    "text": "Світлофор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Шоколад",
+    "packId": "Medium"
+  },
+  {
+    "text": "Компас",
+    "packId": "Medium"
+  },
+  {
+    "text": "Скрипка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Телескоп",
+    "packId": "Medium"
+  },
+  {
+    "text": "Айсберг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гелікоптер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Динозавр",
+    "packId": "Medium"
+  },
+  {
+    "text": "Екскаватор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Піраміда",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кенгуру",
+    "packId": "Medium"
+  },
+  {
+    "text": "Жираф",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бібліотека",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мікроскоп",
+    "packId": "Medium"
+  },
+  {
+    "text": "Акваріум",
+    "packId": "Medium"
+  },
+  {
+    "text": "Парашут",
+    "packId": "Medium"
+  },
+  {
+    "text": "Робот",
+    "packId": "Medium"
+  },
+  {
+    "text": "Супутник",
+    "packId": "Medium"
+  },
+  {
+    "text": "Океан",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пустеля",
+    "packId": "Medium"
+  },
+  {
+    "text": "Джунглі",
+    "packId": "Medium"
+  },
+  {
+    "text": "Печера",
+    "packId": "Medium"
+  },
+  {
+    "text": "Блискавка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Веселка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Землетрус",
+    "packId": "Medium"
+  },
+  {
+    "text": "Торнадо",
+    "packId": "Medium"
+  },
+  {
+    "text": "Електрика",
+    "packId": "Medium"
+  },
+  {
+    "text": "Батарейка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Інтернет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пароль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сервер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Космонавт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Планета",
+    "packId": "Medium"
+  },
+  {
+    "text": "Галактика",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мікрофон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Камера",
+    "packId": "Medium"
+  },
+  {
+    "text": "Проектор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Шахи",
+    "packId": "Medium"
+  },
+  {
+    "text": "Доміно",
+    "packId": "Medium"
+  },
+  {
+    "text": "Карнавал",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фестиваль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Музей",
+    "packId": "Medium"
+  },
+  {
+    "text": "Театр",
+    "packId": "Medium"
+  },
+  {
+    "text": "Цирк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Стадіон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Басейн",
+    "packId": "Medium"
+  },
+  {
+    "text": "Спортзал",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лікарня",
+    "packId": "Medium"
+  },
+  {
+    "text": "Завод",
+    "packId": "Medium"
+  },
+  {
+    "text": "Офіс",
+    "packId": "Medium"
+  },
+  {
+    "text": "Готель",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ресторан",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кафе",
+    "packId": "Medium"
+  },
+  {
+    "text": "Банк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пошта",
+    "packId": "Medium"
+  },
+  {
+    "text": "Поліція",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пожежники",
+    "packId": "Medium"
+  },
+  {
+    "text": "Армія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Прапор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Герб",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гімн",
+    "packId": "Medium"
+  },
+  {
+    "text": "Закон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Суд",
+    "packId": "Medium"
+  },
+  {
+    "text": "В'язниця",
+    "packId": "Medium"
+  },
+  {
+    "text": "Штраф",
+    "packId": "Medium"
+  },
+  {
+    "text": "Податок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бюджет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Економіка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ринок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Акція",
+    "packId": "Medium"
+  },
+  {
+    "text": "Реклама",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бренд",
+    "packId": "Medium"
+  },
+  {
+    "text": "Логотип",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дизайн",
+    "packId": "Medium"
+  },
+  {
+    "text": "Стиль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мода",
+    "packId": "Medium"
+  },
+  {
+    "text": "Краса",
+    "packId": "Medium"
+  },
+  {
+    "text": "Талант",
+    "packId": "Medium"
+  },
+  {
+    "text": "Успіх",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мрія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Надія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Любов",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дружба",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сім'я",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дитина",
+    "packId": "Medium"
+  },
+  {
+    "text": "Батьки",
+    "packId": "Medium"
+  },
+  {
+    "text": "Свято",
+    "packId": "Medium"
+  },
+  {
+    "text": "Подарунок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сюрприз",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сміх",
+    "packId": "Medium"
+  },
+  {
+    "text": "Піаніно",
+    "packId": "Medium"
+  },
+  {
+    "text": "Рояль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Саксофон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Труба",
+    "packId": "Medium"
+  },
+  {
+    "text": "Флейта",
+    "packId": "Medium"
+  },
+  {
+    "text": "Барабан",
+    "packId": "Medium"
+  },
+  {
+    "text": "Акордеон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Баян",
+    "packId": "Medium"
+  },
+  {
+    "text": "Арфа",
+    "packId": "Medium"
+  },
+  {
+    "text": "Віолончель",
+    "packId": "Medium"
+  },
+  {
+    "text": "Контрабас",
+    "packId": "Medium"
+  },
+  {
+    "text": "Синтезатор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Оркестр",
+    "packId": "Medium"
+  },
+  {
+    "text": "Диригент",
+    "packId": "Medium"
+  },
+  {
+    "text": "Концерт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Спектакль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Виставка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Галерея",
+    "packId": "Medium"
+  },
+  {
+    "text": "Скульптура",
+    "packId": "Medium"
+  },
+  {
+    "text": "Портрет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пейзаж",
+    "packId": "Medium"
+  },
+  {
+    "text": "Натюрморт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мольберт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Палітра",
+    "packId": "Medium"
+  },
+  {
+    "text": "Акварель",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гравюра",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фреска",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мозаїка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Вітраж",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кераміка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гончарство",
+    "packId": "Medium"
+  },
+  {
+    "text": "Вишиванка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Орнамент",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фольклор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Легенда",
+    "packId": "Medium"
+  },
+  {
+    "text": "Міф",
+    "packId": "Medium"
+  },
+  {
+    "text": "Казка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Поема",
+    "packId": "Medium"
+  },
+  {
+    "text": "Роман",
+    "packId": "Medium"
+  },
+  {
+    "text": "Детектив",
+    "packId": "Medium"
+  },
+  {
+    "text": "Комедія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Трагедія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Драма",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мюзикл",
+    "packId": "Medium"
+  },
+  {
+    "text": "Балет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Опера",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пантоміма",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фокусник",
+    "packId": "Medium"
+  },
+  {
+    "text": "Акробат",
+    "packId": "Medium"
+  },
+  {
+    "text": "Жонглер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Комп'ютер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ноутбук",
+    "packId": "Medium"
+  },
+  {
+    "text": "Планшет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Смартфон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Монітор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Клавіатура",
+    "packId": "Medium"
+  },
+  {
+    "text": "Принтер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сканер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Роутер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Навушники",
+    "packId": "Medium"
+  },
+  {
+    "text": "Колонка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Антена",
+    "packId": "Medium"
+  },
+  {
+    "text": "Радар",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сонар",
+    "packId": "Medium"
+  },
+  {
+    "text": "Навігатор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Датчик",
+    "packId": "Medium"
+  },
+  {
+    "text": "Термометр",
+    "packId": "Medium"
+  },
+  {
+    "text": "Барометр",
+    "packId": "Medium"
+  },
+  {
+    "text": "Секундомір",
+    "packId": "Medium"
+  },
+  {
+    "text": "Метроном",
+    "packId": "Medium"
+  },
+  {
+    "text": "Калькулятор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Диктофон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Відеокамера",
+    "packId": "Medium"
+  },
+  {
+    "text": "Об'єктив",
+    "packId": "Medium"
+  },
+  {
+    "text": "Штатив",
+    "packId": "Medium"
+  },
+  {
+    "text": "Спалах",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дрон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Квадрокоптер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Скутер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Електросамокат",
+    "packId": "Medium"
+  },
+  {
+    "text": "Позашляховик",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лімузин",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кабріолет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фургон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Евакуатор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бульдозер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Підйомний кран",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бетономішалка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Комбайн",
+    "packId": "Medium"
+  },
+  {
+    "text": "Локомотив",
+    "packId": "Medium"
+  },
+  {
+    "text": "Електричка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фунікулер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Канатна дорога",
+    "packId": "Medium"
+  },
+  {
+    "text": "Яхта",
+    "packId": "Medium"
+  },
+  {
+    "text": "Катер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Катамаран",
+    "packId": "Medium"
+  },
+  {
+    "text": "Субмарина",
+    "packId": "Medium"
+  },
+  {
+    "text": "Криголам",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дирижабль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Планер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Винищувач",
+    "packId": "Medium"
+  },
+  {
+    "text": "Космодром",
+    "packId": "Medium"
+  },
+  {
+    "text": "Скафандр",
+    "packId": "Medium"
+  },
+  {
+    "text": "Орбіта",
+    "packId": "Medium"
+  },
+  {
+    "text": "Астероїд",
+    "packId": "Medium"
+  },
+  {
+    "text": "Материк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Континент",
+    "packId": "Medium"
+  },
+  {
+    "text": "Півострів",
+    "packId": "Medium"
+  },
+  {
+    "text": "Архіпелаг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Атол",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лагуна",
+    "packId": "Medium"
+  },
+  {
+    "text": "Затока",
+    "packId": "Medium"
+  },
+  {
+    "text": "Протока",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фіорд",
+    "packId": "Medium"
+  },
+  {
+    "text": "Каньйон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ущелина",
+    "packId": "Medium"
+  },
+  {
+    "text": "Перевал",
+    "packId": "Medium"
+  },
+  {
+    "text": "Льодовик",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лавина",
+    "packId": "Medium"
+  },
+  {
+    "text": "Зсув",
+    "packId": "Medium"
+  },
+  {
+    "text": "Повінь",
+    "packId": "Medium"
+  },
+  {
+    "text": "Засуха",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ураган",
+    "packId": "Medium"
+  },
+  {
+    "text": "Шторм",
+    "packId": "Medium"
+  },
+  {
+    "text": "Цунамі",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гейзер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кратер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лава",
+    "packId": "Medium"
+  },
+  {
+    "text": "Магма",
+    "packId": "Medium"
+  },
+  {
+    "text": "Оазис",
+    "packId": "Medium"
+  },
+  {
+    "text": "Савана",
+    "packId": "Medium"
+  },
+  {
+    "text": "Тайга",
+    "packId": "Medium"
+  },
+  {
+    "text": "Тундра",
+    "packId": "Medium"
+  },
+  {
+    "text": "Прерія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кораловий риф",
+    "packId": "Medium"
+  },
+  {
+    "text": "Водосховище",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гребля",
+    "packId": "Medium"
+  },
+  {
+    "text": "Канал",
+    "packId": "Medium"
+  },
+  {
+    "text": "Джерело",
+    "packId": "Medium"
+  },
+  {
+    "text": "Криниця",
+    "packId": "Medium"
+  },
+  {
+    "text": "Приплив",
+    "packId": "Medium"
+  },
+  {
+    "text": "Відплив",
+    "packId": "Medium"
+  },
+  {
+    "text": "Горизонталь",
+    "packId": "Medium"
+  },
+  {
+    "text": "Меридіан",
+    "packId": "Medium"
+  },
+  {
+    "text": "Екватор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Полюс",
+    "packId": "Medium"
+  },
+  {
+    "text": "Тропіки",
+    "packId": "Medium"
+  },
+  {
+    "text": "Атмосфера",
+    "packId": "Medium"
+  },
+  {
+    "text": "Озоновий шар",
+    "packId": "Medium"
+  },
+  {
+    "text": "Хмарочос",
+    "packId": "Medium"
+  },
+  {
+    "text": "Замок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фортеця",
+    "packId": "Medium"
+  },
+  {
+    "text": "Палац",
+    "packId": "Medium"
+  },
+  {
+    "text": "Собор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Монастир",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мечеть",
+    "packId": "Medium"
+  },
+  {
+    "text": "Синагога",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ратуша",
+    "packId": "Medium"
+  },
+  {
+    "text": "Парламент",
+    "packId": "Medium"
+  },
+  {
+    "text": "Посольство",
+    "packId": "Medium"
+  },
+  {
+    "text": "Університет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Академія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гімназія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ліцей",
+    "packId": "Medium"
+  },
+  {
+    "text": "Коледж",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лабораторія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Обсерваторія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Планетарій",
+    "packId": "Medium"
+  },
+  {
+    "text": "Оранжерея",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ботанічний сад",
+    "packId": "Medium"
+  },
+  {
+    "text": "Заповідник",
+    "packId": "Medium"
+  },
+  {
+    "text": "Аквапарк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дельфінарій",
+    "packId": "Medium"
+  },
+  {
+    "text": "Іподром",
+    "packId": "Medium"
+  },
+  {
+    "text": "Автодром",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ковзанка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лижна траса",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кемпінг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Санаторій",
+    "packId": "Medium"
+  },
+  {
+    "text": "Хостел",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пансіонат",
+    "packId": "Medium"
+  },
+  {
+    "text": "Супермаркет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гіпермаркет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Універмаг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ярмарок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Аукціон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ломбард",
+    "packId": "Medium"
+  },
+  {
+    "text": "Склад",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ангар",
+    "packId": "Medium"
+  },
+  {
+    "text": "Термінал",
+    "packId": "Medium"
+  },
+  {
+    "text": "Митниця",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кордон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Маяк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Вітряк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Футбол",
+    "packId": "Medium"
+  },
+  {
+    "text": "Баскетбол",
+    "packId": "Medium"
+  },
+  {
+    "text": "Волейбол",
+    "packId": "Medium"
+  },
+  {
+    "text": "Теніс",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бадмінтон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Хокей",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бокс",
+    "packId": "Medium"
+  },
+  {
+    "text": "Боротьба",
+    "packId": "Medium"
+  },
+  {
+    "text": "Карате",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дзюдо",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фехтування",
+    "packId": "Medium"
+  },
+  {
+    "text": "Стрільба",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гімнастика",
+    "packId": "Medium"
+  },
+  {
+    "text": "Атлетика",
+    "packId": "Medium"
+  },
+  {
+    "text": "Марафон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Естафета",
+    "packId": "Medium"
+  },
+  {
+    "text": "Плавання",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дайвінг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Серфінг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Віндсерфінг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Альпінізм",
+    "packId": "Medium"
+  },
+  {
+    "text": "Скелелазіння",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лижі",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сноуборд",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ковзани",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бобслей",
+    "packId": "Medium"
+  },
+  {
+    "text": "Біатлон",
+    "packId": "Medium"
+  },
+  {
+    "text": "Велоспорт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Автоперегони",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гольф",
+    "packId": "Medium"
+  },
+  {
+    "text": "Більярд",
+    "packId": "Medium"
+  },
+  {
+    "text": "Боулінг",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дартс",
+    "packId": "Medium"
+  },
+  {
+    "text": "Шашки",
+    "packId": "Medium"
+  },
+  {
+    "text": "Нарди",
+    "packId": "Medium"
+  },
+  {
+    "text": "Покер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пазл",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кросворд",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ребус",
+    "packId": "Medium"
+  },
+  {
+    "text": "Квест",
+    "packId": "Medium"
+  },
+  {
+    "text": "Турнір",
+    "packId": "Medium"
+  },
+  {
+    "text": "Чемпіонат",
+    "packId": "Medium"
+  },
+  {
+    "text": "Олімпіада",
+    "packId": "Medium"
+  },
+  {
+    "text": "Медаль",
+    "packId": "Medium"
+  },
+  {
+    "text": "Кубок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Інженер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Архітектор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Програміст",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дизайнер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Журналіст",
+    "packId": "Medium"
+  },
+  {
+    "text": "Редактор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Перекладач",
+    "packId": "Medium"
+  },
+  {
+    "text": "Психолог",
+    "packId": "Medium"
+  },
+  {
+    "text": "Юрист",
+    "packId": "Medium"
+  },
+  {
+    "text": "Адвокат",
+    "packId": "Medium"
+  },
+  {
+    "text": "Суддя",
+    "packId": "Medium"
+  },
+  {
+    "text": "Прокурор",
+    "packId": "Medium"
+  },
+  {
+    "text": "Нотаріус",
+    "packId": "Medium"
+  },
+  {
+    "text": "Бухгалтер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Економіст",
+    "packId": "Medium"
+  },
+  {
+    "text": "Банкір",
+    "packId": "Medium"
+  },
+  {
+    "text": "Підприємець",
+    "packId": "Medium"
+  },
+  {
+    "text": "Менеджер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Маркетолог",
+    "packId": "Medium"
+  },
+  {
+    "text": "Логіст",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фермер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Агроном",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ветеринар",
+    "packId": "Medium"
+  },
+  {
+    "text": "Лісник",
+    "packId": "Medium"
+  },
+  {
+    "text": "Геолог",
+    "packId": "Medium"
+  },
+  {
+    "text": "Археолог",
+    "packId": "Medium"
+  },
+  {
+    "text": "Історик",
+    "packId": "Medium"
+  },
+  {
+    "text": "Хімік",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фізик",
+    "packId": "Medium"
+  },
+  {
+    "text": "Біолог",
+    "packId": "Medium"
+  },
+  {
+    "text": "Астроном",
+    "packId": "Medium"
+  },
+  {
+    "text": "Хірург",
+    "packId": "Medium"
+  },
+  {
+    "text": "Стоматолог",
+    "packId": "Medium"
+  },
+  {
+    "text": "Фармацевт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Медсестра",
+    "packId": "Medium"
+  },
+  {
+    "text": "Рятувальник",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пілот",
+    "packId": "Medium"
+  },
+  {
+    "text": "Стюардеса",
+    "packId": "Medium"
+  },
+  {
+    "text": "Капітан",
+    "packId": "Medium"
+  },
+  {
+    "text": "Моряк",
+    "packId": "Medium"
+  },
+  {
+    "text": "Характер",
+    "packId": "Medium"
+  },
+  {
+    "text": "Настрій",
+    "packId": "Medium"
+  },
+  {
+    "text": "Емоція",
+    "packId": "Medium"
+  },
+  {
+    "text": "Радість",
+    "packId": "Medium"
+  },
+  {
+    "text": "Смуток",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гнів",
+    "packId": "Medium"
+  },
+  {
+    "text": "Страх",
+    "packId": "Medium"
+  },
+  {
+    "text": "Здивування",
+    "packId": "Medium"
+  },
+  {
+    "text": "Гордість",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сором",
+    "packId": "Medium"
+  },
+  {
+    "text": "Заздрість",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ревнощі",
+    "packId": "Medium"
+  },
+  {
+    "text": "Вдячність",
+    "packId": "Medium"
+  },
+  {
+    "text": "Співчуття",
+    "packId": "Medium"
+  },
+  {
+    "text": "Терпіння",
+    "packId": "Medium"
+  },
+  {
+    "text": "Сміливість",
+    "packId": "Medium"
+  },
+  {
+    "text": "Обережність",
+    "packId": "Medium"
+  },
+  {
+    "text": "Цікавість",
+    "packId": "Medium"
+  },
+  {
+    "text": "Уява",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пам'ять",
+    "packId": "Medium"
+  },
+  {
+    "text": "Увага",
+    "packId": "Medium"
+  },
+  {
+    "text": "Звичка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Традиція",
+    "packId": "Medium"
+  },
+  {
+    "text": "Культура",
+    "packId": "Medium"
+  },
+  {
+    "text": "Освіта",
+    "packId": "Medium"
+  },
+  {
+    "text": "Наука",
+    "packId": "Medium"
+  },
+  {
+    "text": "Мистецтво",
+    "packId": "Medium"
+  },
+  {
+    "text": "Спорт",
+    "packId": "Medium"
+  },
+  {
+    "text": "Здоров'я",
+    "packId": "Medium"
+  },
+  {
+    "text": "Хвороба",
+    "packId": "Medium"
+  },
+  {
+    "text": "Ліки",
+    "packId": "Medium"
+  },
+  {
+    "text": "Вітамін",
+    "packId": "Medium"
+  },
+  {
+    "text": "Імунітет",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дієта",
+    "packId": "Medium"
+  },
+  {
+    "text": "Режим",
+    "packId": "Medium"
+  },
+  {
+    "text": "Відпочинок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Відпустка",
+    "packId": "Medium"
+  },
+  {
+    "text": "Подорож",
+    "packId": "Medium"
+  },
+  {
+    "text": "Екскурсія",
+    "packId": "Medium"
+  },
+  {
+    "text": "Пригода",
+    "packId": "Medium"
+  },
+  {
+    "text": "Небезпека",
+    "packId": "Medium"
+  },
+  {
+    "text": "Порятунок",
+    "packId": "Medium"
+  },
+  {
+    "text": "Перемога",
+    "packId": "Medium"
+  },
+  {
+    "text": "Дистанція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Енциклопедія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Гравітація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Меланхолія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Парадокс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Синхронізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Еволюція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Археологія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Стратегія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Філософія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ностальгія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ілюзія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Авангард",
+    "packId": "Hard"
+  },
+  {
+    "text": "Гіпотеза",
+    "packId": "Hard"
+  },
+  {
+    "text": "Алегорія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтуїція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Компроміс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Метафора",
+    "packId": "Hard"
+  },
+  {
+    "text": "Перспектива",
+    "packId": "Hard"
+  },
+  {
+    "text": "Резонанс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Харизма",
+    "packId": "Hard"
+  },
+  {
+    "text": "Апатія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Скептицизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Оптимізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Деградація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Корупція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Бюрократія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Демократія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Монархія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Диктатура",
+    "packId": "Hard"
+  },
+  {
+    "text": "Революція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дипломатія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конфлікт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Толерантність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Емпатія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтроверт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Екстраверт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Амбіції",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтелект",
+    "packId": "Hard"
+  },
+  {
+    "text": "Креативність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Логіка",
+    "packId": "Hard"
+  },
+  {
+    "text": "Аналіз",
+    "packId": "Hard"
+  },
+  {
+    "text": "Синтез",
+    "packId": "Hard"
+  },
+  {
+    "text": "Абстракція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конкретика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Об'єктивність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Суб'єктивність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Принцип",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мораль",
+    "packId": "Hard"
+  },
+  {
+    "text": "Етика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Совість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Справедливість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Честь",
+    "packId": "Hard"
+  },
+  {
+    "text": "Гідність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Свобода",
+    "packId": "Hard"
+  },
+  {
+    "text": "Відповідальність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Обов'язок",
+    "packId": "Hard"
+  },
+  {
+    "text": "Довіра",
+    "packId": "Hard"
+  },
+  {
+    "text": "Повага",
+    "packId": "Hard"
+  },
+  {
+    "text": "Авторитет",
+    "packId": "Hard"
+  },
+  {
+    "text": "Репутація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Вплив",
+    "packId": "Hard"
+  },
+  {
+    "text": "Влада",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ресурс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Потенціал",
+    "packId": "Hard"
+  },
+  {
+    "text": "Енергія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Стимул",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мотивація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мета",
+    "packId": "Hard"
+  },
+  {
+    "text": "Результат",
+    "packId": "Hard"
+  },
+  {
+    "text": "Процес",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ефект",
+    "packId": "Hard"
+  },
+  {
+    "text": "Прогрес",
+    "packId": "Hard"
+  },
+  {
+    "text": "Стагнація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Криза",
+    "packId": "Hard"
+  },
+  {
+    "text": "Шанс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ризик",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пораження",
+    "packId": "Hard"
+  },
+  {
+    "text": "Досвід",
+    "packId": "Hard"
+  },
+  {
+    "text": "Знання",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мудрість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Таємниця",
+    "packId": "Hard"
+  },
+  {
+    "text": "Істина",
+    "packId": "Hard"
+  },
+  {
+    "text": "Реальність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фантазія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сенс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Буття",
+    "packId": "Hard"
+  },
+  {
+    "text": "Смерть",
+    "packId": "Hard"
+  },
+  {
+    "text": "Життя",
+    "packId": "Hard"
+  },
+  {
+    "text": "Час",
+    "packId": "Hard"
+  },
+  {
+    "text": "Простір",
+    "packId": "Hard"
+  },
+  {
+    "text": "Матерія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дух",
+    "packId": "Hard"
+  },
+  {
+    "text": "Всесвіт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Хаос",
+    "packId": "Hard"
+  },
+  {
+    "text": "Свідомість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Самосвідомість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Самооцінка",
+    "packId": "Hard"
+  },
+  {
+    "text": "Темперамент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Світогляд",
+    "packId": "Hard"
+  },
+  {
+    "text": "Переконання",
+    "packId": "Hard"
+  },
+  {
+    "text": "Упередження",
+    "packId": "Hard"
+  },
+  {
+    "text": "Стереотип",
+    "packId": "Hard"
+  },
+  {
+    "text": "Комплекс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фобія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Депресія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Тривожність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Стрес",
+    "packId": "Hard"
+  },
+  {
+    "text": "Вигорання",
+    "packId": "Hard"
+  },
+  {
+    "text": "Агресія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фрустрація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Адаптація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Соціалізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Самореалізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Перфекціонізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Егоїзм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Нарцисизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конформізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Нонконформізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ідеалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Матеріалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Прагматизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Реалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Романтизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фаталізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Гуманізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Патріотизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Космополітизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фемінізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пацифізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Радикалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Консерватизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Лібералізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Соціалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Анархізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Тоталітаризм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Авторитаризм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Плюралізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Консенсус",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дилема",
+    "packId": "Hard"
+  },
+  {
+    "text": "Абсурд",
+    "packId": "Hard"
+  },
+  {
+    "text": "Догма",
+    "packId": "Hard"
+  },
+  {
+    "text": "Аксіома",
+    "packId": "Hard"
+  },
+  {
+    "text": "Теорема",
+    "packId": "Hard"
+  },
+  {
+    "text": "Аргумент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Контраргумент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Полеміка",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дискусія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Риторика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Софістика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ерудиція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтелігентність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конституція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Законодавство",
+    "packId": "Hard"
+  },
+  {
+    "text": "Юрисдикція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Суверенітет",
+    "packId": "Hard"
+  },
+  {
+    "text": "Незалежність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Автономія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Федерація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Унітаризм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Республіка",
+    "packId": "Hard"
+  },
+  {
+    "text": "Парламентаризм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Імпічмент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інавгурація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Референдум",
+    "packId": "Hard"
+  },
+  {
+    "text": "Плебісцит",
+    "packId": "Hard"
+  },
+  {
+    "text": "Вибори",
+    "packId": "Hard"
+  },
+  {
+    "text": "Опозиція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Коаліція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фракція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Лобізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Цензура",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пропаганда",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ідеологія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Геополітика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Міграція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Еміграція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Імміграція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Діаспора",
+    "packId": "Hard"
+  },
+  {
+    "text": "Асиміляція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтеграція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сегрегація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дискримінація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Емансипація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Урбанізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Глобалізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Модернізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Реформа",
+    "packId": "Hard"
+  },
+  {
+    "text": "Реставрація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Анексія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Окупація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Капітуляція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Перемир'я",
+    "packId": "Hard"
+  },
+  {
+    "text": "Санкції",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ембарго",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конвенція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Декларація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ратифікація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Прецедент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Амністія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Реабілітація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Екстрадиція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Алібі",
+    "packId": "Hard"
+  },
+  {
+    "text": "Вердикт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Апеляція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Касація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Презумпція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Контрабанда",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фальсифікація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Плагіат",
+    "packId": "Hard"
+  },
+  {
+    "text": "Монополія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Олігархія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Аристократія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Плутократія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Теократія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Охлократія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Анархія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інфляція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дефляція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Девальвація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ревальвація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Рецесія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дефолт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Банкрутство",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інвестиція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дивіденди",
+    "packId": "Hard"
+  },
+  {
+    "text": "Капітал",
+    "packId": "Hard"
+  },
+  {
+    "text": "Актив",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пасив",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ліквідність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Рентабельність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конкуренція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кон'юнктура",
+    "packId": "Hard"
+  },
+  {
+    "text": "Диверсифікація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Приватизація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Націоналізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Субсидія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дотація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кредитування",
+    "packId": "Hard"
+  },
+  {
+    "text": "Іпотека",
+    "packId": "Hard"
+  },
+  {
+    "text": "Лізинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Страхування",
+    "packId": "Hard"
+  },
+  {
+    "text": "Амортизація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Калькуляція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Аудит",
+    "packId": "Hard"
+  },
+  {
+    "text": "Бухгалтерія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Логістика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Маркетинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Менеджмент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Консалтинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Франшиза",
+    "packId": "Hard"
+  },
+  {
+    "text": "Стартап",
+    "packId": "Hard"
+  },
+  {
+    "text": "Аутсорсинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фріланс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Краудфандинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Біржовий курс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Котирування",
+    "packId": "Hard"
+  },
+  {
+    "text": "Емісія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Обіг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Експорт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Імпорт",
+    "packId": "Hard"
+  },
+  {
+    "text": "Протекціонізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Демпінг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Картель",
+    "packId": "Hard"
+  },
+  {
+    "text": "Синдикат",
+    "packId": "Hard"
+  },
+  {
+    "text": "Консорціум",
+    "packId": "Hard"
+  },
+  {
+    "text": "Корпорація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Холдинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Брендинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ребрендинг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Позиціонування",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сегментація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Оптимізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Автоматизація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інновація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Продуктивність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ренесанс",
+    "packId": "Hard"
+  },
+  {
+    "text": "Бароко",
+    "packId": "Hard"
+  },
+  {
+    "text": "Класицизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сентименталізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Модернізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Постмодернізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Імпресіонізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Експресіонізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кубізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Футуризм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Абстракціонізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мінімалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Концептуалізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Символізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Акмеїзм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Авангардизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Еклектика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Античність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Середньовіччя",
+    "packId": "Hard"
+  },
+  {
+    "text": "Просвітництво",
+    "packId": "Hard"
+  },
+  {
+    "text": "Шедевр",
+    "packId": "Hard"
+  },
+  {
+    "text": "Канон",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сюжет",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фабула",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кульмінація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Розв'язка",
+    "packId": "Hard"
+  },
+  {
+    "text": "Епілог",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пролог",
+    "packId": "Hard"
+  },
+  {
+    "text": "Монолог",
+    "packId": "Hard"
+  },
+  {
+    "text": "Діалог",
+    "packId": "Hard"
+  },
+  {
+    "text": "Іронія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сарказм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сатира",
+    "packId": "Hard"
+  },
+  {
+    "text": "Гротеск",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пародія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Епітет",
+    "packId": "Hard"
+  },
+  {
+    "text": "Порівняння",
+    "packId": "Hard"
+  },
+  {
+    "text": "Оліцетворення",
+    "packId": "Hard"
+  },
+  {
+    "text": "Алюзія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ремінісценція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Архаїзм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Неологізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Діалект",
+    "packId": "Hard"
+  },
+  {
+    "text": "Жаргон",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сленг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Етимологія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Семантика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Синтаксис",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пунктуація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Орфографія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фонетика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Морфологія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Лексика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Фразеологізм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Синонім",
+    "packId": "Hard"
+  },
+  {
+    "text": "Антонім",
+    "packId": "Hard"
+  },
+  {
+    "text": "Омонім",
+    "packId": "Hard"
+  },
+  {
+    "text": "Паронім",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мелодія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ритм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Темп",
+    "packId": "Hard"
+  },
+  {
+    "text": "Акустика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Репертуар",
+    "packId": "Hard"
+  },
+  {
+    "text": "Імпровізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Хореографія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інерція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Прискорення",
+    "packId": "Hard"
+  },
+  {
+    "text": "Швидкість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Тиск",
+    "packId": "Hard"
+  },
+  {
+    "text": "Щільність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Теплопровідність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Електропровідність",
+    "packId": "Hard"
+  },
+  {
+    "text": "Магнетизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Радіація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Спектр",
+    "packId": "Hard"
+  },
+  {
+    "text": "Заломлення",
+    "packId": "Hard"
+  },
+  {
+    "text": "Відбиття",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дифракція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтерференція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Поляризація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кристалізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Випаровування",
+    "packId": "Hard"
+  },
+  {
+    "text": "Конденсація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Окислення",
+    "packId": "Hard"
+  },
+  {
+    "text": "Відновлення",
+    "packId": "Hard"
+  },
+  {
+    "text": "Нейтралізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Реакція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Каталізатор",
+    "packId": "Hard"
+  },
+  {
+    "text": "Молекула",
+    "packId": "Hard"
+  },
+  {
+    "text": "Атом",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ізотоп",
+    "packId": "Hard"
+  },
+  {
+    "text": "Елемент",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сполука",
+    "packId": "Hard"
+  },
+  {
+    "text": "Розчин",
+    "packId": "Hard"
+  },
+  {
+    "text": "Сплав",
+    "packId": "Hard"
+  },
+  {
+    "text": "Полімер",
+    "packId": "Hard"
+  },
+  {
+    "text": "Клітина",
+    "packId": "Hard"
+  },
+  {
+    "text": "Тканина",
+    "packId": "Hard"
+  },
+  {
+    "text": "Орган",
+    "packId": "Hard"
+  },
+  {
+    "text": "Організм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Спадковість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Мінливість",
+    "packId": "Hard"
+  },
+  {
+    "text": "Селекція",
+    "packId": "Hard"
+  },
+  {
+    "text": "Симбіоз",
+    "packId": "Hard"
+  },
+  {
+    "text": "Паразитизм",
+    "packId": "Hard"
+  },
+  {
+    "text": "Екологія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Забруднення",
+    "packId": "Hard"
+  },
+  {
+    "text": "Рекультивація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Утилізація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Діагностика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Терапія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Хірургія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Профілактика",
+    "packId": "Hard"
+  },
+  {
+    "text": "Епідемія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Пандемія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Вакцинація",
+    "packId": "Hard"
+  },
+  {
+    "text": "Антибіотик",
+    "packId": "Hard"
+  },
+  {
+    "text": "Алергія",
+    "packId": "Hard"
+  },
+  {
+    "text": "Нервова система",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кровообіг",
+    "packId": "Hard"
+  },
+  {
+    "text": "Дихання",
+    "packId": "Hard"
+  },
+  {
+    "text": "Кібербезпека",
+    "packId": "Hard"
+  },
+  {
+    "text": "Шифрування",
+    "packId": "Hard"
+  },
+  {
+    "text": "Архітектура",
+    "packId": "Hard"
+  },
+  {
+    "text": "Інтерфейс",
+    "packId": "Hard"
+  },
+  {
+    "text": "База даних",
+    "packId": "Hard"
+  },
+  {
+    "text": "Ентропія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квантова фізика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Когнітивний дисонанс",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сюрреалізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сингулярність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Прокрастинація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Метафізика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Агностицизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Екзистенціалізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Естетика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Онтологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Феноменологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Герменевтика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Діалектика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Імманентність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Трансцендентність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нігілізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Стоїцизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гедонізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Утилітаризм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Альтруїзм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Соліпсизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Детермінізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Пантеїзм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Атараксія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Катарсис",
+    "packId": "Insane"
+  },
+  {
+    "text": "Езотерика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Окультизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теософія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Архетип",
+    "packId": "Insane"
+  },
+  {
+    "text": "Підсвідомість",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інтроспекція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Невроз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сублімація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Психоаналіз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гештальт",
+    "packId": "Insane"
+  },
+  {
+    "text": "Біхевіоризм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Парадигма",
+    "packId": "Insane"
+  },
+  {
+    "text": "Релятивність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Генетика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кібернетика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нанотехнології",
+    "packId": "Insane"
+  },
+  {
+    "text": "Штучний інтелект",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейронні мережі",
+    "packId": "Insane"
+  },
+  {
+    "text": "Алгоритм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Криптовалюта",
+    "packId": "Insane"
+  },
+  {
+    "text": "Блокчейн",
+    "packId": "Insane"
+  },
+  {
+    "text": "Віртуальна реальність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Доповнена реальність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Голограма",
+    "packId": "Insane"
+  },
+  {
+    "text": "Клонування",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мутація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Екосистема",
+    "packId": "Insane"
+  },
+  {
+    "text": "Біосфера",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ноосфера",
+    "packId": "Insane"
+  },
+  {
+    "text": "Панспермія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Великий вибух",
+    "packId": "Insane"
+  },
+  {
+    "text": "Чорна діра",
+    "packId": "Insane"
+  },
+  {
+    "text": "Пульсар",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квазар",
+    "packId": "Insane"
+  },
+  {
+    "text": "Темна матерія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Темна енергія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Антиматерія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Протон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейтрон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Електрон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кварк",
+    "packId": "Insane"
+  },
+  {
+    "text": "Фотон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Бозон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гравітон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Радіоактивність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Термодинаміка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гідродинаміка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аеродинаміка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Термоядерний синтез",
+    "packId": "Insane"
+  },
+  {
+    "text": "Фотосинтез",
+    "packId": "Insane"
+  },
+  {
+    "text": "Метаболізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гомеостаз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Осмос",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дифузія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Каталіз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Електроліз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Індукція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дедукція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Абдукція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Силогізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Тавтологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Оксюморон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гіпербола",
+    "packId": "Insane"
+  },
+  {
+    "text": "Літота",
+    "packId": "Insane"
+  },
+  {
+    "text": "Метонімія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Синекдоха",
+    "packId": "Insane"
+  },
+  {
+    "text": "Епістемологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аксіологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Телеологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Есхатологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сотеріологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теодицея",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ноумен",
+    "packId": "Insane"
+  },
+  {
+    "text": "Феномен",
+    "packId": "Insane"
+  },
+  {
+    "text": "Трансценденталізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Емпіріокритицизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Позитивізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Неопозитивізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Постструктуралізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Деконструкція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Апорія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Антиномія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ентелехія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гілозоїзм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Монадологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Панпсихізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конструктивізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інструменталізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конвенціоналізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Редукціонізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Холізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Емерджентність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Супервентність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інтенціональність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кваліа",
+    "packId": "Insane"
+  },
+  {
+    "text": "Епіфеноменалізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Фізикалізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Функціоналізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Елімінативізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Панлогізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Волюнтаризм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квієтизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Евдемонізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аскетизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кінізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Епікуреїзм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Схоластика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Патристика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Номіналізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Універсалії",
+    "packId": "Insane"
+  },
+  {
+    "text": "Категоричний імператив",
+    "packId": "Insane"
+  },
+  {
+    "text": "Річ у собі",
+    "packId": "Insane"
+  },
+  {
+    "text": "Вічне повернення",
+    "packId": "Insane"
+  },
+  {
+    "text": "Надлюдина",
+    "packId": "Insane"
+  },
+  {
+    "text": "Життєвий світ",
+    "packId": "Insane"
+  },
+  {
+    "text": "Герменевтичне коло",
+    "packId": "Insane"
+  },
+  {
+    "text": "Симулякр",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гіперреальність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ризома",
+    "packId": "Insane"
+  },
+  {
+    "text": "Логоцентризм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Фоноцентризм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Біополітика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Некрополітика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аномія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ресентимент",
+    "packId": "Insane"
+  },
+  {
+    "text": "Відчуження",
+    "packId": "Insane"
+  },
+  {
+    "text": "Реїфікація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Товарний фетишизм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Екзистенція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Тимчасовість",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інакшість",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інтерсуб'єктивність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Метанарратив",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дискурс",
+    "packId": "Insane"
+  },
+  {
+    "text": "Епістема",
+    "packId": "Insane"
+  },
+  {
+    "text": "Габітус",
+    "packId": "Insane"
+  },
+  {
+    "text": "Символічний капітал",
+    "packId": "Insane"
+  },
+  {
+    "text": "Паноптикум",
+    "packId": "Insane"
+  },
+  {
+    "text": "Генеалогія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Суперпозиція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Колапс хвильової функції",
+    "packId": "Insane"
+  },
+  {
+    "text": "Корпускулярно-хвильовий дуалізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Принцип невизначеності",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квантова телепортація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квантова декогеренція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квантове тунелювання",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Казимира",
+    "packId": "Insane"
+  },
+  {
+    "text": "Випромінювання Гокінга",
+    "packId": "Insane"
+  },
+  {
+    "text": "Горизонт подій",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гравітаційна лінза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гравітаційні хвилі",
+    "packId": "Insane"
+  },
+  {
+    "text": "Червоне зміщення",
+    "packId": "Insane"
+  },
+  {
+    "text": "Реліктове випромінювання",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інфляційна модель",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мультивсесвіт",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кротовина",
+    "packId": "Insane"
+  },
+  {
+    "text": "Біла діра",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейтронна зірка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Магнетар",
+    "packId": "Insane"
+  },
+  {
+    "text": "Наднова",
+    "packId": "Insane"
+  },
+  {
+    "text": "Білий карлик",
+    "packId": "Insane"
+  },
+  {
+    "text": "Коричневий карлик",
+    "packId": "Insane"
+  },
+  {
+    "text": "Екзопланета",
+    "packId": "Insane"
+  },
+  {
+    "text": "Пояс Койпера",
+    "packId": "Insane"
+  },
+  {
+    "text": "Хмара Оорта",
+    "packId": "Insane"
+  },
+  {
+    "text": "Геліопауза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сонячний вітер",
+    "packId": "Insane"
+  },
+  {
+    "text": "Корональний викид",
+    "packId": "Insane"
+  },
+  {
+    "text": "Акреційний диск",
+    "packId": "Insane"
+  },
+  {
+    "text": "Релятивістський струмінь",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сфера Дайсона",
+    "packId": "Insane"
+  },
+  {
+    "text": "Парадокс Фермі",
+    "packId": "Insane"
+  },
+  {
+    "text": "Рівняння Дрейка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Антропний принцип",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теплова смерть Всесвіту",
+    "packId": "Insane"
+  },
+  {
+    "text": "Великий розрив",
+    "packId": "Insane"
+  },
+  {
+    "text": "Велике стискання",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія струн",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія бран",
+    "packId": "Insane"
+  },
+  {
+    "text": "Петльова квантова гравітація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Суперсиметрія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Бозон Хіггса",
+    "packId": "Insane"
+  },
+  {
+    "text": "Лептон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Адрон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Баріон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мезон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Глюон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейтрино",
+    "packId": "Insane"
+  },
+  {
+    "text": "Тахіон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Анігіляція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конфайнмент",
+    "packId": "Insane"
+  },
+  {
+    "text": "Асимптотична свобода",
+    "packId": "Insane"
+  },
+  {
+    "text": "Спонтанне порушення симетрії",
+    "packId": "Insane"
+  },
+  {
+    "text": "Надпровідність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Надплинність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конденсат Бозе — Ейнштейна",
+    "packId": "Insane"
+  },
+  {
+    "text": "Плазма",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Доплера",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Черенкова",
+    "packId": "Insane"
+  },
+  {
+    "text": "Броунівський рух",
+    "packId": "Insane"
+  },
+  {
+    "text": "Флуктуація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Біфуркація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Атрактор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія хаосу",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект метелика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нелінійність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ізотропія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Анізотропія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Лагранжіан",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гамільтоніан",
+    "packId": "Insane"
+  },
+  {
+    "text": "Тензор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Спінор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Калібрувальна інваріантність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Перенормування",
+    "packId": "Insane"
+  },
+  {
+    "text": "Топологія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гомеоморфізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дифеоморфізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Многовид",
+    "packId": "Insane"
+  },
+  {
+    "text": "Фрактал",
+    "packId": "Insane"
+  },
+  {
+    "text": "Множина Мандельброта",
+    "packId": "Insane"
+  },
+  {
+    "text": "Стрічка Мебіуса",
+    "packId": "Insane"
+  },
+  {
+    "text": "Пляшка Кляйна",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гіперкуб",
+    "packId": "Insane"
+  },
+  {
+    "text": "Тесеракт",
+    "packId": "Insane"
+  },
+  {
+    "text": "Неевклідова геометрія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Геометрія Лобачевського",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ріманова геометрія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Диференціальне числення",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інтегральне числення",
+    "packId": "Insane"
+  },
+  {
+    "text": "Тензорний аналіз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Варіаційне числення",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія груп",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія кілець",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія полів",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорія категорій",
+    "packId": "Insane"
+  },
+  {
+    "text": "Функтор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ізоморфізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гомоморфізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Автоморфізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Бієкція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ін'єкція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сюр'єкція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кардинальне число",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ординальне число",
+    "packId": "Insane"
+  },
+  {
+    "text": "Континуум-гіпотеза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теорема Геделя про неповноту",
+    "packId": "Insane"
+  },
+  {
+    "text": "Апорія Зенона",
+    "packId": "Insane"
+  },
+  {
+    "text": "Парадокс Рассела",
+    "packId": "Insane"
+  },
+  {
+    "text": "Парадокс брехуна",
+    "packId": "Insane"
+  },
+  {
+    "text": "Бритва Оккама",
+    "packId": "Insane"
+  },
+  {
+    "text": "Бритва Генлона",
+    "packId": "Insane"
+  },
+  {
+    "text": "Модальна логіка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нечітка логіка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Предикат",
+    "packId": "Insane"
+  },
+  {
+    "text": "Квантор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Імплікація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Еквівалентність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Диз'юнкція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кон'юнкція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Софізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Паралогізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Антилогізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аподиктичність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Евристика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Стохастичність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ергодичність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Марковський процес",
+    "packId": "Insane"
+  },
+  {
+    "text": "Байєсівський висновок",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кореляція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Регресія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Екстраполяція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інтерполяція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Апроксимація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ітерація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Рекурсія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Поліморфізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інкапсуляція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Асинхронність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Криптографія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Епігенетика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Транскрипція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Трансляція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Реплікація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Репарація ДНК",
+    "packId": "Insane"
+  },
+  {
+    "text": "Сплайсинг",
+    "packId": "Insane"
+  },
+  {
+    "text": "Рібосома",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мітохондрія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Апоптоз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аутофагія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мітоз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мейоз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кросинговер",
+    "packId": "Insane"
+  },
+  {
+    "text": "Поліморфізм генів",
+    "packId": "Insane"
+  },
+  {
+    "text": "Експресія генів",
+    "packId": "Insane"
+  },
+  {
+    "text": "Оперон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Пріон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Бактеріофаг",
+    "packId": "Insane"
+  },
+  {
+    "text": "Плазміда",
+    "packId": "Insane"
+  },
+  {
+    "text": "Транспозон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теломера",
+    "packId": "Insane"
+  },
+  {
+    "text": "Теломераза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Стовбурові клітини",
+    "packId": "Insane"
+  },
+  {
+    "text": "Диференціація клітин",
+    "packId": "Insane"
+  },
+  {
+    "text": "Хемотаксис",
+    "packId": "Insane"
+  },
+  {
+    "text": "Алостерична регуляція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ферментативний каталіз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кофермент",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інгібітор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Антагоніст",
+    "packId": "Insane"
+  },
+  {
+    "text": "Агоніст",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейромедіатор",
+    "packId": "Insane"
+  },
+  {
+    "text": "Синапс",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аксон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дендрит",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мієлінова оболонка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейропластичність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Нейрогенез",
+    "packId": "Insane"
+  },
+  {
+    "text": "Потенціал дії",
+    "packId": "Insane"
+  },
+  {
+    "text": "Синаптична передача",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дофамін",
+    "packId": "Insane"
+  },
+  {
+    "text": "Серотонін",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ацетилхолін",
+    "packId": "Insane"
+  },
+  {
+    "text": "Норадреналін",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ендорфін",
+    "packId": "Insane"
+  },
+  {
+    "text": "Окситоцин",
+    "packId": "Insane"
+  },
+  {
+    "text": "Кортизол",
+    "packId": "Insane"
+  },
+  {
+    "text": "Мелатонін",
+    "packId": "Insane"
+  },
+  {
+    "text": "Циркадний ритм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Електроенцефалограма",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конектом",
+    "packId": "Insane"
+  },
+  {
+    "text": "Протеоміка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Метаболоміка",
+    "packId": "Insane"
+  },
+  {
+    "text": "Біолюмінесценція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Абіогенез",
+    "packId": "Insane"
+  },
+  {
+    "text": "Семіотика",
+    "packId": "Insane"
+  },
+  {
+    "text": "Синтагма",
+    "packId": "Insane"
+  },
+  {
+    "text": "Парадигмальний ряд",
+    "packId": "Insane"
+  },
+  {
+    "text": "Денотат",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конотат",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ідіома",
+    "packId": "Insane"
+  },
+  {
+    "text": "Плеоназм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Анафора",
+    "packId": "Insane"
+  },
+  {
+    "text": "Епіфора",
+    "packId": "Insane"
+  },
+  {
+    "text": "Хіазм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Антитеза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Паралелізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Алітерація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Асонанс",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ономатопея",
+    "packId": "Insane"
+  },
+  {
+    "text": "Катахреза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Зевгма",
+    "packId": "Insane"
+  },
+  {
+    "text": "Еліпсис",
+    "packId": "Insane"
+  },
+  {
+    "text": "Асиндетон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Полісиндетон",
+    "packId": "Insane"
+  },
+  {
+    "text": "Періфраз",
+    "packId": "Insane"
+  },
+  {
+    "text": "Евфемізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дисфемізм",
+    "packId": "Insane"
+  },
+  {
+    "text": "Гіперболізація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Апофазія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Пролепсис",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аналепсис",
+    "packId": "Insane"
+  },
+  {
+    "text": "Металепсис",
+    "packId": "Insane"
+  },
+  {
+    "text": "Інтертекстуальність",
+    "packId": "Insane"
+  },
+  {
+    "text": "Палімпсест",
+    "packId": "Insane"
+  },
+  {
+    "text": "Апокриф",
+    "packId": "Insane"
+  },
+  {
+    "text": "Екзегеза",
+    "packId": "Insane"
+  },
+  {
+    "text": "Герменевт",
+    "packId": "Insane"
+  },
+  {
+    "text": "Аперцепція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Синестезія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Дереалізація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Деперсоналізація",
+    "packId": "Insane"
+  },
+  {
+    "text": "Амнезія",
+    "packId": "Insane"
+  },
+  {
+    "text": "Конфабуляція",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Даннінга — Крюґера",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Барнума",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Струпа",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Плацебо",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект Ноцебо",
+    "packId": "Insane"
+  },
+  {
+    "text": "Підтверджувальне упередження",
+    "packId": "Insane"
+  },
+  {
+    "text": "Фундаментальна помилка атрибуції",
+    "packId": "Insane"
+  },
+  {
+    "text": "Евристика доступності",
+    "packId": "Insane"
+  },
+  {
+    "text": "Ефект якоря",
+    "packId": "Insane"
+  }
 ]

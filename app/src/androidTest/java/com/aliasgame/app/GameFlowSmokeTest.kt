@@ -3,7 +3,6 @@ package com.aliasgame.app
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
-import android.view.KeyEvent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
@@ -45,7 +44,7 @@ class GameFlowSmokeTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         val rulesButton = context.getString(R.string.menu_rules)
-        val rulesTitle = context.getString(R.string.rules_title).uppercase()
+        val rulesTitle = context.getString(R.string.rules_title)
         val goalSection = context.getString(R.string.rules_section_goal).uppercase()
         val backDesc = context.getString(R.string.content_desc_back)
         val appName = context.getString(R.string.app_name).uppercase()
@@ -66,7 +65,7 @@ class GameFlowSmokeTest {
     fun testHomeToSettingsAndBack() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val settingsButton = context.getString(R.string.menu_settings)
-        val languageTitle = context.getString(R.string.language)
+        val languageTitle = context.getString(R.string.language).uppercase()
         val soundSetting = context.getString(R.string.sound_effects)
         val vibrationSetting = context.getString(R.string.haptic_feedback)
         val backDesc = context.getString(R.string.content_desc_back)
@@ -82,12 +81,32 @@ class GameFlowSmokeTest {
     }
 
     @Test
+    fun testHomeToStatisticsAndBack() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val statisticsButton = context.getString(R.string.menu_statistics)
+        val hardestWords = context.getString(R.string.stats_hardest_words)
+        val emptyStatistics = context.getString(R.string.stats_empty)
+        val backDesc = context.getString(R.string.content_desc_back)
+        val appName = context.getString(R.string.app_name).uppercase()
+
+        composeTestRule.onNodeWithText(statisticsButton).performScrollTo().performClick()
+        composeTestRule.onNodeWithText(hardestWords).assertIsDisplayed()
+        // DataStore is cleared before each test, so nothing has been skipped yet.
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText(emptyStatistics).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.onNodeWithContentDescription(backDesc).performClick()
+        composeTestRule.onNodeWithText(appName).assertIsDisplayed()
+    }
+
+    @Test
     fun testHomeToGameFlow() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         // Resource strings for identifying UI elements
         val playButton = context.getString(R.string.menu_play)
-        val setupTitle = context.getString(R.string.setup_title).uppercase()
+        val setupTitle = context.getString(R.string.setup_title)
         val categoryTitle = context.getString(R.string.select_category_title)
         val easyPack = context.getString(R.string.difficulty_easy)
         val mediumPack = context.getString(R.string.difficulty_medium)
@@ -104,8 +123,13 @@ class GameFlowSmokeTest {
         // The default pack is "Easy", so clicking it should open the selection screen
         composeTestRule.onNodeWithText(easyPack).performClick()
 
-        // 4. Verify Selection Screen and pick "Medium"
+        // 4. Verify Selection Screen and pick "Medium". The categories come from parsing the
+        // word-pack asset on an IO thread, which the Compose test rule does not track, so wait
+        // for the list explicitly (slow CI emulators need a few seconds for the large packs).
         composeTestRule.onNodeWithText(categoryTitle).assertIsDisplayed()
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText(mediumPack).fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithText(mediumPack).performClick()
 
         // 5. Verify return to Setup Screen with updated selection
@@ -113,10 +137,10 @@ class GameFlowSmokeTest {
         composeTestRule.onNodeWithText(mediumPack).assertIsDisplayed()
 
         // 6. Start Game
-        composeTestRule.onNodeWithText(startGame).performClick()
+        composeTestRule.onNodeWithText(startGame).performScrollTo().performClick()
 
         // 7. Verify Game Screen / Ready Overlay
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule.onAllNodesWithText(readyButton).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(readyButton).assertIsDisplayed()
@@ -135,12 +159,12 @@ class GameFlowSmokeTest {
         val homeTitle = context.getString(R.string.app_name).uppercase()
 
         composeTestRule.onNodeWithText(playButton).performClick()
-        composeTestRule.onNodeWithText(startGame).performClick()
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.onNodeWithText(startGame).performScrollTo().performClick()
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule.onAllNodesWithText(readyButton).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(readyButton).performClick()
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule.onAllNodesWithContentDescription(exitDescription)
                 .fetchSemanticsNodes().isNotEmpty()
         }
@@ -150,15 +174,33 @@ class GameFlowSmokeTest {
         composeTestRule.onNodeWithText(cancelExit).performClick()
         composeTestRule.onNodeWithContentDescription(exitDescription).assertIsDisplayed()
 
-        InstrumentationRegistry.getInstrumentation()
-            .sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        pressSystemBack()
         composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(cancelExit).performClick()
 
-        InstrumentationRegistry.getInstrumentation()
-            .sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        pressSystemBack()
         composeTestRule.onNodeWithText(exitTitle).assertIsDisplayed()
         composeTestRule.onNodeWithText(confirmExit).performClick()
+        // Exiting clears the saved session in DataStore (I/O the Compose test rule does not track)
+        // before navigating, so wait for the home screen explicitly.
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule.onAllNodesWithText(homeTitle).fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithText(homeTitle).assertIsDisplayed()
+    }
+
+    /**
+     * Sends Back through the activity's OnBackPressedDispatcher, which is what the game's
+     * BackHandler listens to. Unlike injecting a key event, this does not depend on the app
+     * window having input focus, which slow CI emulators often lose to system
+     * "not responding" dialogs.
+     *
+     * Waits for pending recompositions first: the game's BackHandler is only enabled again
+     * after closing the exit dialog has been recomposed.
+     */
+    private fun pressSystemBack() {
+        composeTestRule.waitForIdle()
+        activityScenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+        composeTestRule.waitForIdle()
     }
 }

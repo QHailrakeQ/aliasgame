@@ -3,6 +3,8 @@ package com.aliasgame.app.presentation.setup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.engine.GameEngine
+import com.aliasgame.app.domain.model.GameSettings
+import com.aliasgame.app.domain.model.TeamNames
 import com.aliasgame.app.domain.repository.GameSessionRepository
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.repository.WordsRepository
@@ -16,6 +18,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,7 +32,6 @@ import kotlin.math.roundToLong
  */
 @HiltViewModel
 class SetupViewModel @Inject constructor(
-    private val engine: GameEngine,
     private val repository: WordsRepository,
     private val settingsRepository: SettingsRepository,
     private val sessionRepository: GameSessionRepository,
@@ -45,6 +48,10 @@ class SetupViewModel @Inject constructor(
 
     private var settingsJob: Job? = null
     private var packsJob: Job? = null
+
+    private val namePool = MutableStateFlow<List<String>>(emptyList())
+    /** The pool the current names were rolled from; `null` until names have been rolled. */
+    private var appliedNamePool: List<String>? = null
 
     // Constants for game rules
     companion object {
@@ -79,8 +86,12 @@ class SetupViewModel @Inject constructor(
                 }
             }
             launch {
-                settingsRepository.teamNames.collect { names ->
-                    _uiState.update { it.copy(teamNames = names) }
+                // Only the number of teams is kept between games; the names are rolled afresh
+                // every time from the funny-name pool of the current language.
+                val savedTeamCount = settingsRepository.teamNames.first().size
+                    .coerceAtLeast(TeamNames.MIN_TEAMS)
+                namePool.filter { it.isNotEmpty() }.collect { pool ->
+                    applyNamePool(pool, savedTeamCount)
                 }
             }
             launch {
@@ -128,9 +139,66 @@ class SetupViewModel @Inject constructor(
         return (min + steps * step).coerceIn(min, max)
     }
 
-    fun onTeamNamesChanged(newNames: List<String>) {
-        _uiState.update { it.copy(teamNames = newNames) }
-        debounceSettingsSave { saveSettingsUseCase.saveTeamNames(newNames) }
+    /**
+     * The funny team names of the current app language, read from resources by the screen
+     * (it has the right locale). Called again with another pool when the language changes.
+     */
+    fun onTeamNamePoolChanged(pool: List<String>) {
+        namePool.value = pool
+    }
+
+    fun onTeamNameChanged(index: Int, name: String) =
+        updateTeamNames { names -> names.apply { set(index, name.take(TeamNames.MAX_LENGTH)) } }
+
+    fun onTeamNameCleared(index: Int) = updateTeamNames { names -> names.apply { set(index, "") } }
+
+    /** Replaces one name with a random funny name that no other team uses. */
+    fun onTeamNameRerolled(index: Int) {
+        val pool = namePool.value.ifEmpty { return }
+        updateTeamNames { names ->
+            val others = names.filterIndexed { i, _ -> i != index }
+            // The current name is excluded too, so a reroll always shows a different name.
+            names.apply { set(index, TeamNames.randomUnused(pool, others + names[index])) }
+        }
+    }
+
+    fun onTeamAdded() {
+        val pool = namePool.value.ifEmpty { return }
+        updateTeamNames { names -> names.apply { add(TeamNames.randomUnused(pool, names)) } }
+    }
+
+    fun onTeamRemoved(index: Int) {
+        if (_uiState.value.teamNames.size <= TeamNames.MIN_TEAMS) return
+        updateTeamNames { names -> names.apply { removeAt(index) } }
+    }
+
+    private inline fun updateTeamNames(change: (MutableList<String>) -> MutableList<String>) {
+        val current = _uiState.value.teamNames
+        val updated: List<String> = change(current.toMutableList())
+        if (updated == current) return
+        _uiState.update { it.copy(teamNames = updated) }
+        debounceSettingsSave { saveSettingsUseCase.saveTeamNames(updated) }
+    }
+
+    /**
+     * Rolls the names when the first pool arrives. A later pool means the language changed:
+     * names that were rolled from the previous pool are rolled again in the new language,
+     * names the players typed themselves are kept.
+     */
+    private fun applyNamePool(pool: List<String>, initialTeamCount: Int) {
+        val previousPool = appliedNamePool
+        appliedNamePool = pool
+        val current = _uiState.value.teamNames
+        val updated = if (previousPool == null) {
+            TeamNames.randomDistinct(pool, initialTeamCount)
+        } else {
+            current.foldIndexed(mutableListOf<String>()) { index, result, name ->
+                val keep = name.isNotBlank() && !TeamNames.isPoolName(name, previousPool)
+                result += if (keep) name else TeamNames.randomUnused(pool, result + current.drop(index + 1))
+                result
+            }
+        }
+        _uiState.update { it.copy(teamNames = updated) }
     }
 
     fun onPackSelected(packId: String) {
@@ -155,8 +223,8 @@ class SetupViewModel @Inject constructor(
             getPacksUseCase(language)
                 .onSuccess { availablePacks ->
                     _uiState.update { state ->
-                        val nextPack = if (state.selectedPack !in availablePacks) {
-                            availablePacks.firstOrNull() ?: "Easy"
+                        val nextPack = if (availablePacks.none { it.id == state.selectedPack }) {
+                            availablePacks.firstOrNull()?.id ?: "Easy"
                         } else state.selectedPack
                         state.copy(
                             packs = availablePacks,
@@ -180,9 +248,10 @@ class SetupViewModel @Inject constructor(
     }
 
     fun startGame() {
+        // The button is disabled in this case; the guard keeps the rule in one testable place.
+        if (!_uiState.value.canStartGame) return
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            sessionRepository.clearSession()
 
             getWordsUseCase(
                 language = _uiState.value.selectedLanguage,
@@ -194,13 +263,16 @@ class SetupViewModel @Inject constructor(
                     return@onSuccess
                 }
 
-                engine.setupGame(
-                    _uiState.value.teamNames,
-                    engine.settings.copy(
-                        roundTime = _uiState.value.roundTime,
-                        targetScore = _uiState.value.targetScore
-                    ),
-                    words
+                val state = _uiState.value
+                // The game screen loads its engine from this session, exactly as it does after
+                // process death, so starting and restoring a game share one code path.
+                sessionRepository.saveSession(
+                    GameEngine.newSession(
+                        teamNames = state.teamNames.map { it.trim() },
+                        settings = GameSettings(roundTime = state.roundTime, targetScore = state.targetScore),
+                        language = state.selectedLanguage,
+                        packId = state.selectedPack
+                    )
                 )
                 _uiState.update { it.copy(isLoading = false) }
                 _uiEffect.send(SetupUiEffect.NavigateToGame)

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aliasgame.app.domain.model.AppLanguages
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.usecase.SaveSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,10 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SettingsUiState(
-    val selectedLanguage: String = "EN",
+    val selectedLanguage: String = AppLanguages.DEFAULT,
     val isSoundEnabled: Boolean = true,
     val isVibrationEnabled: Boolean = true,
-    val availableLanguages: List<String> = listOf("EN", "UA", "RU", "DE")
+    val availableLanguages: List<String> = AppLanguages.supported
 )
 
 @HiltViewModel
@@ -54,8 +55,9 @@ class SettingsViewModel @Inject constructor(
         
         viewModelScope.launch {
             saveSettingsUseCase.saveLanguage(language)
-            val systemLangCode = if (language.uppercase() == "UA") "uk" else language.lowercase()
-            val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(systemLangCode)
+            val appLocale = LocaleListCompat.forLanguageTags(AppLanguages.toLanguageTag(language))
+            // Persisted by AppCompat itself: by the system on API 33+, and on older versions via
+            // AppLocalesMetadataHolderService (autoStoreLocales) declared in the manifest.
             AppCompatDelegate.setApplicationLocales(appLocale)
         }
     }
