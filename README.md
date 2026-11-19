@@ -22,6 +22,7 @@ Alias Game is an Android party game inspired by the word-guessing game Alias: on
 - Funny team names rolled at random from 50 names per language. Each name can be cleared or rerolled with one tap; blank and duplicate names are rejected before the game starts.
 - Four languages (English, Ukrainian, Russian, German) for the interface, the words and the team names.
 - Four difficulty categories of about 400 words each, plus a **Mixed** category with all ~1,600 words of a language. Every category shows its word count.
+- **Themes** for every language: Cinema, Coffee shop, and Welding & NDT (non-destructive testing), about 400 words each.
 
 **Playing**
 - Timed turns with a countdown and a progress bar that turns pink in the last ten seconds.
@@ -90,16 +91,16 @@ When a team leaves the round review, each word of the turn is counted once as sh
 
 ### Words and languages
 
-Word packs are bundled as one JSON asset per language, read off the main thread and cached. The Mixed category is built from the regular packs, so it needs no file of its own. The app language is applied with AppCompat per-app locales, and team names are read from the same localized resources, so they always match the chosen language.
+Word packs are bundled as one JSON asset per language, read off the main thread and cached. The Mixed category is built from the difficulty packs, so it needs no file of its own. Themes are plain JSON word lists in `assets/themes/<language>/`, discovered at runtime: adding a theme means adding a file to each language folder (a unit test checks that all languages offer the same themes). The app language is applied with AppCompat per-app locales, and team names are read from the same localized resources, so they always match the chosen language.
 
 ## Testing
 
-**Unit tests** (`app/src/test`, 113 JVM tests):
+**Unit tests** (`app/src/test`, 118 JVM tests):
 
 - `GameEngine`: scoring, turn rotation, fair play, draws, last-word decisions, result corrections, dictionary reshuffling, every phase transition and rejection of out-of-phase commands.
 - ViewModels: the countdown, pause and resume, background pause, double-tap safety, session restoring, recording word statistics, team-name rolling, validation and language switching.
 - Domain rules: word statistics ranking and team-name generation and validation.
-- Data layer: word-pack parsing (including validation of every bundled asset), pack catalog with the mixed category, session and statistics encoding, migration of sessions saved by older versions.
+- Data layer: word-pack and theme parsing (including validation of every bundled asset), pack catalog with the mixed category and themes, session and statistics encoding, migration of sessions saved by older versions.
 
 **Instrumented tests** (`app/src/androidTest`, 10 Compose UI tests):
 
@@ -112,9 +113,17 @@ Word packs are bundled as one JSON asset per language, read off the main thread 
 ./gradlew connectedDebugAndroidTest     # UI tests (emulator or device required)
 ```
 
-## Continuous Integration
+## CI/CD
 
-The GitHub Actions workflow runs on pushes to `main`, `master` and `feature/*`, and on pull requests to `main` and `master`: `lintDebug`, `testDebugUnitTest`, `assembleDebug`, then `connectedDebugAndroidTest` on an API 29 emulator. When a step fails, lint and test reports are uploaded as the `test-reports` artifact.
+GitHub Actions automates checking and releasing:
+
+- **Android CI** (`.github/workflows/android.yml`) runs on pushes to `main` and `feature/*` and on pull requests. Two jobs run in parallel: *Lint, unit tests and build* (`lintDebug`, `testDebugUnitTest`, `assembleDebug`, with the APK kept as an artifact) and *UI tests* (`connectedDebugAndroidTest` on a KVM-accelerated API 29 emulator with a cached snapshot). Gradle is cached, a newer push cancels an outdated run, and reports are uploaded when a job fails. Pull requests into `main` can only be merged when both jobs pass.
+- **Release** (`.github/workflows/release.yml`) runs when a version tag is pushed: it runs lint and unit tests, builds the APK and publishes a GitHub Release with notes generated from the merged pull requests.
+- **Dependabot** proposes weekly updates of Gradle dependencies and GitHub Actions.
+
+```bash
+git tag v1.2 && git push origin v1.2   # publishes release 1.2
+```
 
 ## Screenshots
 
