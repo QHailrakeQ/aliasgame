@@ -25,16 +25,6 @@
     <string name="winners_share">Переможці:</string>
 
     <!-- Funny Team Names -->
-    <string name="funny_name_1">Голодні носороги</string>
-    <string name="funny_name_2">Скажені білки</string>
-    <string name="funny_name_3">Залізні качки</string>
-    <string name="funny_name_4">Космічні вареники</string>
-    <string name="funny_name_5">Швидкі равлики</string>
-    <string name="funny_name_6">Літаючі свині</string>
-    <string name="funny_name_7">Мудрі сови</string>
-    <string name="funny_name_8">Веселі бандити</string>
-    <string name="funny_name_9">Сонні панди</string>
-    <string name="funny_name_10">Танцюючі крокодили</string>
 
     <!-- Configuration and Metadata -->
     <string name="teams_header">Команди</string>
@@ -121,4 +111,61 @@
     <string name="stats_reset_title">Скинути статистику?</string>
     <string name="stats_reset_message">Лічильники всіх слів усіма мовами буде видалено.</string>
     <string name="stats_reset_confirm">Скинути</string>
+    <string-array name="funny_team_names">
+        <item>Голодні носороги</item>
+        <item>Скажені білки</item>
+        <item>Залізні качки</item>
+        <item>Космічні вареники</item>
+        <item>Швидкі равлики</item>
+        <item>Літаючі свині</item>
+        <item>Мудрі сови</item>
+        <item>Веселі бандити</item>
+        <item>Сонні панди</item>
+        <item>Танцюючі крокодили</item>
+        <item>Хитрі єноти</item>
+        <item>Бойові пиріжки</item>
+        <item>Турбо-черепахи</item>
+        <item>Злі авокадо</item>
+        <item>Ніндзя-картоплини</item>
+        <item>Сердиті єдинороги</item>
+        <item>Диско-лами</item>
+        <item>Гострі фрикадельки</item>
+        <item>Ліниві леви</item>
+        <item>Кавові коали</item>
+        <item>Бунтівні млинці</item>
+        <item>Підступні пінгвіни</item>
+        <item>Хоробрі броколі</item>
+        <item>Галактичні ховрахи</item>
+        <item>Фламінго в шкарпетках</item>
+        <item>Дикі вафлі</item>
+        <item>Лазерні хом’яки</item>
+        <item>Пірати-огірки</item>
+        <item>Громові курчата</item>
+        <item>Пухнасті руйнівники</item>
+        <item>Королі борщу</item>
+        <item>Електричні вугрі</item>
+        <item>Незграбні жирафи</item>
+        <item>Нічні сирники</item>
+        <item>Ракетні лінивці</item>
+        <item>Ввічливі вікінги</item>
+        <item>Зомбі-банани</item>
+        <item>Нахабні чайки</item>
+        <item>Стрибучі їжаки</item>
+        <item>Сором’язливі акули</item>
+        <item>Галасливі сусіди</item>
+        <item>Сирні чарівники</item>
+        <item>Оксамитові горили</item>
+        <item>Гіперактивні бегемоти</item>
+        <item>Бульбашкові ведмеді</item>
+        <item>Хрусткі деруни</item>
+        <item>Вусаті котики</item>
+        <item>Шалені галушки</item>
+        <item>Бабусині пиріжки</item>
+        <item>Котики-воркотики</item>
+    </string-array>
+    <string name="content_desc_clear_team_name">Стерти назву</string>
+    <string name="content_desc_reroll_team_name">Випадкова назва</string>
+    <string name="content_desc_remove_team">Видалити команду</string>
+    <string name="team_name_error_blank">Введіть назву команди</string>
+    <string name="team_name_error_duplicate">Така назва вже є в іншої команди</string>
 </resources>

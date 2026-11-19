@@ -25,16 +25,6 @@
     <string name="winners_share">Die Gewinner sind:</string>
 
     <!-- Funny Team Names -->
-    <string name="funny_name_1">Hungrige Nashörner</string>
-    <string name="funny_name_2">Verrückte Eichhörnchen</string>
-    <string name="funny_name_3">Eiserne Enten</string>
-    <string name="funny_name_4">Kosmische Knödel</string>
-    <string name="funny_name_5">Schnelle Schnecken</string>
-    <string name="funny_name_6">Fliegende Schweine</string>
-    <string name="funny_name_7">Weise Eulen</string>
-    <string name="funny_name_8">Glückliche Banditen</string>
-    <string name="funny_name_9">Schläfrige Pandas</string>
-    <string name="funny_name_10">Tanzende Krokodile</string>
 
     <!-- Configuration -->
     <string name="teams_header">Teams</string>
@@ -119,4 +109,61 @@
     <string name="stats_reset_title">Statistik zurücksetzen?</string>
     <string name="stats_reset_message">Die Zähler aller Wörter in allen Sprachen werden gelöscht.</string>
     <string name="stats_reset_confirm">Zurücksetzen</string>
+    <string-array name="funny_team_names">
+        <item>Hungrige Nashörner</item>
+        <item>Verrückte Eichhörnchen</item>
+        <item>Eiserne Enten</item>
+        <item>Kosmische Knödel</item>
+        <item>Schnelle Schnecken</item>
+        <item>Fliegende Schweine</item>
+        <item>Weise Eulen</item>
+        <item>Glückliche Banditen</item>
+        <item>Schläfrige Pandas</item>
+        <item>Tanzende Krokodile</item>
+        <item>Freche Waschbären</item>
+        <item>Kampf-Brezeln</item>
+        <item>Turbo-Schildkröten</item>
+        <item>Wütende Avocados</item>
+        <item>Ninja-Kartoffeln</item>
+        <item>Grantige Einhörner</item>
+        <item>Disco-Lamas</item>
+        <item>Scharfe Frikadellen</item>
+        <item>Faule Löwen</item>
+        <item>Koffein-Koalas</item>
+        <item>Rebellische Pfannkuchen</item>
+        <item>Listige Pinguine</item>
+        <item>Mutige Brokkolis</item>
+        <item>Galaktische Erdmännchen</item>
+        <item>Flamingos in Socken</item>
+        <item>Wilde Waffeln</item>
+        <item>Laser-Hamster</item>
+        <item>Gurken-Piraten</item>
+        <item>Donnerhühner</item>
+        <item>Flauschige Zerstörer</item>
+        <item>Könige der Currywurst</item>
+        <item>Elektro-Aale</item>
+        <item>Tollpatschige Giraffen</item>
+        <item>Mitternachts-Nachos</item>
+        <item>Raketen-Faultiere</item>
+        <item>Höfliche Wikinger</item>
+        <item>Zombie-Bananen</item>
+        <item>Dreiste Möwen</item>
+        <item>Hüpfende Igel</item>
+        <item>Schüchterne Haie</item>
+        <item>Laute Nachbarn</item>
+        <item>Käse-Zauberer</item>
+        <item>Samt-Gorillas</item>
+        <item>Hyper-Nilpferde</item>
+        <item>Seifenblasen-Bären</item>
+        <item>Knusprige Schnitzel</item>
+        <item>Schnurrbart-Katzen</item>
+        <item>Wilde Weißwürste</item>
+        <item>Omas Apfelstrudel</item>
+        <item>Schnurrende Kater</item>
+    </string-array>
+    <string name="content_desc_clear_team_name">Namen löschen</string>
+    <string name="content_desc_reroll_team_name">Zufälliger Name</string>
+    <string name="content_desc_remove_team">Team entfernen</string>
+    <string name="team_name_error_blank">Gib einen Teamnamen ein</string>
+    <string name="team_name_error_duplicate">Diesen Namen hat schon ein anderes Team</string>
 </resources>

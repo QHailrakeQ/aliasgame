@@ -1,6 +1,7 @@
 package com.aliasgame.app.presentation.setup
 
 import com.aliasgame.app.domain.model.GamePhase
+import com.aliasgame.app.domain.model.TeamNameError
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.domain.model.WordPack
 import com.aliasgame.app.domain.repository.SettingsRepository
@@ -19,6 +20,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -31,6 +36,7 @@ class SetupViewModelTest {
     private lateinit var settingsRepository: FakeSettingsRepository
     private lateinit var wordsRepository: FakeWordsRepository
     private lateinit var sessionRepository: FakeGameSessionRepository
+    private val namePool = listOf("Wise Owls", "Sleepy Pandas", "Iron Ducks", "Fast Snails")
 
     @Before
     fun setup() {
@@ -53,6 +59,7 @@ class SetupViewModelTest {
             saveSettingsUseCase
         )
         
+        viewModel.onTeamNamePoolChanged(namePool)
         // Ensure init block collectors process initial repository values
         testDispatcher.scheduler.runCurrent()
     }
@@ -138,6 +145,8 @@ class SetupViewModelTest {
     @Test
     fun `starting a game saves a fresh session with the chosen setup and navigates`() = runTest {
         wordsRepository.words = listOf(Word("Cat", "Easy"))
+        viewModel.onTeamNameChanged(0, "T1")
+        viewModel.onTeamNameChanged(1, " T2 ") // trimmed when the game starts
         viewModel.onRoundTimeChanged(30L)
         viewModel.onTargetScoreChanged(20)
         runCurrent()
@@ -153,6 +162,95 @@ class SetupViewModelTest {
         assertEquals(20, session.settings.targetScore)
         assertEquals("EN" to "Easy", session.language to session.packId)
         assertEquals(GamePhase.READY_TO_START, session.phase)
+    }
+
+    // --- Team names -----------------------------------------------------------------------
+
+    @Test
+    fun `teams start with different random names from the pool, as many as last time`() = runTest {
+        val names = viewModel.uiState.value.teamNames
+
+        assertEquals(2, names.size) // the saved setup had two teams
+        assertTrue(names.all { it in namePool })
+        assertEquals(names.size, names.toSet().size)
+    }
+
+    @Test
+    fun `rerolling gives a new name that no other team uses`() = runTest {
+        repeat(20) {
+            val before = viewModel.uiState.value.teamNames
+            viewModel.onTeamNameRerolled(0)
+            val after = viewModel.uiState.value.teamNames
+
+            assertNotEquals(before[0], after[0])
+            assertNotEquals(after[1], after[0])
+            assertEquals(before[1], after[1])
+            assertTrue(after[0] in namePool)
+        }
+    }
+
+    @Test
+    fun `a cleared name blocks the start until a name is entered`() = runTest {
+        wordsRepository.words = listOf(Word("Cat", "Easy"))
+        viewModel.onTeamNameCleared(1)
+
+        assertEquals("", viewModel.uiState.value.teamNames[1])
+        assertEquals(listOf(null, TeamNameError.BLANK), viewModel.uiState.value.teamNameErrors)
+        assertFalse(viewModel.uiState.value.canStartGame)
+        viewModel.startGame()
+        advanceUntilIdle()
+        assertNull(sessionRepository.saved)
+
+        viewModel.onTeamNameChanged(1, "Our own name")
+        assertTrue(viewModel.uiState.value.canStartGame)
+    }
+
+    @Test
+    fun `two teams with the same name cannot start a game`() = runTest {
+        wordsRepository.words = listOf(Word("Cat", "Easy"))
+        viewModel.onTeamNameChanged(0, "Owls")
+        viewModel.onTeamNameChanged(1, " owls")
+
+        assertEquals(
+            listOf(TeamNameError.DUPLICATE, TeamNameError.DUPLICATE),
+            viewModel.uiState.value.teamNameErrors
+        )
+        viewModel.startGame()
+        advanceUntilIdle()
+        assertNull(sessionRepository.saved)
+    }
+
+    @Test
+    fun `team names are limited in length`() = runTest {
+        viewModel.onTeamNameChanged(0, "x".repeat(100))
+
+        assertEquals(24, viewModel.uiState.value.teamNames[0].length)
+    }
+
+    @Test
+    fun `added teams get an unused name and at least two teams always remain`() = runTest {
+        viewModel.onTeamAdded()
+        val names = viewModel.uiState.value.teamNames
+        assertEquals(3, names.size)
+        assertEquals(3, names.toSet().size)
+
+        viewModel.onTeamRemoved(0)
+        viewModel.onTeamRemoved(0)
+
+        assertEquals(2, viewModel.uiState.value.teamNames.size)
+    }
+
+    @Test
+    fun `switching the language rerolls rolled names and keeps typed ones`() = runTest {
+        viewModel.onTeamNameChanged(1, "Our own name")
+        val ukrainianPool = listOf("Мудрі сови", "Сонні панди", "Залізні качки")
+
+        viewModel.onTeamNamePoolChanged(ukrainianPool)
+        runCurrent()
+
+        val names = viewModel.uiState.value.teamNames
+        assertTrue(names[0] in ukrainianPool)
+        assertEquals("Our own name", names[1])
     }
 
     // Fakes
