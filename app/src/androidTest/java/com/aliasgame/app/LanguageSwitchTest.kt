@@ -2,6 +2,7 @@ package com.aliasgame.app
 
 import android.app.Activity
 import android.content.res.Configuration
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
@@ -22,9 +23,9 @@ import java.io.File
 import java.util.Locale
 
 /**
- * Switching the language in the settings updates the screen in place: the activity handles the
- * locale change itself (configChanges in the manifest) instead of being recreated, which made
- * the whole screen flash.
+ * Switching the language in the settings shows the new language right away. On Android 13+
+ * the activity handles the locale change itself (configChanges in the manifest) instead of
+ * being recreated, which made the whole screen flash; older versions recreate it.
  */
 @RunWith(AndroidJUnit4::class)
 class LanguageSwitchTest {
@@ -69,6 +70,9 @@ class LanguageSwitchTest {
             composeTestRule.onAllNodesWithText(ukrainianLanguageTitle).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText(ukrainianLanguageTitle).assertIsDisplayed()
-        activityScenario.onActivity { assertSame("The activity was recreated", activityBefore, it) }
+        // Only Android 13+ switches in place; older versions recreate the screen on purpose.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            activityScenario.onActivity { assertSame("The activity was recreated", activityBefore, it) }
+        }
     }
 }
