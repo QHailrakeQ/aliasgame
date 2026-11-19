@@ -166,4 +166,11 @@
     <string name="content_desc_remove_team">Team entfernen</string>
     <string name="team_name_error_blank">Gib einen Teamnamen ein</string>
     <string name="team_name_error_duplicate">Diesen Namen hat schon ein anderes Team</string>
+    <string name="theme_cinema">Kino</string>
+    <string name="theme_coffee_shop">Café</string>
+    <string name="theme_welding_ndt">Schweißen &amp; ZfP</string>
+    <string name="desc_theme_cinema">Genres, Filmcrew, Set-Jargon und Festivals.</string>
+    <string name="desc_theme_coffee_shop">Getränke, Brühgeräte, Bohnen und Café-Alltag.</string>
+    <string name="desc_theme_welding_ndt">Schweißnähte, Fehler und zerstörungsfreie Prüfung von Rohrleitungen.</string>
+    <string name="pack_section_themes">Themen</string>
 </resources>

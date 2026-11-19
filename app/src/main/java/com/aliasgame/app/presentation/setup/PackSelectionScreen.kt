@@ -93,15 +93,27 @@ fun PackSelectionScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(bottom = 32.dp)
                     ) {
-                        items(state.packs) { pack ->
-                            PackItem(
-                                pack = pack,
-                                isSelected = pack.id == state.selectedPack,
-                                onClick = {
-                                    viewModel.onPackSelected(pack.id)
-                                    onBack()
-                                }
-                            )
+                        val (themes, levels) = state.packs.partition { it.isTheme }
+                        val onPackClick = { pack: WordPack ->
+                            viewModel.onPackSelected(pack.id)
+                            onBack()
+                        }
+                        items(levels, key = { it.id }) { pack ->
+                            PackItem(pack, pack.id == state.selectedPack) { onPackClick(pack) }
+                        }
+                        if (themes.isNotEmpty()) {
+                            item(key = "themes_header") {
+                                Text(
+                                    text = stringResource(R.string.pack_section_themes).uppercase(),
+                                    modifier = Modifier.padding(top = GameSpacing.cardGap),
+                                    style = Typography.labelLarge,
+                                    color = GameSecondary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            items(themes, key = { it.id }) { pack ->
+                                PackItem(pack, pack.id == state.selectedPack) { onPackClick(pack) }
+                            }
                         }
                     }
                 }

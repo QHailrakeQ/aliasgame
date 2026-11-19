@@ -168,4 +168,11 @@
     <string name="content_desc_remove_team">Видалити команду</string>
     <string name="team_name_error_blank">Введіть назву команди</string>
     <string name="team_name_error_duplicate">Така назва вже є в іншої команди</string>
+    <string name="theme_cinema">Кіно</string>
+    <string name="theme_coffee_shop">Кав\'ярня</string>
+    <string name="theme_welding_ndt">Зварювання та НК</string>
+    <string name="desc_theme_cinema">Жанри, знімальна група, сленг майданчика та фестивалі.</string>
+    <string name="desc_theme_coffee_shop">Напої, обладнання, зерно та життя кав\'ярні.</string>
+    <string name="desc_theme_welding_ndt">Шви, дефекти та неруйнівний контроль трубопроводів.</string>
+    <string name="pack_section_themes">Теми</string>
 </resources>

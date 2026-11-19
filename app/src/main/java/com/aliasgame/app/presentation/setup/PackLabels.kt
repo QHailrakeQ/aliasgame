@@ -14,7 +14,11 @@ internal fun packDisplayName(packId: String): String = when (packId.lowercase())
     "hard" -> stringResource(R.string.difficulty_hard)
     "insane" -> stringResource(R.string.difficulty_insane)
     WordPack.MIXED_ID.lowercase() -> stringResource(R.string.difficulty_mixed)
-    else -> packId
+    "cinema" -> stringResource(R.string.theme_cinema)
+    "coffee_shop" -> stringResource(R.string.theme_coffee_shop)
+    "welding_ndt" -> stringResource(R.string.theme_welding_ndt)
+    // A theme file added without a localized name: "board_games" -> "Board games".
+    else -> packId.replace('_', ' ').replaceFirstChar { it.uppercase() }
 }
 
 /** Localized one-line description of a word pack. */
@@ -25,7 +29,10 @@ internal fun packDescription(packId: String): String = when (packId.lowercase())
     "hard" -> stringResource(R.string.desc_hard)
     "insane" -> stringResource(R.string.desc_insane)
     WordPack.MIXED_ID.lowercase() -> stringResource(R.string.desc_mixed)
-    else -> stringResource(R.string.pack_description_fallback, packId)
+    "cinema" -> stringResource(R.string.desc_theme_cinema)
+    "coffee_shop" -> stringResource(R.string.desc_theme_coffee_shop)
+    "welding_ndt" -> stringResource(R.string.desc_theme_welding_ndt)
+    else -> stringResource(R.string.pack_description_fallback, packDisplayName(packId))
 }
 
 /** "413 words" with the correct plural form of the current language. */

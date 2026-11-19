@@ -166,4 +166,11 @@
     <string name="content_desc_remove_team">Remove team</string>
     <string name="team_name_error_blank">Enter a team name</string>
     <string name="team_name_error_duplicate">Another team already has this name</string>
+    <string name="theme_cinema">Cinema</string>
+    <string name="theme_coffee_shop">Coffee shop</string>
+    <string name="theme_welding_ndt">Welding &amp; NDT</string>
+    <string name="desc_theme_cinema">Genres, film crews, shooting slang and festivals.</string>
+    <string name="desc_theme_coffee_shop">Drinks, brewing gear, beans and café life.</string>
+    <string name="desc_theme_welding_ndt">Welds, defects and non-destructive testing of pipelines.</string>
+    <string name="pack_section_themes">Themes</string>
 </resources>
