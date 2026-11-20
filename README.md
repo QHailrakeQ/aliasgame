@@ -15,6 +15,10 @@ Alias Game is an Android party game inspired by the word-guessing game Alias: on
   <img src="docs/statistics-screen.jpg" alt="Statistics screen with the most skipped words" width="200">
 </p>
 
+## Download
+
+The APK of every version is attached to its [GitHub Release](https://github.com/QHailrakeQ/aliasgame/releases/latest). Download `AliasGame-<version>-debug.apk` from the latest release and open it on an Android 7.0+ phone (installing apps from unknown sources has to be allowed). The app has no release signing key yet, so the published APK is a debug build.
+
 ## Features
 
 **Game setup**
@@ -95,14 +99,14 @@ Word packs are bundled as one JSON asset per language, read off the main thread 
 
 ## Testing
 
-**Unit tests** (`app/src/test`, 118 JVM tests):
+**Unit tests** (`app/src/test`, 121 JVM tests):
 
 - `GameEngine`: scoring, turn rotation, fair play, draws, last-word decisions, result corrections, dictionary reshuffling, every phase transition and rejection of out-of-phase commands.
 - ViewModels: the countdown, pause and resume, background pause, double-tap safety, session restoring, recording word statistics, team-name rolling, validation and language switching.
 - Domain rules: word statistics ranking and team-name generation and validation.
 - Data layer: word-pack and theme parsing (including validation of every bundled asset), pack catalog with the mixed category and themes, session and statistics encoding, migration of sessions saved by older versions.
 
-**Instrumented tests** (`app/src/androidTest`, 10 Compose UI tests):
+**Instrumented tests** (`app/src/androidTest`, 11 Compose UI tests):
 
 - Smoke tests for the home → rules, settings, statistics and setup → game flows, including the exit confirmation.
 - Overlays block touches and accessibility focus on the controls underneath, while their own buttons still react to a real, slightly moving finger.
@@ -117,7 +121,7 @@ Word packs are bundled as one JSON asset per language, read off the main thread 
 
 GitHub Actions automates checking and releasing:
 
-- **Android CI** (`.github/workflows/android.yml`) runs on pushes to `main` and `feature/*` and on pull requests. Two jobs run in parallel: *Lint, unit tests and build* (`lintDebug`, `testDebugUnitTest`, `assembleDebug`, with the APK kept as an artifact) and *UI tests* (`connectedDebugAndroidTest` on a KVM-accelerated API 29 emulator with a cached snapshot). Gradle is cached, a newer push cancels an outdated run, and reports are uploaded when a job fails. Pull requests into `main` can only be merged when both jobs pass.
+- **Android CI** (`.github/workflows/android.yml`) runs on pushes to `main` and `feature/*` and on pull requests. Two jobs run in parallel: *Lint, unit tests and build* (`lintDebug`, `testDebugUnitTest`, `assembleDebug`, with the APK kept as an artifact) and *UI tests* (`connectedDebugAndroidTest` on a KVM-accelerated API 29 emulator with a cached snapshot). Gradle is cached, a newer push cancels an outdated run, and reports are uploaded when a job fails.
 - **Release** (`.github/workflows/release.yml`) runs when a version tag is pushed: it runs lint and unit tests, builds the APK and publishes a GitHub Release with notes generated from the merged pull requests.
 - **Dependabot** proposes weekly updates of Gradle dependencies and GitHub Actions.
 
@@ -148,7 +152,22 @@ git tag v1.2 && git push origin v1.2   # publishes release 1.2
 - [ ] "Continue game" on the home screen for a saved session.
 - [ ] Localized error messages and plural forms for scores.
 - [ ] Save the session on meaningful events instead of every countdown tick.
-- [ ] Complete the Russian *Insane* word pack.
+
+## How I used AI in this project
+
+I used this project to try AI coding assistants on real tasks: GitHub Copilot early on (its co-author lines are still in the first commits), later Claude Code. I also tried multi-agent mode on the free plans.
+
+Where it helped:
+
+- **Structure.** The early history was chaotic: large commits, vague messages. With AI it became easier and faster to write focused commits with clear messages, to formulate a task before starting it, and to work the way a real project needs: plan, review, test.
+- **Routine work.** Translating strings and word lists into four languages, extending the word packs, writing test fakes and repetitive test cases, drafting GitHub Actions workflows and this README, sorting out lint warnings.
+- **A second pair of eyes.** Reading an unfamiliar part of the code, an audit of the project, explanations of Android details I had not met before.
+
+What stayed with me:
+
+- Every change was reviewed before it went in. The rules for the agent are in [AGENTS.md](AGENTS.md): plan first, no commits or merges without my approval.
+- The AI cannot see or hear the app, so the design, the sounds and how the game feels were checked by me on a real phone.
+- It does make mistakes. The language switch on Android 12 and lower, for example, took two fixes. That is why the important logic is covered by tests and every pull request goes through CI.
 
 ## License
 
