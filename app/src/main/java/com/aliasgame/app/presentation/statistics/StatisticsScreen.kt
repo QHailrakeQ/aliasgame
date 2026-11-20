@@ -95,7 +95,7 @@ fun StatisticsScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.stats_reset),
-                        color = GameAccent,
+                        color = GameTheme.palette.accent,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -145,8 +145,8 @@ private fun HardestWordRow(rank: Int, stat: WordStat) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(GameShapeSize.control),
-        color = GlassWhite,
-        border = BorderStroke(1.dp, GlassWhiteBorder)
+        color = GameTheme.palette.surface,
+        border = BorderStroke(1.dp, GameTheme.palette.surfaceBorder)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -155,7 +155,7 @@ private fun HardestWordRow(rank: Int, stat: WordStat) {
             Surface(
                 modifier = Modifier.size(36.dp),
                 shape = CircleShape,
-                color = if (rank <= 3) GameAccent else Color.White.copy(alpha = 0.1f)
+                color = if (rank <= 3) GameTheme.palette.accent else Color.White.copy(alpha = 0.1f)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
@@ -180,7 +180,7 @@ private fun HardestWordRow(rank: Int, stat: WordStat) {
             Text(
                 text = stringResource(R.string.stats_skipped_of_shown, stat.skipped, stat.shown),
                 style = Typography.labelMedium,
-                color = GameSecondary,
+                color = GameTheme.palette.secondary,
                 textAlign = TextAlign.End
             )
         }
@@ -212,14 +212,14 @@ private fun LanguageFilterChip(language: String, isSelected: Boolean, onClick: (
                 selected = isSelected
             },
         shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) GameSecondary else GlassWhite,
-        border = if (isSelected) null else BorderStroke(1.dp, GlassWhiteBorder)
+        color = if (isSelected) GameTheme.palette.secondary else GameTheme.palette.surface,
+        border = if (isSelected) null else BorderStroke(1.dp, GameTheme.palette.surfaceBorder)
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 12.dp)) {
             Text(
                 text = language,
                 style = Typography.titleSmall,
-                color = if (isSelected) BgStart else Color.White,
+                color = if (isSelected) GameTheme.palette.onSecondary else Color.White,
                 fontWeight = FontWeight.Bold
             )
         }
