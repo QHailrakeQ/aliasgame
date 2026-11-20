@@ -117,12 +117,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          # The tests often passed and then the step hung after the emulator was killed, until
-          # the job timeout. The emulator's crash reporter (crashpad_handler) outlives the
-          # emulator and keeps the step's output open, so it is stopped after the tests; the
-          # exit code of the tests is kept. (One line, because the action runs every line of
-          # the script as a separate command.)
-          script: ./gradlew connectedDebugAndroidTest; status=$?; pkill -f crashpad_handler; exit $status
+          script: ./gradlew connectedDebugAndroidTest
 
       - name: Upload UI test reports
         if: failure()
