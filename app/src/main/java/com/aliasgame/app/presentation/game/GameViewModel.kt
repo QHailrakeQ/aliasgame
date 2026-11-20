@@ -90,12 +90,13 @@ class GameViewModel @Inject constructor(
         _uiState.update { it.copy(isEntranceAnimationPlayed = true) }
     }
 
-    fun onStartTimer() = perform({ startTurn() }) { startTicking() }
+    fun onStartTimer() = perform({ startTurn() }) {
+        playSound(GameSound.TURN_START)
+        startTicking()
+    }
 
     fun onWordSwiped(isCorrect: Boolean) = perform({ answer(isCorrect) }) {
-        viewModelScope.launch {
-            _uiEffect.send(if (isCorrect) GameUiEffect.PlayCorrectSound else GameUiEffect.PlaySkipSound)
-        }
+        playSound(if (isCorrect) GameSound.CORRECT else GameSound.SKIP)
     }
 
     fun pauseGame() = perform({ pause() }) { timerJob?.cancel() }
@@ -109,9 +110,20 @@ class GameViewModel @Inject constructor(
      */
     fun onAppBackgrounded() = pauseGame()
 
-    fun onFinalWordProcessed(winnerTeamId: String?) = perform({ decideLastWord(winnerTeamId) })
+    fun onFinalWordProcessed(winnerTeamId: String?) = perform({ decideLastWord(winnerTeamId) }) {
+        playSound(
+            when {
+                isGameFinished() -> GameSound.VICTORY
+                winnerTeamId != null -> GameSound.CORRECT
+                else -> GameSound.SKIP
+            }
+        )
+    }
 
-    fun toggleWordResult(index: Int) = perform({ toggleResult(index) })
+    // A correction on the review screen can complete the win condition and finish the game.
+    fun toggleWordResult(index: Int) = perform({ toggleResult(index) }) {
+        if (isGameFinished()) playSound(GameSound.VICTORY)
+    }
 
     fun startNextRound() {
         // Taken before nextRound() clears the reviewed results.
@@ -149,9 +161,23 @@ class GameViewModel @Inject constructor(
                 delay(1000)
                 val timeRanOut = engine?.tick() == true
                 publish()
-                if (timeRanOut) _uiEffect.send(GameUiEffect.PlayTimerEndSound)
+                if (timeRanOut) {
+                    playSound(GameSound.TIMER_END)
+                } else {
+                    countdownSoundFor(_uiState.value.timeRemaining)?.let(::playSound)
+                }
             }
         }
+    }
+
+    private fun isGameFinished() = engine?.state?.phase == GamePhase.FINISHED
+
+    /**
+     * Requests [sound] without suspending the caller: the countdown must keep its pace even
+     * when nobody is collecting effects at that moment (for example in unit tests).
+     */
+    private fun playSound(sound: GameSound) {
+        viewModelScope.launch { _uiEffect.send(GameUiEffect.PlaySound(sound)) }
     }
 
     /** Copies the engine state into the UI state and persists the session. */
@@ -210,6 +236,21 @@ class GameViewModel @Inject constructor(
             sessionSaveJob?.cancelAndJoin()
             sessionRepository.clearSession()
             _uiEffect.send(effect)
+        }
+    }
+
+    internal companion object {
+        /** The countdown ticks audibly during the last [COUNTDOWN_SECONDS] seconds of a turn. */
+        const val COUNTDOWN_SECONDS = 5L
+
+        /** The last [FINAL_COUNTDOWN_SECONDS] seconds tick in a higher pitch. */
+        const val FINAL_COUNTDOWN_SECONDS = 3L
+
+        /** The tick for [secondsLeft] remaining seconds of a running turn, or `null` for silence. */
+        fun countdownSoundFor(secondsLeft: Long): GameSound? = when (secondsLeft) {
+            in 1..FINAL_COUNTDOWN_SECONDS -> GameSound.COUNTDOWN_TICK_FINAL
+            in 1..COUNTDOWN_SECONDS -> GameSound.COUNTDOWN_TICK
+            else -> null
         }
     }
 }

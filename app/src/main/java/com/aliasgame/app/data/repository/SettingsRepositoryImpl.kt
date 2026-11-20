@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.*
 import androidx.core.os.LocaleListCompat
 import androidx.datastore.preferences.preferencesDataStore
 import com.aliasgame.app.domain.model.AppLanguages
+import com.aliasgame.app.domain.model.AppStyle
 import com.aliasgame.app.domain.repository.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -54,6 +55,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val SELECTED_PACK = stringPreferencesKey("selected_pack")
         val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
         val VIBRATION_ENABLED = booleanPreferencesKey("vibration_enabled")
+        val APP_STYLE = stringPreferencesKey("app_style")
     }
 
     override val selectedLanguage: Flow<String> = context.settingsDataStore.data
@@ -93,6 +95,10 @@ class SettingsRepositoryImpl @Inject constructor(
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
         .map { it[Keys.VIBRATION_ENABLED] ?: true }
 
+    override val appStyle: Flow<AppStyle> = context.settingsDataStore.data
+        .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
+        .map { AppStyle.fromId(it[Keys.APP_STYLE]) }
+
     override suspend fun saveLanguage(language: String) {
         context.settingsDataStore.edit { it[Keys.LANGUAGE] = language }
     }
@@ -119,5 +125,9 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun saveVibrationEnabled(enabled: Boolean) {
         context.settingsDataStore.edit { it[Keys.VIBRATION_ENABLED] = enabled }
+    }
+
+    override suspend fun saveAppStyle(style: AppStyle) {
+        context.settingsDataStore.edit { it[Keys.APP_STYLE] = style.id }
     }
 }

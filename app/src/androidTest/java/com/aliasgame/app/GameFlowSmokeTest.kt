@@ -73,10 +73,12 @@ class GameFlowSmokeTest {
 
         composeTestRule.onNodeWithText(settingsButton).performClick()
         composeTestRule.onNodeWithText(languageTitle).assertIsDisplayed()
-        composeTestRule.onNodeWithText(soundSetting).assertIsDisplayed()
-        composeTestRule.onNodeWithText(vibrationSetting).assertIsDisplayed()
+        // The settings scroll; on a small screen these switches sit below the style picker.
+        composeTestRule.onNodeWithText(soundSetting).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText(vibrationSetting).performScrollTo().assertIsDisplayed()
 
-        composeTestRule.onNodeWithContentDescription(backDesc).performClick()
+        // The header scrolls with the content, so bring the back button into view first.
+        composeTestRule.onNodeWithContentDescription(backDesc).performScrollTo().performClick()
         composeTestRule.onNodeWithText(appName).assertIsDisplayed()
     }
 

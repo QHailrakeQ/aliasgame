@@ -42,17 +42,25 @@ internal fun VictoryOverlay(
     onExit: () -> Unit
 ) {
     val isDraw = winners.size > 1
+    val palette = GameTheme.palette
+    // Read here: the drawing lambdas below cannot read composition locals themselves.
+    val accent = palette.accent
+    val secondary = palette.secondary
     Box(
         modifier = Modifier
             .fillMaxSize()
             .blockUnderlyingTouches()
             .background(
                 Brush.verticalGradient(
-                    colorStops = arrayOf(
-                        0f to Color(0xFF35105F),
-                        0.45f to Color(0xFF1F0B4D),
-                        1f to Color(0xFF10052E)
-                    )
+                    colorStops = if (palette.isNeon) {
+                        arrayOf(0f to palette.backgroundBottom, 1f to palette.backgroundTop)
+                    } else {
+                        arrayOf(
+                            0f to Color(0xFF35105F),
+                            0.45f to Color(0xFF1F0B4D),
+                            1f to Color(0xFF10052E)
+                        )
+                    }
                 )
             ),
         contentAlignment = Alignment.Center
@@ -60,7 +68,7 @@ internal fun VictoryOverlay(
         Canvas(Modifier.fillMaxSize()) {
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(GameAccent.copy(alpha = 0.32f), Color.Transparent),
+                    colors = listOf(accent.copy(alpha = 0.32f), Color.Transparent),
                     center = Offset(size.width * 0.5f, size.height * 0.22f),
                     radius = size.width * 0.82f
                 ),
@@ -69,7 +77,7 @@ internal fun VictoryOverlay(
             )
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(GameSecondary.copy(alpha = 0.18f), Color.Transparent),
+                    colors = listOf(secondary.copy(alpha = 0.18f), Color.Transparent),
                     center = Offset(size.width * 0.5f, size.height * 0.82f),
                     radius = size.width * 0.72f
                 ),
@@ -98,8 +106,8 @@ internal fun VictoryOverlay(
                     Surface(
                         modifier = Modifier.size(116.dp),
                         shape = CircleShape,
-                        color = GameAccent.copy(alpha = 0.10f),
-                        border = BorderStroke(1.dp, GameSecondary.copy(alpha = 0.30f))
+                        color = GameTheme.palette.accent.copy(alpha = 0.10f),
+                        border = BorderStroke(1.dp, GameTheme.palette.secondary.copy(alpha = 0.30f))
                     ) {}
                     Icon(
                         imageVector = Icons.Default.EmojiEvents,
@@ -129,7 +137,7 @@ internal fun VictoryOverlay(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(32.dp),
                 color = Color(0xFF211044).copy(alpha = 0.90f),
-                border = BorderStroke(1.dp, GameSecondary.copy(alpha = 0.30f)),
+                border = BorderStroke(1.dp, GameTheme.palette.secondary.copy(alpha = 0.30f)),
                 shadowElevation = 24.dp
             ) {
                 Box(
@@ -152,7 +160,7 @@ internal fun VictoryOverlay(
                             Text(
                                 text = stringResource(R.string.winners_share),
                                 style = Typography.labelLarge,
-                                color = GameSecondary,
+                                color = GameTheme.palette.secondary,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(Modifier.height(12.dp))
@@ -177,7 +185,7 @@ internal fun VictoryOverlay(
                                 .clip(CircleShape)
                                 .background(
                                     Brush.horizontalGradient(
-                                        listOf(GameAccent, GameSecondary)
+                                        listOf(GameTheme.palette.accent, GameTheme.palette.secondary)
                                     )
                                 )
                         )
@@ -203,7 +211,7 @@ internal fun VictoryOverlay(
                     .fillMaxWidth()
                     .heightIn(min = 64.dp),
                 shape = RoundedCornerShape(GameShapeSize.control),
-                color = GameAccent,
+                color = GameTheme.palette.accent,
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.22f)),
                 shadowElevation = 14.dp
             ) {
@@ -245,7 +253,9 @@ internal fun VictoryOverlay(
 @Composable
 private fun ConfettiEffect() {
     val density = LocalDensity.current.density
-    val particles = remember(density) {
+    val accent = GameTheme.palette.accent
+    val secondary = GameTheme.palette.secondary
+    val particles = remember(density, accent, secondary) {
         val random = Random(System.nanoTime())
         List(52) {
             ConfettiParticle(
@@ -258,8 +268,8 @@ private fun ConfettiEffect() {
                 size = (5f + random.nextFloat() * 7f) * density,
                 shape = random.nextInt(3),
                 color = when (random.nextInt(4)) {
-                    0 -> GameSecondary
-                    1 -> GameAccent
+                    0 -> secondary
+                    1 -> accent
                     2 -> Color(0xFFFFD166)
                     else -> Color.White
                 }

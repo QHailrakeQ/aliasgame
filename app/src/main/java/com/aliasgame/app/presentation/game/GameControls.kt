@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.aliasgame.app.R
 import com.aliasgame.app.ui.theme.*
+import com.aliasgame.app.ui.components.neonGlow
 
 @Composable
 internal fun GameControls(
@@ -36,6 +37,7 @@ internal fun GameControls(
 ) {
     val haptic = LocalHapticFeedback.current
     val triggerHaptic = { if (isVibrationEnabled) haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
+    val palette = GameTheme.palette
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -45,10 +47,13 @@ internal fun GameControls(
         // Skip Button
         Surface(
             onClick = { triggerHaptic(); onSkip() },
-            modifier = Modifier.weight(1f).height(64.dp),
+            modifier = Modifier
+                .weight(1f)
+                .height(64.dp)
+                .neonGlow(palette.glow(palette.skipOutline, strength = 0.5f), GameShapeSize.control, glowRadius = 10.dp),
             shape = RoundedCornerShape(GameShapeSize.control),
-            color = GlassWhite,
-            border = BorderStroke(1.dp, GlassWhiteBorder)
+            color = palette.surface,
+            border = BorderStroke(if (palette.isNeon) 1.5.dp else 1.dp, palette.skipOutline)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
@@ -78,7 +83,7 @@ internal fun GameControls(
                 .semantics { contentDescription = pauseDesc },
             shape = CircleShape,
             color = Color.White.copy(alpha = 0.1f),
-            border = BorderStroke(1.dp, GlassWhiteBorder)
+            border = BorderStroke(1.dp, GameTheme.palette.surfaceBorder)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(Icons.Default.Pause, contentDescription = null, tint = Color.White)
@@ -88,10 +93,13 @@ internal fun GameControls(
         // Correct Button
         Button(
             onClick = { triggerHaptic(); onCorrect() },
-            modifier = Modifier.weight(1f).height(64.dp),
+            modifier = Modifier
+                .weight(1f)
+                .height(64.dp)
+                .neonGlow(palette.glow(palette.correct), 20.dp, glowRadius = 18.dp),
             shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = GameAccent),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+            colors = ButtonDefaults.buttonColors(containerColor = palette.correct, contentColor = palette.onCorrect),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = if (palette.isNeon) 0.dp else 8.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -99,7 +107,7 @@ internal fun GameControls(
                 Text(
                     text = stringResource(R.string.got_it_button),
                     style = Typography.titleMedium,
-                    color = Color.White,
+                    color = palette.onCorrect,
                     fontWeight = FontWeight.Black,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

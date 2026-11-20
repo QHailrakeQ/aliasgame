@@ -1,6 +1,7 @@
 package com.aliasgame.app
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.fadeIn
@@ -10,6 +11,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,18 +30,28 @@ import com.aliasgame.app.presentation.setup.PackSelectionScreen
 import com.aliasgame.app.presentation.setup.SetupScreen
 import com.aliasgame.app.presentation.setup.SetupViewModel
 import com.aliasgame.app.ui.theme.AliasGameTheme
+import com.aliasgame.app.domain.model.AppStyle
+import com.aliasgame.app.presentation.MainViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val mainViewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // installSplashScreen has to be called before super.onCreate
-        installSplashScreen()
+        val splashScreen = installSplashScreen()
         
         super.onCreate(savedInstanceState)
+
+        // Reading the stored style takes a few milliseconds; keeping the splash screen until
+        // then avoids flashing the default style before the chosen one.
+        splashScreen.setKeepOnScreenCondition { mainViewModel.appStyle.value == null }
         
         setContent {
-            AliasGameTheme {
+            val appStyle by mainViewModel.appStyle.collectAsStateWithLifecycle()
+            AliasGameTheme(style = appStyle ?: AppStyle.DEFAULT) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

@@ -267,6 +267,7 @@ class SetupViewModelTest {
         override val selectedPack = selectedPackFlow
         override val isSoundEnabled = flowOf(true)
         override val isVibrationEnabled = flowOf(true)
+        override val appStyle = flowOf(com.aliasgame.app.domain.model.AppStyle.DEFAULT)
 
         override suspend fun saveLanguage(language: String) {}
         override suspend fun saveRoundTime(time: Long) {}
@@ -278,6 +279,7 @@ class SetupViewModelTest {
         }
         override suspend fun saveSoundEnabled(enabled: Boolean) {}
         override suspend fun saveVibrationEnabled(enabled: Boolean) {}
+        override suspend fun saveAppStyle(style: com.aliasgame.app.domain.model.AppStyle) {}
     }
 
     class FakeWordsRepository : WordsRepository {

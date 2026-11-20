@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Alias Spiel</string>
     <string name="setup_title">Spiel-Setup</string>
     <string name="round_time">Rundenzeit: %1$d sek</string>
     <string name="target_score">Zielpunktzahl: %1$d</string>
@@ -29,6 +28,10 @@
     <!-- Configuration -->
     <string name="teams_header">Teams</string>
     <string name="preferences_header">Einstellungen</string>
+    <string name="style_header">Design</string>
+    <string name="style_classic">Klassisch</string>
+    <string name="style_neon_pink">Neon Pink</string>
+    <string name="style_neon_violet">Neon Violett</string>
     <string name="sound_effects">Soundeffekte</string>
     <string name="haptic_feedback">Vibration</string>
     <string name="select_category_title">Kategorie wählen</string>
