@@ -1,71 +1,71 @@
 package com.aliasgame.app.ui.theme
 
 import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.aliasgame.app.domain.model.AppStyle
 
-private val DarkColorScheme = darkColorScheme(
-    primary = GamePrimary,
-    secondary = GameSecondary,
-    tertiary = GameAccent,
-    background = BgStart,
-    surface = GlassWhite,
-    onPrimary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White
-)
+/** The palette of the active [AppStyle]; provided by [AliasGameTheme]. */
+val LocalGamePalette = staticCompositionLocalOf { AppStyle.DEFAULT.palette() }
 
-private val LightColorScheme = lightColorScheme(
-    primary = GamePrimary,
-    secondary = GameSecondary,
-    tertiary = GameAccent,
-    background = BgStart,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.Black
-)
+object GameTheme {
+    /** The palette of the style chosen in the settings. */
+    val palette: GamePalette
+        @Composable @ReadOnlyComposable
+        get() = LocalGamePalette.current
+}
 
+/**
+ * The app's theme. The game always uses its own dark, colorful look, so the system light/dark
+ * setting and dynamic colors are deliberately not followed; [style] is chosen in the settings.
+ */
 @Composable
 fun AliasGameTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is disabled by default for better brand consistency in a party game
-    dynamicColor: Boolean = false,
+    style: AppStyle = AppStyle.DEFAULT,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    val palette = style.palette()
+    val colorScheme = remember(palette) {
+        darkColorScheme(
+            primary = palette.accent,
+            onPrimary = palette.onAccent,
+            secondary = palette.secondary,
+            onSecondary = palette.onSecondary,
+            tertiary = palette.accent,
+            background = palette.backgroundTop,
+            onBackground = Color.White,
+            surface = palette.backgroundBottom,
+            onSurface = Color.White
+        )
     }
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = BgStart.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
+            window.statusBarColor = palette.backgroundTop.toArgb()
+            window.navigationBarColor = palette.backgroundBottom.toArgb()
+            val insetsController = WindowCompat.getInsetsController(window, view)
+            insetsController.isAppearanceLightStatusBars = false
+            insetsController.isAppearanceLightNavigationBars = false
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalGamePalette provides palette) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

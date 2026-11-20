@@ -5,6 +5,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliasgame.app.domain.model.AppLanguages
+import com.aliasgame.app.domain.model.AppStyle
 import com.aliasgame.app.domain.repository.SettingsRepository
 import com.aliasgame.app.domain.usecase.SaveSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ data class SettingsUiState(
     val selectedLanguage: String = AppLanguages.DEFAULT,
     val isSoundEnabled: Boolean = true,
     val isVibrationEnabled: Boolean = true,
+    val appStyle: AppStyle = AppStyle.DEFAULT,
     val availableLanguages: List<String> = AppLanguages.supported
 )
 
@@ -47,6 +49,11 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update { it.copy(isVibrationEnabled = enabled) }
                 }
             }
+            launch {
+                settingsRepository.appStyle.collect { style ->
+                    _uiState.update { it.copy(appStyle = style) }
+                }
+            }
         }
     }
 
@@ -73,5 +80,12 @@ class SettingsViewModel @Inject constructor(
 
     fun onVibrationToggled(enabled: Boolean) {
         viewModelScope.launch { saveSettingsUseCase.saveVibrationEnabled(enabled) }
+    }
+
+    /** Stores [style]; the whole app follows it as soon as it is saved. */
+    fun onStyleSelected(style: AppStyle) {
+        if (_uiState.value.appStyle == style) return
+        _uiState.update { it.copy(appStyle = style) }
+        viewModelScope.launch { saveSettingsUseCase.saveAppStyle(style) }
     }
 }
