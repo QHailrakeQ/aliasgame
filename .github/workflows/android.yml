@@ -93,7 +93,10 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-api29-x86_64-v1
+          # Bump the suffix to rebuild the snapshot, e.g. after an emulator update: a snapshot made
+          # by an older emulator booted into a half-started system ("No service published for:
+          # input") and then hung the step.
+          key: avd-api29-x86_64-v2
 
       - name: Create emulator snapshot for the cache
         if: steps.avd-cache.outputs.cache-hit != 'true'
