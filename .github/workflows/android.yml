@@ -114,7 +114,11 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest
+          # The tests used to pass and then the step hung until the job timeout: the Gradle
+          # daemon and the adb server outlived the script and kept the step from finishing.
+          # Stop both afterwards, keeping the exit code of the tests. (One line, because the
+          # action runs every line of the script as a separate command.)
+          script: ./gradlew connectedDebugAndroidTest; status=$?; ./gradlew --stop; adb kill-server; exit $status
 
       - name: Upload UI test reports
         if: failure()
