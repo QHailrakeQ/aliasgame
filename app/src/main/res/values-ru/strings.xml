@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Алиас</string>
     <string name="setup_title">Настройка игры</string>
     <string name="round_time">Время раунда: %1$d сек</string>
     <string name="target_score">Очки для победы: %1$d</string>
@@ -29,6 +28,10 @@
     <!-- Categories and Configuration -->
     <string name="teams_header">Команды</string>
     <string name="preferences_header">Настройки</string>
+    <string name="style_header">Оформление</string>
+    <string name="style_classic">Классическое</string>
+    <string name="style_neon_pink">Неон: розовый</string>
+    <string name="style_neon_violet">Неон: фиолетовый</string>
     <string name="sound_effects">Звуковые эффекты</string>
     <string name="haptic_feedback">Вибрация</string>
     <string name="select_category_title">Выберите категорию</string>

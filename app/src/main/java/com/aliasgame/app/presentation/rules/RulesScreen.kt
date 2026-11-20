@@ -95,7 +95,7 @@ private fun RuleItem(
     GlassCard {
         Column(modifier = Modifier.padding(GameSpacing.cardPadding)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, null, tint = GameSecondary, modifier = Modifier.size(20.dp))
+                Icon(icon, null, tint = GameTheme.palette.secondary, modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(12.dp))
                 Text(
                     text = title.uppercase(),

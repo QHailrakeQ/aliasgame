@@ -6,9 +6,13 @@ import android.content.ContextWrapper
 import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
@@ -30,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aliasgame.app.R
+import com.aliasgame.app.domain.model.AppStyle
 import com.aliasgame.app.ui.components.GlassCard
 import com.aliasgame.app.ui.components.PartyBackground
 import com.aliasgame.app.ui.components.PartyScreenHeader
@@ -93,6 +98,23 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(GameSpacing.section))
 
+            // Visual style
+            SettingsCard {
+                Column {
+                    SectionHeader(stringResource(R.string.style_header), Icons.Default.Palette)
+                    AppStyle.entries.forEach { style ->
+                        StyleOption(
+                            name = stringResource(style.labelRes()),
+                            style = style,
+                            isSelected = state.appStyle == style,
+                            onClick = { viewModel.onStyleSelected(style) }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(GameSpacing.section))
+
             // Sound & Vibration
             SettingsCard {
                 Column {
@@ -139,17 +161,80 @@ private fun LanguageChip(
                 selected = isSelected
             },
         shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) GameSecondary else GlassWhite,
-        border = if (isSelected) null else androidx.compose.foundation.BorderStroke(1.dp, GlassWhiteBorder)
+        color = if (isSelected) GameTheme.palette.secondary else GameTheme.palette.surface,
+        border = if (isSelected) null else androidx.compose.foundation.BorderStroke(1.dp, GameTheme.palette.surfaceBorder)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
                 style = Typography.titleSmall,
-                color = if (isSelected) BgStart else Color.White,
+                color = if (isSelected) GameTheme.palette.onSecondary else Color.White,
                 fontWeight = FontWeight.Bold
             )
         }
+    }
+}
+
+private fun AppStyle.labelRes(): Int = when (this) {
+    AppStyle.CLASSIC -> R.string.style_classic
+    AppStyle.NEON_PINK -> R.string.style_neon_pink
+    AppStyle.NEON_VIOLET -> R.string.style_neon_violet
+}
+
+/** One selectable style with a small preview of its colors. */
+@Composable
+private fun StyleOption(
+    name: String,
+    style: AppStyle,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val current = GameTheme.palette
+    val preview = style.palette()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .heightIn(min = 56.dp)
+            .selectable(selected = isSelected, role = Role.RadioButton, onClick = onClick)
+            .background(
+                if (isSelected) current.secondary.copy(alpha = 0.12f) else Color.Transparent,
+                RoundedCornerShape(GameShapeSize.pill)
+            )
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Preview: the style's background with its two main colors on it.
+        Box(
+            modifier = Modifier
+                .size(width = 56.dp, height = 36.dp)
+                .background(
+                    Brush.verticalGradient(listOf(preview.backgroundTop, preview.backgroundBottom)),
+                    RoundedCornerShape(10.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(Modifier.size(14.dp).background(preview.accent, CircleShape))
+                Box(Modifier.size(14.dp).background(preview.secondary, CircleShape))
+            }
+        }
+        Spacer(Modifier.width(GameSpacing.controlGap))
+        Text(
+            text = name,
+            modifier = Modifier.weight(1f),
+            style = Typography.bodyLarge,
+            color = Color.White,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+        )
+        RadioButton(
+            selected = isSelected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = current.secondary,
+                unselectedColor = Color.White.copy(alpha = 0.6f)
+            )
+        )
     }
 }
 
@@ -159,7 +244,7 @@ private fun SectionHeader(title: String, icon: ImageVector) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(bottom = 16.dp)
     ) {
-        Icon(icon, null, tint = GameSecondary, modifier = Modifier.size(20.dp))
+        Icon(icon, null, tint = GameTheme.palette.secondary, modifier = Modifier.size(20.dp))
         Spacer(Modifier.width(8.dp))
         Text(
             text = title.uppercase(),
@@ -189,9 +274,9 @@ private fun PreferenceRow(label: String, checked: Boolean, onCheckedChange: (Boo
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
-                checkedTrackColor = GameSecondary,
+                checkedTrackColor = GameTheme.palette.secondary,
                 uncheckedThumbColor = Color.Gray,
-                uncheckedTrackColor = GlassWhite
+                uncheckedTrackColor = GameTheme.palette.surface
             )
         )
     }

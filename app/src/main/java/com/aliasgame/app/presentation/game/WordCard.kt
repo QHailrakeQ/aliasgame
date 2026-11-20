@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aliasgame.app.domain.model.Word
 import com.aliasgame.app.ui.theme.*
+import com.aliasgame.app.ui.components.neonGlow
+import com.aliasgame.app.ui.components.withGlow
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -36,14 +38,23 @@ fun WordCard(
     val offsetY = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
-    
+    val palette = GameTheme.palette
+
     val targetColor = when {
-        offsetY.value < -100f -> Color(0xFF4CAF50).copy(alpha = 0.3f) // Green for Correct
-        offsetY.value > 100f -> GameAccent.copy(alpha = 0.3f)        // Pink/Red for Skip
-        else -> GlassWhite
+        offsetY.value < -100f -> palette.correctTint.copy(alpha = 0.3f) // towards "got it"
+        offsetY.value > 100f -> palette.accent.copy(alpha = 0.3f)       // towards "skip"
+        else -> palette.surface
     }
-    
+    // The neon outline follows the swipe direction too.
+    val targetOutline = when {
+        !palette.isNeon -> palette.surfaceBorder
+        offsetY.value < -100f -> palette.correctTint
+        offsetY.value > 100f -> palette.accent
+        else -> palette.outline
+    }
+
     val backgroundColor by animateColorAsState(targetValue = targetColor, label = "cardColor")
+    val outlineColor by animateColorAsState(targetValue = targetOutline, label = "cardOutline")
 
     BoxWithConstraints(
         modifier = Modifier
@@ -57,6 +68,7 @@ fun WordCard(
             modifier = Modifier
                 .fillMaxSize()
                 .offset { IntOffset(0, offsetY.value.roundToInt()) }
+                .neonGlow(palette.glow(outlineColor, strength = 0.55f), GameShapeSize.card, glowRadius = 18.dp)
                 .pointerInput(word) {
                     detectDragGestures(
                         onDragEnd = {
@@ -79,7 +91,7 @@ fun WordCard(
                 },
             shape = RoundedCornerShape(GameShapeSize.card),
             color = backgroundColor,
-            border = BorderStroke(2.dp, GlassWhiteBorder)
+            border = BorderStroke(2.dp, outlineColor)
         ) {
             Box(
                 modifier = Modifier.fillMaxSize().padding(GameSpacing.cardPadding),
@@ -90,7 +102,9 @@ fun WordCard(
 
                 Text(
                     text = word.text,
-                    style = Typography.displaySmall.copy(fontSize = textSize),
+                    style = Typography.displaySmall
+                        .copy(fontSize = textSize, fontFamily = palette.displayFont)
+                        .withGlow(palette.glow(outlineColor, strength = 0.9f), blurRadius = 28f),
                     fontWeight = FontWeight.Black,
                     textAlign = TextAlign.Center,
                     color = Color.White,

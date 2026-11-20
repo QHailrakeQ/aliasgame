@@ -114,6 +114,7 @@ class StatisticsViewModelTest {
         override val selectedPack = flowOf("Easy")
         override val isSoundEnabled = flowOf(true)
         override val isVibrationEnabled = flowOf(true)
+        override val appStyle = flowOf(com.aliasgame.app.domain.model.AppStyle.DEFAULT)
         override suspend fun saveLanguage(language: String) {}
         override suspend fun saveRoundTime(time: Long) {}
         override suspend fun saveTargetScore(score: Int) {}
@@ -121,5 +122,6 @@ class StatisticsViewModelTest {
         override suspend fun savePack(packId: String) {}
         override suspend fun saveSoundEnabled(enabled: Boolean) {}
         override suspend fun saveVibrationEnabled(enabled: Boolean) {}
+        override suspend fun saveAppStyle(style: com.aliasgame.app.domain.model.AppStyle) {}
     }
 }
