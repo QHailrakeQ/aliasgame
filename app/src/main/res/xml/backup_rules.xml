@@ -1,13 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older that API 31
-   See https://developer.android.com/about/versions/12/backup-restore
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Backup rules for Android 11 (API 30) and lower.
+    See https://developer.android.com/guide/topics/data/autobackup
+
+    The same rules as data_extraction_rules.xml: back up the settings and the word
+    statistics, leave out the game in progress.
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <include domain="file" path="datastore/settings.preferences_pb" />
+    <include domain="file" path="datastore/word_stats.preferences_pb" />
+    <!-- The app language on Android 12 and lower, stored by AppCompat (autoStoreLocales). -->
+    <include domain="file" path="androidx.appcompat.app.AppCompatDelegate.application_locales_record_file" />
 </full-backup-content>
