@@ -91,9 +91,7 @@ fun GameScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                GameUiEffect.PlayCorrectSound -> if (soundEnabled) soundPlayer?.play(GameSound.CORRECT)
-                GameUiEffect.PlaySkipSound -> if (soundEnabled) soundPlayer?.play(GameSound.SKIP)
-                GameUiEffect.PlayTimerEndSound -> if (soundEnabled) soundPlayer?.play(GameSound.TIMER_END)
+                is GameUiEffect.PlaySound -> if (soundEnabled) soundPlayer?.play(effect.sound)
                 GameUiEffect.NavigateBack -> onExit()
                 GameUiEffect.NavigateToSetup -> onNewGame()
             }

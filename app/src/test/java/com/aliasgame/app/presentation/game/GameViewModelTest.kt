@@ -17,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.*
@@ -504,6 +505,125 @@ class GameViewModelTest {
         assertEquals(GameUiEffect.NavigateToSetup, effect.await())
         assertNull(sessionRepository.snapshotFlow.value)
         assertEquals(listOf("clear"), sessionRepository.operations)
+    }
+
+    // --- Sounds --------------------------------------------------------------------------
+
+    /** Records every sound the screen is asked to play, in order. */
+    private fun TestScope.collectSounds(): List<GameSound> {
+        val sounds = mutableListOf<GameSound>()
+        backgroundScope.launch {
+            viewModel.uiEffect.collect { if (it is GameUiEffect.PlaySound) sounds += it.sound }
+        }
+        return sounds
+    }
+
+    @Test
+    fun `only the last five seconds tick and the last three tick higher`() {
+        val expected = listOf(
+            null, // 0: the time is up, the turn-end sound plays instead
+            GameSound.COUNTDOWN_TICK_FINAL,
+            GameSound.COUNTDOWN_TICK_FINAL,
+            GameSound.COUNTDOWN_TICK_FINAL,
+            GameSound.COUNTDOWN_TICK,
+            GameSound.COUNTDOWN_TICK,
+            null,
+            null
+        )
+        assertEquals(expected, (0L..7L).map { GameViewModel.countdownSoundFor(it) })
+    }
+
+    @Test
+    fun `a full turn plays the start, the countdown ticks and the turn end in order`() = runTest {
+        startNewGame()
+        val sounds = collectSounds()
+
+        playUntilLastWord()
+        runCurrent()
+
+        assertEquals(
+            listOf(
+                GameSound.TURN_START,
+                GameSound.COUNTDOWN_TICK,
+                GameSound.COUNTDOWN_TICK,
+                GameSound.COUNTDOWN_TICK_FINAL,
+                GameSound.COUNTDOWN_TICK_FINAL,
+                GameSound.COUNTDOWN_TICK_FINAL,
+                GameSound.TIMER_END
+            ),
+            sounds
+        )
+    }
+
+    @Test
+    fun `answers play the correct and skip sounds`() = runTest {
+        startNewGame(words = List(3) { Word("Word $it", "easy") })
+        val sounds = collectSounds()
+
+        viewModel.onStartTimer()
+        runCurrent()
+        viewModel.onWordSwiped(isCorrect = true)
+        viewModel.onWordSwiped(isCorrect = false)
+        runCurrent()
+
+        assertEquals(listOf(GameSound.TURN_START, GameSound.CORRECT, GameSound.SKIP), sounds)
+    }
+
+    @Test
+    fun `a paused countdown stops ticking`() = runTest {
+        startNewGame()
+        val sounds = collectSounds()
+        viewModel.onStartTimer()
+        runCurrent()
+        advanceTimeBy((defaultSettings.roundTime - 4) * 1000)
+        runCurrent()
+        assertEquals(4L, viewModel.uiState.value.timeRemaining)
+
+        viewModel.pauseGame()
+        advanceTimeBy(10_000)
+        runCurrent()
+
+        assertEquals(listOf(GameSound.TURN_START, GameSound.COUNTDOWN_TICK, GameSound.COUNTDOWN_TICK), sounds)
+    }
+
+    @Test
+    fun `the last word plays the correct sound when a team earned it`() = runTest {
+        restoreFrom(snapshot(GamePhase.LAST_WORD, timeRemaining = 0))
+        val sounds = collectSounds()
+
+        viewModel.onFinalWordProcessed(winnerTeamId = "1")
+        runCurrent()
+
+        assertEquals(listOf(GameSound.CORRECT), sounds)
+    }
+
+    @Test
+    fun `the last word plays the skip sound when nobody earned it`() = runTest {
+        restoreFrom(snapshot(GamePhase.LAST_WORD, timeRemaining = 0))
+        val sounds = collectSounds()
+
+        viewModel.onFinalWordProcessed(winnerTeamId = null)
+        runCurrent()
+
+        assertEquals(listOf(GameSound.SKIP), sounds)
+    }
+
+    @Test
+    fun `finishing the game plays only the victory sound`() = runTest {
+        val lastTeamOfCycle = snapshot(GamePhase.LAST_WORD, timeRemaining = 0).let { snapshot ->
+            snapshot.copy(
+                currentTeamIndex = snapshot.teams.lastIndex,
+                teams = snapshot.teams.map { if (it.id == "1") it.copy(score = defaultSettings.targetScore) else it }
+            )
+        }
+        restoreFrom(lastTeamOfCycle)
+        val sounds = collectSounds()
+
+        viewModel.onFinalWordProcessed(winnerTeamId = null)
+        runCurrent()
+
+        assertTrue(viewModel.uiState.value.isGameFinished)
+        assertEquals(listOf(GameSound.VICTORY), sounds)
     }
 
     // Fakes
