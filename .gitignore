@@ -1,12 +1,5 @@
 *.iml
 .gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -14,11 +7,11 @@
 .cxx
 local.properties
 
+# Android Studio project files. The IDE regenerates them from the Gradle build on sync.
+/.idea/
+
 # Kotlin compiler daemon session data and crash logs
 .kotlin/
-
-# Per-developer IDE state
-/.idea/deploymentTargetSelector.xml
 
 # Internal audit notes (kept locally, not published)
 /docs/IMPROVEMENT_ROADMAP.md
