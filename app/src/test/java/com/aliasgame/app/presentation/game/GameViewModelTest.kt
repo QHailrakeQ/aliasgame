@@ -446,6 +446,63 @@ class GameViewModelTest {
         assertEquals(GamePhase.PAUSED, sessionRepository.snapshotFlow.value?.phase)
     }
 
+    @Test
+    fun `countdown ticks update the screen without saving the session`() = runTest {
+        startNewGame()
+        viewModel.onStartTimer()
+        runCurrent()
+        sessionRepository.operations.clear()
+
+        advanceTimeBy(5000)
+        runCurrent()
+
+        assertEquals(defaultSettings.roundTime - 5, viewModel.uiState.value.timeRemaining)
+        assertEquals(emptyList<String>(), sessionRepository.operations)
+    }
+
+    @Test
+    fun `an answered word is saved right away`() = runTest {
+        startNewGame()
+        viewModel.onStartTimer()
+        runCurrent()
+
+        viewModel.onWordSwiped(isCorrect = true)
+        runCurrent()
+
+        assertEquals(1, sessionRepository.snapshotFlow.value?.currentRoundResults?.size)
+    }
+
+    @Test
+    fun `running out of time saves the last-word phase`() = runTest {
+        startNewGame()
+
+        playUntilLastWord()
+        advanceUntilIdle()
+
+        val saved = sessionRepository.snapshotFlow.value
+        assertEquals(GamePhase.LAST_WORD, saved?.phase)
+        assertEquals(0L, saved?.timeRemaining)
+    }
+
+    @Test
+    fun `a turn killed in the background continues with the exact remaining time`() = runTest {
+        startNewGame()
+        viewModel.onStartTimer()
+        runCurrent()
+        advanceTimeBy(3000)
+        runCurrent()
+
+        viewModel.onAppBackgrounded()
+        advanceUntilIdle()
+        // The process dies; a new screen is created from what was saved.
+        val saved = requireNotNull(sessionRepository.snapshotFlow.value)
+        restoreFrom(saved)
+
+        val state = viewModel.uiState.value
+        assertTrue(state.isPaused)
+        assertEquals(defaultSettings.roundTime - 3, state.timeRemaining)
+    }
+
     // --- App lifecycle -------------------------------------------------------------------
 
     @Test

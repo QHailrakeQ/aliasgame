@@ -31,6 +31,13 @@ import javax.inject.Inject
  * same path restores a game after process death. Game rules and phase transitions live in the
  * engine; this class only drives the one-second countdown, persists the session and turns
  * engine state into UI state.
+ *
+ * The session is saved after every accepted command (start, answer, pause, last word, review
+ * corrections, next round) and when the time runs out, but not on every countdown tick. A
+ * restored turn is always paused, and going to the background pauses and saves the turn, so
+ * after the process is killed in the background the game continues with the exact remaining
+ * time. Only a crash while the countdown is on screen gives the team back the seconds since
+ * the last saved event.
  */
 @HiltViewModel
 class GameViewModel @Inject constructor(
@@ -160,7 +167,8 @@ class GameViewModel @Inject constructor(
             while (engine?.state?.phase == GamePhase.RUNNING) {
                 delay(1000)
                 val timeRanOut = engine?.tick() == true
-                publish()
+                // A plain tick only updates the screen; running out of time changes the phase.
+                publish(persist = timeRanOut)
                 if (timeRanOut) {
                     playSound(GameSound.TIMER_END)
                 } else {
@@ -180,8 +188,8 @@ class GameViewModel @Inject constructor(
         viewModelScope.launch { _uiEffect.send(GameUiEffect.PlaySound(sound)) }
     }
 
-    /** Copies the engine state into the UI state and persists the session. */
-    private fun publish() {
+    /** Copies the engine state into the UI state and, if [persist] is set, saves the session. */
+    private fun publish(persist: Boolean = true) {
         val currentEngine = engine ?: return
         val state = currentEngine.state
         _uiState.update {
@@ -197,7 +205,7 @@ class GameViewModel @Inject constructor(
                 roundResults = state.roundResults
             )
         }
-        saveSession(currentEngine)
+        if (persist) saveSession(currentEngine)
     }
 
     private fun saveSession(currentEngine: GameEngine) {
