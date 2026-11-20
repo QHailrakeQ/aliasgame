@@ -1,5 +1,9 @@
 package com.aliasgame.app.presentation.settings
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -37,6 +42,8 @@ fun SettingsScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val activity = remember(context) { context.findActivity() }
 
     PartyBackground {
         Column(
@@ -68,7 +75,16 @@ fun SettingsScreen(
                             LanguageChip(
                                 text = lang,
                                 isSelected = isSelected,
-                                onClick = { viewModel.onLanguageSelected(lang) }
+                                onClick = {
+                                    val changed = viewModel.onLanguageSelected(lang)
+                                    // Android 13+ delivers the new language as a configuration
+                                    // change the activity handles in place. On older versions
+                                    // AppCompat does not refresh the strings that way, so the
+                                    // screen is recreated as before.
+                                    if (changed && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                                        activity?.recreate()
+                                    }
+                                }
                             )
                         }
                     }
@@ -188,4 +204,10 @@ private fun SettingsCard(content: @Composable () -> Unit) {
             content()
         }
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

@@ -21,6 +21,24 @@ class AppLanguagesTest {
     }
 
     @Test
+    fun `a supported device language is used, with the UA code for Ukrainian`() {
+        assertEquals("UA", AppLanguages.fromDeviceLanguages(listOf("uk-UA", "en-US")))
+        assertEquals("DE", AppLanguages.fromDeviceLanguages(listOf("de-AT")))
+        assertEquals("RU", AppLanguages.fromDeviceLanguages(listOf("ru")))
+    }
+
+    @Test
+    fun `the first supported language in the device list wins`() {
+        assertEquals("DE", AppLanguages.fromDeviceLanguages(listOf("fr-FR", "de-DE", "en-GB")))
+    }
+
+    @Test
+    fun `English is used when no device language is supported`() {
+        assertEquals("EN", AppLanguages.fromDeviceLanguages(listOf("fr-FR", "pl-PL")))
+        assertEquals("EN", AppLanguages.fromDeviceLanguages(emptyList()))
+    }
+
+    @Test
     fun `default language is supported`() {
         assertTrue(AppLanguages.DEFAULT in AppLanguages.supported)
     }

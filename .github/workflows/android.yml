@@ -6,47 +6,122 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
-jobs:
-  build:
+# A newer push to the same branch or pull request cancels the run that is still going.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
+permissions:
+  contents: read
+
+jobs:
+  # Fast checks that need no emulator: lint, unit tests and the debug build.
+  checks:
+    name: Lint, unit tests and build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
+      - uses: actions/checkout@v7
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Run Lint
-      run: ./gradlew lintDebug
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Run Unit Tests
-      run: ./gradlew testDebugUnitTest
+      # Caches Gradle dependencies and build outputs between runs, which also makes
+      # transient Maven download failures much rarer.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
 
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      - name: Lint
+        run: ./gradlew lintDebug
 
-    - name: Run Instrumented Tests
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 29
-        arch: x86_64
-        disable-animations: true
-        script: ./gradlew connectedDebugAndroidTest
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest
 
-    - name: Upload test and lint reports
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-reports
-        path: |
-          app/build/reports/
-          app/build/outputs/androidTest-results/
-        retention-days: 7
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+
+      - name: Upload lint and unit test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: check-reports
+          path: |
+            app/build/reports/
+            app/build/test-results/
+          retention-days: 7
+
+  # Compose UI tests on an emulator; runs in parallel with the checks above.
+  ui-tests:
+    name: UI tests (API 29 emulator)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Hardware acceleration for the emulator; without it the emulator is several times slower.
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Cache emulator image
+        uses: actions/cache@v6
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-api29-x86_64-v1
+
+      - name: Create emulator snapshot for the cache
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Emulator snapshot created"
+
+      - name: UI tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connectedDebugAndroidTest
+
+      - name: Upload UI test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ui-test-reports
+          path: |
+            app/build/reports/androidTests/
+            app/build/outputs/androidTest-results/
+          retention-days: 7

@@ -110,7 +110,7 @@ fun GameScreen(
                 .then(if (state.hasBlockingOverlay()) Modifier.clearAndSetSemantics {} else Modifier),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GameItemContainer(progress = entryProgress.value, index = 0) {
+            GameItemContainer(progress = { entryProgress.value }, index = 0) {
                 GameHUD(
                     currentTeamId = state.currentTeam?.id,
                     teamName = state.currentTeam?.name ?: "",
@@ -166,7 +166,7 @@ fun GameScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            GameItemContainer(progress = entryProgress.value, index = 2) {
+            GameItemContainer(progress = { entryProgress.value }, index = 2) {
                 GameControls(
                     isVibrationEnabled = state.isVibrationEnabled,
                     onSkip = { viewModel.onWordSwiped(false) },
@@ -244,20 +244,21 @@ fun GameScreen(
 
 @Composable
 private fun GameItemContainer(
-    progress: Float,
+    // Read only inside graphicsLayer, i.e. while drawing: the entrance animation then
+    // moves and fades the item every frame without recomposing the screen content.
+    progress: () -> Float,
     index: Int,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     val startThreshold = index * 0.15f
-    val itemAlpha = ((progress - startThreshold) / 0.4f).coerceIn(0f, 1f)
-    val itemTranslation = (1f - itemAlpha) * 50f
 
     Box(
         modifier = modifier
             .graphicsLayer {
+                val itemAlpha = ((progress() - startThreshold) / 0.4f).coerceIn(0f, 1f)
                 alpha = itemAlpha
-                translationY = itemTranslation
+                translationY = (1f - itemAlpha) * 50f
             }
     ) {
         content()

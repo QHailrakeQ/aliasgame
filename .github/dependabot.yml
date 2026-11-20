@@ -1,0 +1,19 @@
+# Opens weekly pull requests with dependency updates; CI checks each of them.
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      # One pull request for all Compose and AndroidX libraries instead of one per artifact.
+      androidx:
+        patterns: [ "androidx.*" ]
+      kotlin:
+        patterns: [ "org.jetbrains.kotlin*", "org.jetbrains.kotlinx*", "com.google.devtools.ksp" ]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

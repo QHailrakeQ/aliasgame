@@ -112,7 +112,7 @@ fun SetupScreen(
             )
 
                 // Game Rules (Time and Target Score)
-                SetupItemContainer(progress = entryProgress.value, index = 0) {
+                SetupItemContainer(progress = { entryProgress.value }, index = 0) {
                     GameRulesCard(
                         roundTime = state.roundTime,
                         targetScore = state.targetScore,
@@ -122,7 +122,7 @@ fun SetupScreen(
                 }
 
                 // Word Pack Selection
-                SetupItemContainer(progress = entryProgress.value, index = 1) {
+                SetupItemContainer(progress = { entryProgress.value }, index = 1) {
                     PackSelectionCard(
                         selectedPack = state.selectedPack,
                         selectedPackWordCount = state.packs
@@ -132,7 +132,7 @@ fun SetupScreen(
                 }
 
                 // Team Management
-                SetupItemContainer(progress = entryProgress.value, index = 2) {
+                SetupItemContainer(progress = { entryProgress.value }, index = 2) {
                     TeamManagementCard(
                         teamNames = state.teamNames,
                         errors = state.teamNameErrors,
@@ -145,7 +145,7 @@ fun SetupScreen(
                 }
 
                 // Start Game button
-                SetupItemContainer(progress = entryProgress.value, index = 3) {
+                SetupItemContainer(progress = { entryProgress.value }, index = 3) {
                     Button(
                         onClick = viewModel::startGame,
                         modifier = Modifier
@@ -184,19 +184,20 @@ fun SetupScreen(
 
 @Composable
 private fun SetupItemContainer(
-    progress: Float,
+    // Read only inside graphicsLayer, i.e. while drawing: the entrance animation then
+    // moves and fades the item every frame without recomposing the screen content.
+    progress: () -> Float,
     index: Int,
     content: @Composable () -> Unit
 ) {
     val startThreshold = index * 0.12f
-    val itemAlpha = ((progress - startThreshold) / 0.35f).coerceIn(0f, 1f)
-    val itemTranslation = (1f - itemAlpha) * 40f
 
     Box(
         modifier = Modifier
             .graphicsLayer {
+                val itemAlpha = ((progress() - startThreshold) / 0.35f).coerceIn(0f, 1f)
                 alpha = itemAlpha
-                translationY = itemTranslation
+                translationY = (1f - itemAlpha) * 40f
             }
     ) {
         content()

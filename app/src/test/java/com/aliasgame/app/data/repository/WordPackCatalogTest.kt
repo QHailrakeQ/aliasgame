@@ -53,4 +53,30 @@ class WordPackCatalogTest {
     fun `wordsOf the mixed pack returns every word of the language`() {
         assertEquals(words, WordPackCatalog.wordsOf(words, WordPack.MIXED_ID))
     }
+
+    private val themes = linkedMapOf(
+        "cinema" to listOf(Word("Sequel", "cinema"), Word("Cameo", "cinema")),
+        "coffee_shop" to listOf(Word("Latte", "coffee_shop"))
+    )
+
+    @Test
+    fun `themes come after the mixed pack, marked as themes, in the given order`() {
+        assertEquals(
+            listOf(
+                WordPack("Easy", 3),
+                WordPack("Insane", 2),
+                WordPack("Medium", 1),
+                WordPack(WordPack.MIXED_ID, 6),
+                WordPack("cinema", 2, isTheme = true),
+                WordPack("coffee_shop", 1, isTheme = true)
+            ),
+            WordPackCatalog.packsOf(words, themes)
+        )
+    }
+
+    @Test
+    fun `wordsOf a theme returns only its words, and the mixed pack leaves themes out`() {
+        assertEquals(themes.getValue("cinema"), WordPackCatalog.wordsOf(words, "cinema", themes))
+        assertEquals(words, WordPackCatalog.wordsOf(words, WordPack.MIXED_ID, themes))
+    }
 }

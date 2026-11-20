@@ -50,16 +50,21 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onLanguageSelected(language: String) {
-        if (_uiState.value.selectedLanguage == language) return
-        
-        viewModelScope.launch {
-            saveSettingsUseCase.saveLanguage(language)
-            val appLocale = LocaleListCompat.forLanguageTags(AppLanguages.toLanguageTag(language))
-            // Persisted by AppCompat itself: by the system on API 33+, and on older versions via
-            // AppLocalesMetadataHolderService (autoStoreLocales) declared in the manifest.
-            AppCompatDelegate.setApplicationLocales(appLocale)
-        }
+    /**
+     * Applies [language] to the interface immediately and stores it for the word packs.
+     * @return `true` if the language changed.
+     */
+    fun onLanguageSelected(language: String): Boolean {
+        if (_uiState.value.selectedLanguage == language) return false
+        _uiState.update { it.copy(selectedLanguage = language) }
+
+        // Applied synchronously, so a screen recreated right after this call already uses it.
+        // Persisted by AppCompat itself: by the system on API 33+, and on older versions via
+        // AppLocalesMetadataHolderService (autoStoreLocales) declared in the manifest.
+        val appLocale = LocaleListCompat.forLanguageTags(AppLanguages.toLanguageTag(language))
+        AppCompatDelegate.setApplicationLocales(appLocale)
+        viewModelScope.launch { saveSettingsUseCase.saveLanguage(language) }
+        return true
     }
 
     fun onSoundToggled(enabled: Boolean) {
