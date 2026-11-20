@@ -53,7 +53,7 @@ fun PackSelectionScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = GameSecondary)
+                        CircularProgressIndicator(color = GameTheme.palette.secondary)
                     }
                 }
 
@@ -80,7 +80,7 @@ fun PackSelectionScreen(
                             TextButton(onClick = viewModel::retryLoadPacks) {
                                 Text(
                                     stringResource(R.string.retry),
-                                    color = GameSecondary
+                                    color = GameTheme.palette.secondary
                                 )
                             }
                         }
@@ -107,7 +107,7 @@ fun PackSelectionScreen(
                                     text = stringResource(R.string.pack_section_themes).uppercase(),
                                     modifier = Modifier.padding(top = GameSpacing.cardGap),
                                     style = Typography.labelLarge,
-                                    color = GameSecondary,
+                                    color = GameTheme.palette.secondary,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -135,10 +135,10 @@ private fun PackItem(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(GameShapeSize.card),
-        color = if (isSelected) GameSecondary.copy(alpha = 0.12f) else GlassWhite,
+        color = if (isSelected) GameTheme.palette.secondary.copy(alpha = 0.12f) else GameTheme.palette.surface,
         border = androidx.compose.foundation.BorderStroke(
             1.dp,
-            if (isSelected) GameSecondary.copy(alpha = 0.8f) else GlassWhiteBorder
+            if (isSelected) GameTheme.palette.secondary.copy(alpha = 0.8f) else GameTheme.palette.surfaceBorder
         )
     ) {
         Row(
@@ -150,7 +150,7 @@ private fun PackItem(
             Surface(
                 modifier = Modifier.size(12.dp),
                 shape = RoundedCornerShape(GameShapeSize.pill),
-                color = GameSecondary
+                color = GameTheme.palette.secondary
             ) {}
             
             Spacer(modifier = Modifier.width(GameSpacing.controlGap))
@@ -171,7 +171,7 @@ private fun PackItem(
                 Text(
                     text = packWordCount(pack.wordCount),
                     style = Typography.labelMedium,
-                    color = GameSecondary,
+                    color = GameTheme.palette.secondary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -180,7 +180,7 @@ private fun PackItem(
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = stringResource(R.string.content_desc_selected),
-                    tint = GameSecondary,
+                    tint = GameTheme.palette.secondary,
                     modifier = Modifier.size(28.dp)
                 )
             }

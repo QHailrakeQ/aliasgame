@@ -43,6 +43,7 @@ import com.aliasgame.app.ui.components.GlassCard
 import com.aliasgame.app.ui.components.PartyBackground
 import com.aliasgame.app.ui.components.PartyScreenHeader
 import com.aliasgame.app.ui.theme.*
+import com.aliasgame.app.ui.components.neonGlow
 
 /**
  * Modernized Setup Screen focusing on game rules and teams.
@@ -151,13 +152,18 @@ fun SetupScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(72.dp)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 16.dp)
+                            .neonGlow(
+                                GameTheme.palette.glow(GameTheme.palette.accent).takeIf { state.canStartGame } ?: Color.Transparent,
+                                20.dp,
+                                glowRadius = 20.dp
+                            ),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = GameAccent,
-                            contentColor = Color.White
+                            containerColor = GameTheme.palette.accent,
+                            contentColor = GameTheme.palette.onAccent
                         ),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = if (GameTheme.palette.isNeon) 0.dp else 8.dp),
                         enabled = state.canStartGame
                     ) {
                         if (state.isLoading) {
@@ -166,7 +172,7 @@ fun SetupScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     stringResource(R.string.start_game).uppercase(),
-                                    style = Typography.headlineMedium.copy(fontSize = 22.sp),
+                                    style = Typography.headlineMedium.copy(fontSize = 22.sp, fontFamily = GameTheme.palette.displayFont),
                                     fontWeight = FontWeight.Black
                                 )
                                 Spacer(Modifier.width(12.dp))
@@ -210,7 +216,7 @@ private fun SectionHeader(title: String, icon: ImageVector) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(bottom = 16.dp)
     ) {
-        Icon(icon, null, tint = GameSecondary, modifier = Modifier.size(20.dp))
+        Icon(icon, null, tint = GameTheme.palette.secondary, modifier = Modifier.size(20.dp))
         Spacer(Modifier.width(8.dp))
         Text(
             text = title.uppercase(),
@@ -327,14 +333,14 @@ private fun StepperButton(
         enabled = enabled,
         modifier = Modifier.size(56.dp),
         shape = RoundedCornerShape(16.dp),
-        color = GlassWhite,
-        border = BorderStroke(1.dp, if (enabled) GameSecondary.copy(alpha = 0.5f) else GlassWhiteBorder)
+        color = GameTheme.palette.surface,
+        border = BorderStroke(1.dp, if (enabled) GameTheme.palette.secondary.copy(alpha = 0.5f) else GameTheme.palette.surfaceBorder)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = icon,
                 contentDescription = contentDescription,
-                tint = if (enabled) GameSecondary else Color.White.copy(alpha = 0.3f),
+                tint = if (enabled) GameTheme.palette.secondary else Color.White.copy(alpha = 0.3f),
                 modifier = Modifier.graphicsLayer { this.alpha = alpha }
             )
         }
@@ -356,8 +362,8 @@ private fun PackSelectionCard(
                 onClick = onPackClick,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                color = GlassWhite,
-                border = BorderStroke(1.dp, GlassWhiteBorder)
+                color = GameTheme.palette.surface,
+                border = BorderStroke(1.dp, GameTheme.palette.surfaceBorder)
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -380,7 +386,7 @@ private fun PackSelectionCard(
                         }
                     }
 
-                    Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = GameSecondary)
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = GameTheme.palette.secondary)
                 }
             }
         }
@@ -419,7 +425,7 @@ private fun TeamManagementCard(
                     onClick = onTeamAdd,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    Text("+ " + stringResource(R.string.add_team).uppercase(), color = GameSecondary, fontWeight = FontWeight.Bold)
+                    Text("+ " + stringResource(R.string.add_team).uppercase(), color = GameTheme.palette.secondary, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -476,10 +482,10 @@ private fun TeamNameRow(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = GlassWhiteBorder,
-                unfocusedContainerColor = GlassWhite,
-                errorContainerColor = GlassWhite,
-                focusedIndicatorColor = GameSecondary,
+                focusedContainerColor = GameTheme.palette.surfaceBorder,
+                unfocusedContainerColor = GameTheme.palette.surface,
+                errorContainerColor = GameTheme.palette.surface,
+                focusedIndicatorColor = GameTheme.palette.secondary,
                 unfocusedIndicatorColor = Color.Transparent,
                 errorIndicatorColor = TeamNameErrorColor,
                 errorSupportingTextColor = TeamNameErrorColor,
@@ -487,8 +493,8 @@ private fun TeamNameRow(
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
                 errorTextColor = Color.White,
-                cursorColor = GameSecondary,
-                errorCursorColor = GameSecondary
+                cursorColor = GameTheme.palette.secondary,
+                errorCursorColor = GameTheme.palette.secondary
             ),
             singleLine = true
         )
@@ -496,12 +502,12 @@ private fun TeamNameRow(
             onClick = onReroll,
             modifier = Modifier
                 .padding(top = 4.dp)
-                .background(GameSecondary.copy(alpha = 0.15f), CircleShape)
+                .background(GameTheme.palette.secondary.copy(alpha = 0.15f), CircleShape)
         ) {
             Icon(
                 Icons.Default.Casino,
                 contentDescription = stringResource(R.string.content_desc_reroll_team_name),
-                tint = GameSecondary
+                tint = GameTheme.palette.secondary
             )
         }
         if (canRemove) {

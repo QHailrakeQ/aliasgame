@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import com.aliasgame.app.R
 import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.ui.theme.*
+import com.aliasgame.app.ui.components.neonGlow
+import com.aliasgame.app.ui.components.withGlow
 
 @Composable
 internal fun GameHUD(
@@ -42,13 +44,24 @@ internal fun GameHUD(
     onExitClick: () -> Unit
 ) {
     val isUrgent = timeRemaining < URGENT_SECONDS
+    val palette = GameTheme.palette
+    // In the neon styles the whole panel turns to the accent color while time is running out.
+    val panelOutline by animateColorAsState(
+        targetValue = when {
+            !palette.isNeon -> palette.surfaceBorder
+            isUrgent -> palette.accent
+            else -> palette.panelOutline
+        },
+        label = "PanelOutline"
+    )
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp),
+            .padding(top = 12.dp)
+            .neonGlow(palette.glow(panelOutline, strength = 0.45f), GameShapeSize.card),
         shape = RoundedCornerShape(GameShapeSize.card),
-        color = GlassWhite,
-        border = BorderStroke(1.dp, GlassWhiteBorder)
+        color = palette.surface,
+        border = BorderStroke(if (palette.isNeon) 1.5.dp else 1.dp, panelOutline)
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -76,7 +89,9 @@ internal fun GameHUD(
                 ) {
                     Text(
                         text = teamName.uppercase(),
-                        style = Typography.titleMedium.copy(letterSpacing = 1.sp),
+                        style = Typography.titleMedium
+                            .copy(letterSpacing = 1.sp, fontFamily = palette.displayFont)
+                            .withGlow(palette.glow(palette.accent), blurRadius = 20f),
                         color = Color.White,
                         fontWeight = FontWeight.Black,
                         maxLines = 1,
@@ -85,20 +100,26 @@ internal fun GameHUD(
                     Text(
                         text = stringResource(R.string.turn_score_label, score),
                         style = Typography.labelLarge,
-                        color = GameSecondary
+                        color = GameTheme.palette.secondary
                     )
                 }
 
                 val timerBorderColor by animateColorAsState(
-                    targetValue = if (isUrgent) GameAccent else Color.White.copy(alpha = 0.2f),
+                    targetValue = when {
+                        isUrgent -> palette.accent
+                        palette.isNeon -> palette.secondary
+                        else -> Color.White.copy(alpha = 0.2f)
+                    },
                     label = "TimerBorder"
                 )
 
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = if (isUrgent) GameAccent.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.1f),
-                    modifier = Modifier.widthIn(min = 64.dp),
-                    border = BorderStroke(if (isUrgent) 2.dp else 1.dp, timerBorderColor)
+                    color = if (isUrgent) GameTheme.palette.accent.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.1f),
+                    modifier = Modifier
+                        .widthIn(min = 64.dp)
+                        .neonGlow(palette.glow(timerBorderColor), 16.dp, glowRadius = if (isUrgent) 18.dp else 10.dp),
+                    border = BorderStroke(if (isUrgent || palette.isNeon) 2.dp else 1.dp, timerBorderColor)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -115,7 +136,9 @@ internal fun GameHUD(
                         }
                         Text(
                             text = timeRemaining.toString(),
-                            style = Typography.titleMedium,
+                            style = Typography.titleMedium
+                                .copy(fontFamily = palette.displayFont)
+                                .withGlow(palette.glow(timerBorderColor), blurRadius = 16f),
                             color = Color.White,
                             fontWeight = FontWeight.Black
                         )
@@ -136,7 +159,7 @@ internal fun GameHUD(
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = if (team.id == currentTeamId) {
-                            GameSecondary.copy(alpha = 0.22f)
+                            GameTheme.palette.secondary.copy(alpha = 0.22f)
                         } else {
                             Color.White.copy(alpha = 0.07f)
                         },
@@ -145,7 +168,7 @@ internal fun GameHUD(
                         },
                         border = BorderStroke(
                             1.dp,
-                            if (team.id == currentTeamId) GameSecondary.copy(alpha = 0.7f)
+                            if (team.id == currentTeamId) GameTheme.palette.secondary.copy(alpha = 0.7f)
                             else Color.White.copy(alpha = 0.12f)
                         )
                     ) {
@@ -164,7 +187,7 @@ internal fun GameHUD(
                             Text(
                                 text = team.score.toString(),
                                 style = Typography.labelMedium,
-                                color = GameSecondary,
+                                color = GameTheme.palette.secondary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -198,7 +221,7 @@ private fun TimerProgressBar(timeRemaining: Long, roundTime: Long, isUrgent: Boo
         }
     }
     val color by animateColorAsState(
-        targetValue = if (isUrgent) GameAccent else GameSecondary,
+        targetValue = if (isUrgent) GameTheme.palette.accent else GameTheme.palette.secondary,
         label = "TimerBarColor"
     )
     LinearProgressIndicator(

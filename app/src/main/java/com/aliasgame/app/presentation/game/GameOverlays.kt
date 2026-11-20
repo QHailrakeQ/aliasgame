@@ -36,6 +36,8 @@ import com.aliasgame.app.R
 import com.aliasgame.app.domain.model.RoundResult
 import com.aliasgame.app.domain.model.Team
 import com.aliasgame.app.ui.theme.*
+import com.aliasgame.app.ui.components.neonGlow
+import com.aliasgame.app.ui.components.withGlow
 
 /**
  * Makes the overlay a touch target so that controls drawn underneath cannot be tapped
@@ -74,8 +76,8 @@ fun FinalWordDialog(
         ),
         content = {
             Surface(
-                color = BgEnd,
-                border = BorderStroke(1.dp, GlassWhiteBorder),
+                color = GameTheme.palette.backgroundBottom,
+                border = BorderStroke(1.dp, GameTheme.palette.panelOutline),
                 shape = RoundedCornerShape(GameShapeSize.card)
             ) {
                 Column(
@@ -104,7 +106,8 @@ fun FinalWordDialog(
                             onClick = { onTeamSelected(team.id) },
                             modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(vertical = 4.dp),
                             shape = RoundedCornerShape(GameShapeSize.control),
-                            colors = ButtonDefaults.buttonColors(containerColor = GlassWhite)
+                            colors = ButtonDefaults.buttonColors(containerColor = GameTheme.palette.surface, contentColor = Color.White),
+                            border = if (GameTheme.palette.isNeon) BorderStroke(1.5.dp, GameTheme.palette.outline) else null
                         ) { Text(team.name, fontWeight = FontWeight.Bold) }
                     }
                     
@@ -136,8 +139,8 @@ internal fun PauseOverlay(onContinue: () -> Unit) {
         Surface(
             modifier = Modifier.padding(GameSpacing.cardPadding),
             shape = RoundedCornerShape(GameShapeSize.card),
-            color = BgStart,
-            border = BorderStroke(1.dp, GlassWhiteBorder)
+            color = GameTheme.palette.backgroundTop,
+            border = BorderStroke(1.dp, GameTheme.palette.panelOutline)
         ) {
             Column(
                 Modifier.padding(GameSpacing.cardPadding),
@@ -152,9 +155,12 @@ internal fun PauseOverlay(onContinue: () -> Unit) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = onContinue,
-                    modifier = Modifier.fillMaxWidth().height(64.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .neonGlow(GameTheme.palette.glow(GameTheme.palette.accent), 20.dp),
                     shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = GameAccent)
+                    colors = ButtonDefaults.buttonColors(containerColor = GameTheme.palette.accent, contentColor = GameTheme.palette.onAccent)
                 ) {
                     Text(stringResource(R.string.resume_button).uppercase(), fontWeight = FontWeight.Black)
                 }
@@ -166,14 +172,14 @@ internal fun PauseOverlay(onContinue: () -> Unit) {
 @Composable
 internal fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, onToggleResult: (Int) -> Unit, onNextRound: () -> Unit) {
     Box(
-        Modifier.fillMaxSize().blockUnderlyingTouches().background(BgStart.copy(alpha = 0.95f)).padding(16.dp),
+        Modifier.fillMaxSize().blockUnderlyingTouches().background(GameTheme.palette.backgroundTop.copy(alpha = 0.95f)).padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(GameShapeSize.card),
-            color = GlassWhite,
-            border = BorderStroke(1.dp, GlassWhiteBorder)
+            color = GameTheme.palette.surface,
+            border = BorderStroke(1.dp, GameTheme.palette.surfaceBorder)
         ) {
             Column(
                 Modifier.fillMaxSize().padding(GameSpacing.cardPadding),
@@ -207,7 +213,7 @@ internal fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, 
                                 team.score.toString(),
                                 style = Typography.titleLarge,
                                 fontWeight = FontWeight.Black,
-                                color = GameSecondary
+                                color = GameTheme.palette.secondary
                             )
                         }
                     }
@@ -247,7 +253,7 @@ internal fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, 
                             Icon(
                                 imageVector = if (result.isCorrect) Icons.Default.Check else Icons.Default.Close,
                                 contentDescription = if (result.isCorrect) correctDesc else wrongDesc,
-                                tint = if (result.isCorrect) GameSecondary else GameAccent
+                                tint = if (result.isCorrect) GameTheme.palette.secondary else GameTheme.palette.accent
                             )
                         }
                         HorizontalDivider(color = Color.White.copy(alpha = 0.1f))
@@ -256,9 +262,12 @@ internal fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, 
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = onNextRound,
-                    modifier = Modifier.fillMaxWidth().height(64.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .neonGlow(GameTheme.palette.glow(GameTheme.palette.accent), GameShapeSize.control),
                     shape = RoundedCornerShape(GameShapeSize.control),
-                    colors = ButtonDefaults.buttonColors(containerColor = GameAccent)
+                    colors = ButtonDefaults.buttonColors(containerColor = GameTheme.palette.accent, contentColor = GameTheme.palette.onAccent)
                 ) {
                     Text(stringResource(R.string.next_round).uppercase(), style = Typography.titleMedium, fontWeight = FontWeight.Black)
                 }
@@ -270,29 +279,34 @@ internal fun RoundResultsOverlay(results: List<RoundResult>, teams: List<Team>, 
 @Composable
 internal fun ReadyOverlay(teamName: String, onStart: () -> Unit) {
     Box(
-        Modifier.fillMaxSize().blockUnderlyingTouches().background(BgStart.copy(alpha = 0.9f)),
+        Modifier.fillMaxSize().blockUnderlyingTouches().background(GameTheme.palette.backgroundTop.copy(alpha = 0.9f)),
         contentAlignment = Alignment.Center
     ) {
         Surface(
-            modifier = Modifier.padding(GameSpacing.cardPadding),
+            modifier = Modifier
+                .padding(GameSpacing.cardPadding)
+                .neonGlow(GameTheme.palette.glow(GameTheme.palette.secondary, strength = 0.5f), GameShapeSize.card, glowRadius = 18.dp),
             shape = RoundedCornerShape(GameShapeSize.card),
-            color = GlassWhite,
-            border = BorderStroke(2.dp, GameSecondary)
+            color = GameTheme.palette.surface,
+            border = BorderStroke(2.dp, GameTheme.palette.secondary)
         ) {
             Column(
                 Modifier.padding(GameSpacing.cardPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(stringResource(R.string.ready_title).uppercase(), style = Typography.labelLarge, color = Color.White.copy(alpha = 0.7f))
-                Text(teamName.uppercase(), style = Typography.displaySmall, fontWeight = FontWeight.Black, color = Color.White, textAlign = TextAlign.Center)
+                Text(teamName.uppercase(), style = Typography.displaySmall.copy(fontFamily = GameTheme.palette.displayFont).withGlow(GameTheme.palette.glow(GameTheme.palette.accent), blurRadius = 28f), fontWeight = FontWeight.Black, color = Color.White, textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(GameSpacing.section))
                 Button(
                     onClick = onStart,
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 64.dp)
+                        .neonGlow(GameTheme.palette.glow(GameTheme.palette.secondary), GameShapeSize.control),
                     shape = RoundedCornerShape(GameShapeSize.control),
-                    colors = ButtonDefaults.buttonColors(containerColor = GameSecondary)
+                    colors = ButtonDefaults.buttonColors(containerColor = GameTheme.palette.secondary)
                 ) {
-                    Text(stringResource(R.string.ready_button).uppercase(), style = Typography.titleLarge, color = BgStart, fontWeight = FontWeight.Black)
+                    Text(stringResource(R.string.ready_button).uppercase(), style = Typography.titleLarge, color = GameTheme.palette.onSecondary, fontWeight = FontWeight.Black)
                 }
             }
         }

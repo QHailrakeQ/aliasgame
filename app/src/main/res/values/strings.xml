@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Alias Game</string>
+    <!-- The game is called ALIAS in every language: on the home screen and under the launcher icon. -->
+    <string name="app_name" translatable="false">Alias</string>
     <string name="setup_title">Game Setup</string>
     <string name="round_time">Round Time: %1$d sec</string>
     <string name="target_score">Target Score: %1$d</string>
@@ -29,6 +30,10 @@
     <!-- Categories and Configuration -->
     <string name="teams_header">Teams</string>
     <string name="preferences_header">Preferences</string>
+    <string name="style_header">Appearance</string>
+    <string name="style_classic">Classic</string>
+    <string name="style_neon_pink">Neon Pink</string>
+    <string name="style_neon_violet">Neon Violet</string>
     <string name="sound_effects">Sound Effects</string>
     <string name="haptic_feedback">Haptic Feedback</string>
     <string name="select_category_title">Select Category</string>

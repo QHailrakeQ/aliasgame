@@ -38,9 +38,8 @@ data class GameUiState(
  * Side effects for the Game screen.
  */
 sealed interface GameUiEffect {
-    data object PlayCorrectSound : GameUiEffect
-    data object PlaySkipSound : GameUiEffect
-    data object PlayTimerEndSound : GameUiEffect
+    /** Plays [sound] unless sound effects are turned off in the settings. */
+    data class PlaySound(val sound: GameSound) : GameUiEffect
     data object NavigateBack : GameUiEffect
     data object NavigateToSetup : GameUiEffect
 }
