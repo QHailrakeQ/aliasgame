@@ -2,7 +2,6 @@ package com.aliasgame.app.presentation.game
 
 import android.content.Context
 import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.media.SoundPool
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,15 +16,36 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.withContext
 
-enum class GameSound { CORRECT, SKIP, TIMER_END }
+/** Every sound effect of the game screen. */
+enum class GameSound {
+    /** A word was guessed. */
+    CORRECT,
+
+    /** A word was skipped. */
+    SKIP,
+
+    /** The countdown of a turn started. */
+    TURN_START,
+
+    /** One of the last seconds of a turn ticked away. */
+    COUNTDOWN_TICK,
+
+    /** One of the very last seconds ticked away: the same tick, played higher. */
+    COUNTDOWN_TICK_FINAL,
+
+    /** The time of a turn ran out. */
+    TIMER_END,
+
+    /** A team won the game. */
+    VICTORY
+}
 
 /**
  * Plays the game's sound effects and owns the underlying audio resources.
  *
- * The short answer sounds use [SoundPool]: they are decoded once and can restart instantly,
- * so rapid answers each get their sound (a [MediaPlayer] ignores `start()` while still
- * playing). The longer timer-end sound plays once per turn and stays on [MediaPlayer],
- * which streams it instead of decoding it into memory.
+ * All sounds are short (the longest, [GameSound.VICTORY], lasts about two seconds), so they
+ * all use [SoundPool]: each one is decoded once and starts instantly, even when the same sound
+ * is requested again before it finished, as with quick answers or countdown ticks.
  *
  * Call [release] when the player is no longer needed; see [rememberGameSoundPlayer].
  */
@@ -42,42 +62,50 @@ class GameSoundPlayer(context: Context) {
         .build()
 
     // SoundPool decodes asynchronously; play() before loading finishes is silently skipped.
-    private val correctSoundId = soundPool.load(context, R.raw.correct_sound, 1)
-    private val skipSoundId = soundPool.load(context, R.raw.skip_sound, 1)
-
-    // create() returns null when the resource cannot be prepared; the sound is then skipped.
-    private val timerEndPlayer: MediaPlayer? = MediaPlayer.create(context, R.raw.last_word_sound)
+    // load() returns 0 when the file cannot be opened; such a sound is skipped as well.
+    private val soundIds: Map<GameSound, Int> = run {
+        val correct = soundPool.load(context, R.raw.correct_sound, 1)
+        val skip = soundPool.load(context, R.raw.skip_sound, 1)
+        val turnStart = soundPool.load(context, R.raw.turn_start_sound, 1)
+        val tick = soundPool.load(context, R.raw.countdown_tick_sound, 1)
+        val timeUp = soundPool.load(context, R.raw.time_up_sound, 1)
+        val victory = soundPool.load(context, R.raw.victory_sound, 1)
+        mapOf(
+            GameSound.CORRECT to correct,
+            GameSound.SKIP to skip,
+            GameSound.TURN_START to turnStart,
+            GameSound.COUNTDOWN_TICK to tick,
+            GameSound.COUNTDOWN_TICK_FINAL to tick,
+            GameSound.TIMER_END to timeUp,
+            GameSound.VICTORY to victory
+        )
+    }
 
     fun play(sound: GameSound) {
-        when (sound) {
-            GameSound.CORRECT -> playFromPool(correctSoundId)
-            GameSound.SKIP -> playFromPool(skipSoundId)
-            GameSound.TIMER_END -> timerEndPlayer?.run {
-                seekTo(0)
-                start()
-            }
-        }
+        val soundId = soundIds[sound] ?: return
+        if (soundId == 0) return
+        // A playback rate above 1 raises the pitch, so one tick file serves both tick sounds.
+        val rate = if (sound == GameSound.COUNTDOWN_TICK_FINAL) FINAL_TICK_RATE else NORMAL_RATE
+        soundPool.play(soundId, 1f, 1f, 1, 0, rate)
     }
 
     fun release() {
         soundPool.release()
-        timerEndPlayer?.release()
-    }
-
-    private fun playFromPool(soundId: Int) {
-        if (soundId != 0) soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
     }
 
     private companion object {
-        const val MAX_SIMULTANEOUS_SOUNDS = 3
+        // An answer, a countdown tick and the end of the turn can overlap, plus one spare.
+        const val MAX_SIMULTANEOUS_SOUNDS = 4
+        const val NORMAL_RATE = 1f
+        const val FINAL_TICK_RATE = 1.5f
     }
 }
 
 /**
  * A [GameSoundPlayer] tied to the composition, or `null` while it is still being created.
  *
- * Creating the player opens the audio files and prepares the [MediaPlayer] synchronously,
- * which takes from hundreds of milliseconds to seconds on slower devices. Doing that on the
+ * Creating the player opens and registers the audio files synchronously, which takes from
+ * hundreds of milliseconds to seconds on slower devices. Doing that on the
  * main thread froze the game screen right after it opened (buttons ignored every touch), so
  * the player is created on a background thread; sounds requested before it is ready are skipped.
  * It is released when it leaves the composition.

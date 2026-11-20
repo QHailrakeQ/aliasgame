@@ -39,6 +39,7 @@ private class SilentSettingsRepository : SettingsRepository {
     override val selectedPack = flowOf("Easy")
     override val isSoundEnabled = flowOf(false)
     override val isVibrationEnabled = flowOf(false)
+    override val appStyle = flowOf(com.aliasgame.app.domain.model.AppStyle.DEFAULT)
     override suspend fun saveLanguage(language: String) {}
     override suspend fun saveRoundTime(time: Long) {}
     override suspend fun saveTargetScore(score: Int) {}
@@ -46,6 +47,7 @@ private class SilentSettingsRepository : SettingsRepository {
     override suspend fun savePack(packId: String) {}
     override suspend fun saveSoundEnabled(enabled: Boolean) {}
     override suspend fun saveVibrationEnabled(enabled: Boolean) {}
+    override suspend fun saveAppStyle(style: com.aliasgame.app.domain.model.AppStyle) {}
 }
 
 private class TenWordsRepository : WordsRepository {

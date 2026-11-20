@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Аліас</string>
     <string name="setup_title">Налаштування гри</string>
     <string name="round_time">Час раунду: %1$d сек</string>
     <string name="target_score">Цільовий рахунок: %1$d</string>
@@ -29,6 +28,10 @@
     <!-- Configuration and Metadata -->
     <string name="teams_header">Команди</string>
     <string name="preferences_header">Налаштування</string>
+    <string name="style_header">Оформлення</string>
+    <string name="style_classic">Класичне</string>
+    <string name="style_neon_pink">Неон: рожевий</string>
+    <string name="style_neon_violet">Неон: фіолетовий</string>
     <string name="sound_effects">Звукові ефекти</string>
     <string name="haptic_feedback">Вібрація</string>
     <string name="select_category_title">Оберіть категорію</string>

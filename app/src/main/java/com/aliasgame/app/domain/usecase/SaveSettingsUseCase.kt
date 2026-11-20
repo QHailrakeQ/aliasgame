@@ -1,5 +1,6 @@
 package com.aliasgame.app.domain.usecase
 
+import com.aliasgame.app.domain.model.AppStyle
 import com.aliasgame.app.domain.repository.SettingsRepository
 import javax.inject.Inject
 
@@ -17,4 +18,5 @@ class SaveSettingsUseCase @Inject constructor(
     suspend fun savePack(packId: String) = settingsRepository.savePack(packId)
     suspend fun saveSoundEnabled(enabled: Boolean) = settingsRepository.saveSoundEnabled(enabled)
     suspend fun saveVibrationEnabled(enabled: Boolean) = settingsRepository.saveVibrationEnabled(enabled)
+    suspend fun saveAppStyle(style: AppStyle) = settingsRepository.saveAppStyle(style)
 }
