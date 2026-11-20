@@ -77,7 +77,8 @@ class GameFlowSmokeTest {
         composeTestRule.onNodeWithText(soundSetting).performScrollTo().assertIsDisplayed()
         composeTestRule.onNodeWithText(vibrationSetting).performScrollTo().assertIsDisplayed()
 
-        composeTestRule.onNodeWithContentDescription(backDesc).performClick()
+        // The header scrolls with the content, so bring the back button into view first.
+        composeTestRule.onNodeWithContentDescription(backDesc).performScrollTo().performClick()
         composeTestRule.onNodeWithText(appName).assertIsDisplayed()
     }
 
